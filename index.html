@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Universal Acutrials | Strategic Consulting</title>
+    <meta name="description" content="Universal Acutrials - Premium Consulting Firm" />
+    
+    <!-- Google Fonts: Outfit for a modern, tech-forward look similar to the reference -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class', // Enable class-based dark mode
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Outfit', 'sans-serif'],
+            },
+            colors: {
+              // Logo "Universal" Blue (Deep Navy/Indigo)
+              brand: {
+                50: '#eef2ff',
+                100: '#e0e7ff',
+                200: '#c7d2fe',
+                300: '#a5b4fc',
+                400: '#818cf8',
+                500: '#6366f1',
+                600: '#4f46e5',
+                700: '#4338ca', // Primary Logo Blue
+                800: '#3730a3',
+                900: '#312e81',
+                950: '#1e1b4b', // Deepest Navy
+              },
+              // Logo "Actuaries" Red
+              accent: {
+                50: '#fef2f2',
+                100: '#fee2e2',
+                200: '#fecaca',
+                300: '#fca5a5',
+                400: '#f87171',
+                500: '#ef4444', // Primary Logo Red
+                600: '#dc2626',
+                700: '#b91c1c',
+                800: '#991b1b',
+                900: '#7f1d1d',
+                950: '#450a0a',
+              },
+              dark: {
+                bg: '#020617', // Slate 950 (Almost Black)
+                card: '#0f172a', // Slate 900
+                border: '#1e293b', // Slate 800
+              },
+              light: {
+                bg: '#f8fafc', // Slate 50
+                card: '#ffffff',
+                text: '#0f172a', // Slate 900
+              }
+            },
+            animation: {
+              'blob': 'blob 7s infinite',
+              'float': 'float 6s ease-in-out infinite',
+            },
+            keyframes: {
+              blob: {
+                '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                '100%': { transform: 'translate(0px, 0px) scale(1)' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-20px)' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      /* Smooth Scroll & Snapping Configuration */
+      html {
+        scroll-behavior: smooth;
+        scroll-snap-type: y proximity; /* Proximity prevents getting stuck on tall sections */
+        scroll-padding-top: 80px; /* Offset for the sticky navbar */
+        height: 100%;
+        overflow-y: scroll;
+      }
+
+      /* Sections snap to start */
+      section, footer {
+        scroll-snap-align: start;
+        scroll-snap-stop: normal;
+      }
+
+      /* Custom Scrollbar for Premium Feel */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1; /* Slate 300 */
+        border-radius: 4px;
+        transition: background 0.3s ease;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #334155; /* Slate 700 */
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8; /* Slate 400 */
+      }
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background: #475569; /* Slate 600 */
+      }
+      
+      body {
+        @apply bg-light-bg dark:bg-dark-bg text-light-text dark:text-white transition-colors duration-300;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.24",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
