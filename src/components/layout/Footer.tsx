@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
 /**
@@ -30,20 +31,20 @@ export const Footer = () => {
            <div>
              <h4 className="text-white font-bold mb-6">Services</h4>
              <ul className="space-y-3 text-slate-400 text-sm">
-               <li><a href="#" className="hover:text-accent-500 transition-colors">Risk Management</a></li>
-               <li><a href="#" className="hover:text-accent-500 transition-colors">Financial Advisory</a></li>
-               <li><a href="#" className="hover:text-accent-500 transition-colors">Digital Strategy</a></li>
-               <li><a href="#" className="hover:text-accent-500 transition-colors">Cyber Security</a></li>
+               <li><Link to="/services" className="hover:text-accent-500 transition-colors">Risk Management</Link></li>
+               <li><Link to="/services" className="hover:text-accent-500 transition-colors">Financial Advisory</Link></li>
+               <li><Link to="/services" className="hover:text-accent-500 transition-colors">Digital Strategy</Link></li>
+               <li><Link to="/services" className="hover:text-accent-500 transition-colors">Cyber Security</Link></li>
              </ul>
            </div>
            
            <div>
              <h4 className="text-white font-bold mb-6">Company</h4>
              <ul className="space-y-3 text-slate-400 text-sm">
-               <li><a href="#" className="hover:text-accent-500 transition-colors">About Us</a></li>
-               <li><a href="#" className="hover:text-accent-500 transition-colors">Careers</a></li>
-               <li><a href="#" className="hover:text-accent-500 transition-colors">News & Insights</a></li>
-               <li><a href="#" className="hover:text-accent-500 transition-colors">Contact</a></li>
+               <li><Link to="/about" className="hover:text-accent-500 transition-colors">About Us</Link></li>
+               <li><Link to="/careers" className="hover:text-accent-500 transition-colors">Careers</Link></li>
+               <li><Link to="/insights" className="hover:text-accent-500 transition-colors">News & Insights</Link></li>
+               <li><Link to="/contact" className="hover:text-accent-500 transition-colors">Contact</Link></li>
              </ul>
            </div>
            

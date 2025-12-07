@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ScrollProgress } from './components/layout/ScrollProgress';
+import { ScrollToTop } from './components/layout/ScrollToTop';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
-import { Hero } from './components/sections/Hero';
-import { About } from './components/sections/About';
-import { Services } from './components/sections/Services';
-import { Stats } from './components/sections/Stats';
-import { Contact } from './components/sections/Contact';
+import { Home, AboutUs, ServicesPage, Insights, Careers, ContactUs } from './pages';
 
 /**
  * Main App Component
@@ -36,18 +34,27 @@ const App = () => {
   };
 
   return (
-    <div className="antialiased min-h-screen font-sans selection:bg-accent-500/30 selection:text-accent-900 dark:selection:text-white">
-      <ScrollProgress />
-      <Navbar isDark={theme === 'dark'} toggleTheme={toggleTheme} />
-      <main>
-        <Hero />
-        <About />
-        <Services />
-        <Stats />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
+    <Router>
+      <div className="antialiased min-h-screen font-sans selection:bg-accent-500/30 selection:text-accent-900 dark:selection:text-white">
+        <ScrollToTop />
+        <ScrollProgress />
+        <Navbar 
+          isDark={theme === 'dark'} 
+          toggleTheme={toggleTheme}
+        />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/insights" element={<Insights />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/contact" element={<ContactUs />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   );
 };
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 import { ThemeToggle } from '../ui/ThemeToggle';
@@ -15,6 +16,7 @@ interface NavbarProps {
 export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -23,11 +25,12 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Services', href: '#services' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', path: '/' },
+    { name: 'About Us', path: '/about' },
+    { name: 'Services', path: '/services' },
+    { name: 'Insights', path: '/insights' },
+    { name: 'Careers', path: '/careers' },
+    { name: 'Contact Us', path: '/contact' },
   ];
 
   return (
@@ -39,28 +42,37 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
       }`}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
-        <a href="#" className="flex items-center gap-2 group">
+        <button onClick={() => handleNavClick('home')} className="flex items-center gap-2 group">
           <Logo className="h-10" />
-        </a>
+        </button>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <a 
+            <Link 
               key={link.name} 
-              href={link.href}
-              className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-accent-600 dark:hover:text-accent-500 transition-colors relative group uppercase tracking-wide"
+              to={link.path}
+              className={`text-sm font-medium transition-colors relative group uppercase tracking-wide ${
+                location.pathname === link.path 
+                  ? 'text-accent-600 dark:text-accent-500' 
+                  : 'text-slate-600 dark:text-slate-300 hover:text-accent-600 dark:hover:text-accent-500'
+              }`}
             >
               {link.name}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 transition-all group-hover:w-full" />
-            </a>
+              <span className={`absolute -bottom-1 left-0 h-0.5 bg-accent-500 transition-all ${
+                location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
+              }`} />
+            </Link>
           ))}
           
           <ThemeToggle isDark={isDark} toggle={toggleTheme} />
 
-          <a href="#contact" className="px-6 py-2 bg-gradient-to-r from-accent-600 to-accent-500 hover:from-accent-500 hover:to-accent-400 text-white rounded-md text-sm font-bold uppercase tracking-wider transition-all hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] transform hover:-translate-y-0.5">
+          <Link 
+            to="/contact"
+            className="px-6 py-2 bg-gradient-to-r from-accent-600 to-accent-500 hover:from-accent-500 hover:to-accent-400 text-white rounded-md text-sm font-bold uppercase tracking-wider transition-all hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] transform hover:-translate-y-0.5"
+          >
             Get in touch
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Toggle */}
@@ -87,14 +99,18 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
           >
             <div className="flex flex-col p-6 gap-4">
               {navLinks.map((link) => (
-                <a 
+                <Link 
                   key={link.name} 
-                  href={link.href}
+                  to={link.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-slate-700 dark:text-slate-300 hover:text-accent-600 dark:hover:text-accent-500 font-medium uppercase tracking-wide"
+                  className={`text-left font-medium uppercase tracking-wide transition-colors ${
+                    location.pathname === link.path 
+                      ? 'text-accent-600 dark:text-accent-500' 
+                      : 'text-slate-700 dark:text-slate-300 hover:text-accent-600 dark:hover:text-accent-500'
+                  }`}
                 >
                   {link.name}
-                </a>
+                </Link>
               ))}
             </div>
           </motion.div>
