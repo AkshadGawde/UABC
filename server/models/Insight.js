@@ -78,7 +78,6 @@ const insightSchema = new mongoose.Schema(
       type: String,
       unique: true,
       sparse: true,
-      index: false, // Prevent automatic index creation
     },
     seoTitle: {
       type: String,
