@@ -269,15 +269,15 @@ router.post("/refresh", authenticateToken, async (req, res) => {
 // @route   POST /api/auth/create-admin
 // @desc    Create new admin user (for development/setup purposes)
 // @access  Public (in production, this should be protected or removed)
-router.post('/create-admin', registerValidation, async (req, res) => {
+router.post("/create-admin", registerValidation, async (req, res) => {
   try {
     // Check validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Validation error',
-        errors: errors.array()
+        message: "Validation error",
+        errors: errors.array(),
       });
     }
 
@@ -287,14 +287,14 @@ router.post('/create-admin', registerValidation, async (req, res) => {
     const existingUser = await User.findOne({
       $or: [
         { username: username.toLowerCase() },
-        { email: email.toLowerCase() }
-      ]
+        { email: email.toLowerCase() },
+      ],
     });
 
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: 'User with this username or email already exists'
+        message: "User with this username or email already exists",
       });
     }
 
@@ -305,25 +305,25 @@ router.post('/create-admin', registerValidation, async (req, res) => {
       password,
       firstName,
       lastName,
-      role: 'admin' // Set as admin
+      role: "admin", // Set as admin
     });
 
     await user.save();
 
     // Generate JWT token
     const token = jwt.sign(
-      { 
+      {
         userId: user._id,
         username: user.username,
-        role: user.role
+        role: user.role,
       },
       process.env.JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: "24h" }
     );
 
     res.status(201).json({
       success: true,
-      message: 'Admin user created successfully',
+      message: "Admin user created successfully",
       token,
       user: {
         id: user._id,
@@ -331,15 +331,14 @@ router.post('/create-admin', registerValidation, async (req, res) => {
         email: user.email,
         role: user.role,
         fullName: user.fullName,
-        avatar: user.avatar
-      }
+        avatar: user.avatar,
+      },
     });
-
   } catch (error) {
-    console.error('Admin creation error:', error);
+    console.error("Admin creation error:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error during admin creation'
+      message: "Server error during admin creation",
     });
   }
 });
