@@ -30,7 +30,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://127.0.0.1:5173",
   "https://uabc-cms.vercel.app", // Add your future frontend domain
-  "https://your-frontend-domain.com", // Replace with actual domain
+  "https://your-frontend-domain.com", // Replace with actual frontend domain when deployed
 ];
 
 app.use(
@@ -92,9 +92,9 @@ app.get("/", (req, res) => {
     endpoints: {
       health: "/api/health",
       auth: "/api/auth",
-      insights: "/api/insights"
+      insights: "/api/insights",
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -133,7 +133,7 @@ app.all("*", (req, res) => {
     success: false,
     message: "API endpoint not found",
     path: req.originalUrl,
-    method: req.method
+    method: req.method,
   });
 });
 
