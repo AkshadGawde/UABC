@@ -8,7 +8,12 @@
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["cms", "mongodb", "express", "nodejs"],
+  "keywords": [
+    "cms",
+    "mongodb",
+    "express",
+    "nodejs"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
