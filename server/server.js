@@ -72,10 +72,7 @@ if (!process.env.MONGODB_URI) {
 }
 
 mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("✅ Connected to MongoDB Atlas");
     console.log("📊 Database:", mongoose.connection.name);
@@ -85,6 +82,26 @@ mongoose
     console.error("🔧 Check your MongoDB URI and network connection");
     process.exit(1);
   });
+
+// Root endpoint
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "UABC CMS Backend API",
+    version: "1.0.0",
+    endpoints: {
+      health: "/api/health",
+      auth: "/api/auth",
+      insights: "/api/insights"
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Favicon handler
+app.get("/favicon.ico", (req, res) => {
+  res.status(204).send();
+});
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -110,11 +127,13 @@ app.use((error, req, res, next) => {
   });
 });
 
-// 404 handler
-app.use("*", (req, res) => {
+// 404 handler for unmatched routes
+app.all("*", (req, res) => {
   res.status(404).json({
     success: false,
     message: "API endpoint not found",
+    path: req.originalUrl,
+    method: req.method
   });
 });
 

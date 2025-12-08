@@ -78,6 +78,7 @@ const insightSchema = new mongoose.Schema(
       type: String,
       unique: true,
       sparse: true,
+      index: false, // Prevent automatic index creation
     },
     seoTitle: {
       type: String,
@@ -126,7 +127,7 @@ insightSchema.pre("save", function (next) {
 insightSchema.index({ published: 1, createdAt: -1 });
 insightSchema.index({ category: 1, published: 1 });
 insightSchema.index({ tags: 1 });
-insightSchema.index({ slug: 1 });
+// Slug index handled by unique: true above
 
 // Static methods
 insightSchema.statics.findPublished = function () {
