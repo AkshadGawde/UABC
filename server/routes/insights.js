@@ -467,6 +467,47 @@ router.patch(
   }
 );
 
+// @route   PATCH /api/insights/:id/featured
+// @desc    Toggle featured status
+// @access  Private (Editor+)
+router.patch(
+  "/:id/featured",
+  authenticateToken,
+  requireEditor,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { featured } = req.body;
+
+      const insight = await Insight.findById(id);
+
+      if (!insight) {
+        return res.status(404).json({
+          success: false,
+          message: "Insight not found",
+        });
+      }
+
+      insight.featured = !!featured;
+      await insight.save();
+
+      res.json({
+        success: true,
+        message: `Insight ${
+          insight.featured ? "marked as featured" : "removed from featured"
+        } successfully`,
+        data: insight,
+      });
+    } catch (error) {
+      console.error("Feature insight error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Server error while updating featured status",
+      });
+    }
+  }
+);
+
 // @route   GET /api/insights/categories/stats
 // @desc    Get category statistics
 // @access  Public

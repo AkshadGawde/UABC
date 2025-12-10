@@ -14,6 +14,7 @@ export interface Insight {
   readTime: number;
   image: string;
   published: boolean;
+  featured?: boolean;
   publishedAt?: string;
   createdAt: string;
   updatedAt: string;
@@ -45,6 +46,21 @@ export interface InsightsResponse {
   insights: Insight[];
   pagination: PaginationInfo;
 }
+
+// Data shape for creating/updating insights from the editor
+export type CreateInsightData = {
+  title: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  category: 'Technology' | 'Business' | 'Innovation' | 'Industry' | 'Research' | 'Analysis';
+  image?: string;
+  tags?: string[];
+  published?: boolean;
+  featured?: boolean; // may be ignored by backend schema
+  seoTitle?: string;
+  seoDescription?: string;
+};
 
 class InsightsService {
   // Get all insights (public)
@@ -98,7 +114,14 @@ class InsightsService {
       const response = await authService.makeAuthenticatedRequest(
         `${API_URL}/insights/admin?${params}`
       );
-      
+
+      if (response.status === 403) {
+        throw new Error('Insufficient permissions');
+      }
+      if (response.status === 401) {
+        throw new Error('Authentication required');
+      }
+
       const data = await response.json();
       
       if (!data.success) {
@@ -119,6 +142,11 @@ class InsightsService {
         }
       };
     }
+  }
+
+  // Get all insights (alias for backward compatibility)
+  async getAllInsights(filters: InsightFilters = {}): Promise<InsightsResponse> {
+    return this.getInsights(filters);
   }
 
   // Get single insight by ID
@@ -155,22 +183,38 @@ class InsightsService {
   }
 
   // Create new insight
-  async createInsight(data: Omit<Insight, '_id' | 'id' | 'createdAt' | 'updatedAt' | 'views' | 'likes' | 'readTime'>): Promise<{ success: boolean; message: string; insight?: Insight }> {
+  async createInsight(data: CreateInsightData): Promise<{ success: boolean; message: string; insight?: Insight }> {
     try {
+      // Sanitize payload for backend validators
+      const payload: any = { ...data };
+      if (typeof payload.image === 'string') {
+        const img = payload.image.trim();
+        // Remove if empty or data URI; backend expects a valid URL when provided
+        if (!img || img.startsWith('data:')) {
+          delete payload.image;
+        } else {
+          payload.image = img;
+        }
+      }
+      if (!payload.tags) payload.tags = [];
+
       const response = await authService.makeAuthenticatedRequest(
         `${API_URL}/insights`,
         {
           method: 'POST',
-          body: JSON.stringify(data)
+          body: JSON.stringify(payload)
         }
       );
       
       const result = await response.json();
       
       if (!result.success) {
+        const firstError = Array.isArray(result.errors) && result.errors.length > 0
+          ? result.errors[0].msg || result.errors[0].message
+          : undefined;
         return {
           success: false,
-          message: result.message || 'Failed to create insight'
+          message: firstError || result.message || 'Failed to create insight'
         };
       }
       
@@ -197,20 +241,33 @@ class InsightsService {
   // Update existing insight
   async updateInsight(id: string, data: Partial<Omit<Insight, '_id' | 'id' | 'createdAt'>>): Promise<{ success: boolean; message: string; insight?: Insight }> {
     try {
+      const payload: any = { ...data };
+      if (typeof payload.image === 'string') {
+        const img = payload.image.trim();
+        if (!img || img.startsWith('data:')) {
+          delete payload.image;
+        } else {
+          payload.image = img;
+        }
+      }
+
       const response = await authService.makeAuthenticatedRequest(
         `${API_URL}/insights/${id}`,
         {
           method: 'PUT',
-          body: JSON.stringify(data)
+          body: JSON.stringify(payload)
         }
       );
       
       const result = await response.json();
       
       if (!result.success) {
+        const firstError = Array.isArray(result.errors) && result.errors.length > 0
+          ? result.errors[0].msg || result.errors[0].message
+          : undefined;
         return {
           success: false,
-          message: result.message || 'Failed to update insight'
+          message: firstError || result.message || 'Failed to update insight'
         };
       }
       
@@ -296,6 +353,39 @@ class InsightsService {
         success: false,
         message: 'Network error. Please check your connection.'
       };
+    }
+  }
+
+  // Backward-compat: togglePublished(id) flips current published state
+  async togglePublished(id: string): Promise<{ success: boolean; message: string; insight?: Insight }> {
+    const current = await this.getInsight(id, true);
+    if (!current) return { success: false, message: 'Insight not found' };
+    return this.togglePublish(id, !current.published);
+  }
+
+  // Toggle featured via dedicated endpoint; flips current value
+  async toggleFeatured(id: string): Promise<{ success: boolean; message: string; insight?: Insight }> {
+    const current = await this.getInsight(id, true);
+    if (!current) return { success: false, message: 'Insight not found' };
+    const next = !Boolean(current.featured);
+    try {
+      const response = await authService.makeAuthenticatedRequest(
+        `${API_URL}/insights/${id}/featured`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify({ featured: next })
+        }
+      );
+      const result = await response.json();
+      if (!result.success) {
+        return { success: false, message: result.message || 'Failed to update featured status' };
+      }
+      const insight = result.data;
+      if (insight._id && !insight.id) insight.id = insight._id;
+      return { success: true, message: result.message, insight };
+    } catch (error) {
+      console.error('Error toggling featured status:', error);
+      return { success: false, message: 'Network error. Please check your connection.' };
     }
   }
 

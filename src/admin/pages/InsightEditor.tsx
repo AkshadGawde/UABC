@@ -5,12 +5,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { insightsService, CreateInsightData, Insight } from '../services/insightsService';
 
 const categories = [
-  'Market Analysis',
-  'Technology', 
-  'Risk Management',
-  'Regulatory',
-  'Industry Trends',
-  'Sustainability'
+  'Technology',
+  'Business',
+  'Innovation',
+  'Industry',
+  'Research',
+  'Analysis'
 ];
 
 export const InsightEditor = () => {
@@ -19,7 +19,7 @@ export const InsightEditor = () => {
   const isEdit = id !== 'new';
 
   const [formData, setFormData] = useState<CreateInsightData>({
-    category: 'Market Analysis',
+    category: 'Technology',
     title: '',
     excerpt: '',
     content: '',
@@ -70,9 +70,17 @@ export const InsightEditor = () => {
     try {
       setSaving(true);
       if (isEdit && id) {
-        await insightsService.updateInsight(id, formData);
+        const res = await insightsService.updateInsight(id, formData);
+        if (!res.success) {
+          alert(res.message || 'Failed to update insight');
+          return;
+        }
       } else {
-        await insightsService.createInsight(formData);
+        const res = await insightsService.createInsight(formData);
+        if (!res.success) {
+          alert(res.message || 'Failed to create insight');
+          return;
+        }
       }
       navigate('/admin');
     } catch (error) {

@@ -76,8 +76,8 @@ const authorizeRoles = (...roles) => {
 // Admin only middleware
 const requireAdmin = authorizeRoles("admin");
 
-// Admin or Editor middleware
-const requireEditor = authorizeRoles("admin", "editor");
+// Admin or Editor middleware (also allow author for PDF uploads)
+const requireEditor = authorizeRoles("admin", "editor", "author");
 
 module.exports = {
   authenticateToken,

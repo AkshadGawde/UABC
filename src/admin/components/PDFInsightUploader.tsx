@@ -1,0 +1,314 @@
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Upload, Calendar, FileText, Image, AlertCircle, Check } from 'lucide-react';
+import { authService } from '../services/authService';
+
+interface PDFInsightUploaderProps {
+  onUploadSuccess?: (insight: any) => void;
+  onUploadError?: (error: string) => void;
+}
+
+const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
+  onUploadSuccess,
+  onUploadError,
+}) => {
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [featuredImage, setFeaturedImage] = useState('');
+  const [publishDate, setPublishDate] = useState(new Date().toISOString().split('T')[0]);
+  const [loading, setLoading] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const [preview, setPreview] = useState<{
+    title?: string;
+    excerpt?: string;
+  } | null>(null);
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      if (file.type === 'application/pdf') {
+        setPdfFile(file);
+      } else {
+        onUploadError?.('Please select a PDF file');
+      }
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.type === 'application/pdf') {
+        setPdfFile(file);
+      } else {
+        onUploadError?.('Please select a PDF file');
+      }
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!pdfFile) {
+      onUploadError?.('Please select a PDF file');
+      return;
+    }
+
+    // Debug auth state
+    const isAuth = authService.isAuthenticated();
+    const user = authService.getCurrentUser();
+    const token = authService.getToken();
+    
+    console.log('Auth Debug:', { isAuth, user, hasToken: !!token });
+    
+    if (!isAuth || !token) {
+      onUploadError?.('You must be logged in to upload PDFs. Please refresh and log in again.');
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const formData = new FormData();
+      formData.append('pdf', pdfFile);
+      formData.append('publishDate', publishDate);
+      
+      if (featuredImage.trim()) {
+        formData.append('featuredImage', featuredImage.trim());
+      }
+
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const token = authService.getToken();
+
+      if (!token) {
+        throw new Error('No authentication token found. Please log in again.');
+      }
+      
+      const response = await fetch(`${apiUrl}/pdf-insights/upload`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          // Don't set Content-Type - let browser set it for FormData with boundary
+        },
+        body: formData,
+      });
+
+      let result;
+      try {
+        result = await response.json();
+      } catch (jsonError) {
+        // If JSON parsing fails, get the raw text to see what the server returned
+        const textResponse = await response.text();
+        console.error('Server returned non-JSON response:', textResponse);
+        throw new Error(`Server error: ${response.status} - ${textResponse.substring(0, 100)}...`);
+      }
+
+      if (!response.ok) {
+        throw new Error(result.message || `Upload failed with status ${response.status}`);
+      }
+
+      // Reset form
+      setPdfFile(null);
+      setFeaturedImage('');
+      setPublishDate(new Date().toISOString().split('T')[0]);
+      setPreview(null);
+
+      onUploadSuccess?.(result.data);
+    } catch (error) {
+      console.error('Upload error:', error);
+      onUploadError?.(error instanceof Error ? error.message : 'Upload failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 py-4">
+          <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+            <FileText className="w-5 h-5" />
+            Upload PDF Insight
+          </h2>
+          <p className="text-blue-100 text-sm mt-1">
+            Upload a PDF document to create a new insight with automatic metadata extraction
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {/* PDF Upload Area */}
+          <div className="space-y-4">
+            <label className="block text-sm font-medium text-gray-700">
+              PDF Document *
+            </label>
+            
+            <div
+              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                dragActive
+                  ? 'border-blue-400 bg-blue-50'
+                  : pdfFile
+                  ? 'border-green-400 bg-green-50'
+                  : 'border-gray-300 hover:border-gray-400'
+              }`}
+              onDragEnter={handleDrag}
+              onDragLeave={handleDrag}
+              onDragOver={handleDrag}
+              onDrop={handleDrop}
+            >
+              <input
+                type="file"
+                accept=".pdf"
+                onChange={handleFileSelect}
+                className="hidden"
+                id="pdf-upload"
+              />
+              
+              {pdfFile ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-2"
+                >
+                  <div className="flex items-center justify-center w-12 h-12 mx-auto bg-green-100 rounded-full">
+                    <Check className="w-6 h-6 text-green-600" />
+                  </div>
+                  <p className="font-medium text-gray-900">{pdfFile.name}</p>
+                  <p className="text-sm text-gray-500">
+                    {formatFileSize(pdfFile.size)} • PDF Document
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setPdfFile(null)}
+                    className="text-sm text-red-600 hover:text-red-700"
+                  >
+                    Remove file
+                  </button>
+                </motion.div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-center w-12 h-12 mx-auto bg-gray-100 rounded-full">
+                    <Upload className="w-6 h-6 text-gray-400" />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="pdf-upload"
+                      className="cursor-pointer text-blue-600 hover:text-blue-700 font-medium"
+                    >
+                      Choose a PDF file
+                    </label>
+                    <p className="text-gray-500"> or drag and drop</p>
+                  </div>
+                  <p className="text-xs text-gray-400">
+                    Maximum file size: 10MB
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Featured Image */}
+          <div className="space-y-2">
+            <label htmlFor="featuredImage" className="block text-sm font-medium text-gray-700">
+              Featured Image URL
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Image className="h-4 w-4 text-gray-400" />
+              </div>
+              <input
+                type="url"
+                id="featuredImage"
+                value={featuredImage}
+                onChange={(e) => setFeaturedImage(e.target.value)}
+                placeholder="https://example.com/image.jpg (optional)"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <p className="text-xs text-gray-500">
+              Optional: Add a featured image URL for the insight card
+            </p>
+          </div>
+
+          {/* Publish Date */}
+          <div className="space-y-2">
+            <label htmlFor="publishDate" className="block text-sm font-medium text-gray-700">
+              Publish Date *
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Calendar className="h-4 w-4 text-gray-400" />
+              </div>
+              <input
+                type="date"
+                id="publishDate"
+                value={publishDate}
+                onChange={(e) => setPublishDate(e.target.value)}
+                required
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          </div>
+
+          {/* Info Box */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+              <div className="text-sm text-blue-800">
+                <h4 className="font-medium mb-1">Automatic Processing</h4>
+                <p>
+                  The PDF will be automatically processed to extract the title and generate an excerpt. 
+                  The document will be stored securely and made available for download by readers.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-end pt-4">
+            <button
+              type="submit"
+              disabled={loading || !pdfFile}
+              className={`px-6 py-2 rounded-md font-medium transition-colors ${
+                loading || !pdfFile
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white'
+              }`}
+            >
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Processing PDF...
+                </div>
+              ) : (
+                'Upload Insight'
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default PDFInsightUploader;

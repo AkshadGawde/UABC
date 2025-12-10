@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const insightSchema = new mongoose.Schema(
   {
+    // Auto-extracted from PDF
     title: {
       type: String,
       required: [true, "Title is required"],
@@ -10,51 +11,32 @@ const insightSchema = new mongoose.Schema(
     },
     excerpt: {
       type: String,
-      required: [true, "Excerpt is required"],
       trim: true,
       maxlength: [500, "Excerpt cannot exceed 500 characters"],
     },
-    content: {
+    // PDF storage - using base64 for simplicity
+    pdfData: {
+      type: String, // Base64 encoded PDF
+      required: [true, "PDF data is required"],
+    },
+    pdfFilename: {
       type: String,
-      required: [true, "Content is required"],
+      required: [true, "PDF filename is required"],
       trim: true,
     },
-    author: {
-      type: String,
-      required: [true, "Author is required"],
-      trim: true,
-      maxlength: [100, "Author name cannot exceed 100 characters"],
-    },
-    category: {
-      type: String,
-      required: [true, "Category is required"],
-      enum: {
-        values: [
-          "Technology",
-          "Business",
-          "Innovation",
-          "Industry",
-          "Research",
-          "Analysis",
-        ],
-        message:
-          "Category must be one of: Technology, Business, Innovation, Industry, Research, Analysis",
-      },
-    },
-    tags: [
-      {
-        type: String,
-        trim: true,
-        maxlength: [50, "Tag cannot exceed 50 characters"],
-      },
-    ],
-    readTime: {
-      type: Number,
+    pdfSize: {
+      type: Number, // File size in bytes
       required: true,
-      min: [1, "Read time must be at least 1 minute"],
     },
-    image: {
-      type: String,
+    // Admin sets publication date
+    publishDate: {
+      type: Date,
+      required: [true, "Publication date is required"],
+      default: Date.now,
+    },
+    // Featured image for the insight poster
+    featuredImage: {
+      type: String, // URL to poster image
       default:
         "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&q=80",
     },
@@ -62,9 +44,9 @@ const insightSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    publishedAt: {
-      type: Date,
-      default: null,
+    featured: {
+      type: Boolean,
+      default: false,
     },
     views: {
       type: Number,
@@ -78,14 +60,6 @@ const insightSchema = new mongoose.Schema(
       type: String,
       unique: true,
       sparse: true,
-    },
-    seoTitle: {
-      type: String,
-      maxlength: [60, "SEO title cannot exceed 60 characters"],
-    },
-    seoDescription: {
-      type: String,
-      maxlength: [160, "SEO description cannot exceed 160 characters"],
     },
   },
   {

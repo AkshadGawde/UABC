@@ -1,22 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Eye, Edit, Trash2, Star, Globe, Clock, LogOut } from 'lucide-react';
+import { Plus, Eye, Edit, Trash2, Star, Globe, Clock, LogOut, Upload } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { insightsService, Insight } from '../services/insightsService';
+import { AdminSetup } from '../components/AdminSetup';
+import PDFInsightUploader from '../components/PDFInsightUploader';
 
 export const AdminDashboard = () => {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState<'all' | 'published' | 'drafts'>('all');
+  const [showUploader, setShowUploader] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { user, logout } = useAuth();
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [showSetup, setShowSetup] = useState(false);
 
   const loadInsights = async () => {
     try {
       setLoading(true);
       const data = await insightsService.getAllInsights();
-      setInsights(data);
+      setInsights(data.insights || []); // Extract insights array from response
+      setAuthError(null);
     } catch (error) {
       console.error('Failed to load insights:', error);
+      const message = error instanceof Error ? error.message : 'Failed to load insights';
+      setAuthError(message);
+      if (message === 'Insufficient permissions') {
+        try {
+          const pub = await insightsService.getPublicInsights({ limit: 20 });
+          setInsights(pub.insights || []);
+        } catch (e) {
+          setInsights([]);
+        }
+      } else {
+        setInsights([]); // Set empty array on other errors
+      }
     } finally {
       setLoading(false);
     }
@@ -55,6 +75,20 @@ export const AdminDashboard = () => {
     }
   };
 
+  const handleUploadSuccess = (insight: any) => {
+    setSuccessMessage(`PDF insight "${insight.title}" uploaded successfully!`);
+    setShowUploader(false);
+    loadInsights();
+    // Clear success message after 5 seconds
+    setTimeout(() => setSuccessMessage(null), 5000);
+  };
+
+  const handleUploadError = (error: string) => {
+    setErrorMessage(error);
+    // Clear error message after 5 seconds
+    setTimeout(() => setErrorMessage(null), 5000);
+  };
+
   const filteredInsights = insights.filter(insight => {
     switch (selectedTab) {
       case 'published':
@@ -73,6 +107,16 @@ export const AdminDashboard = () => {
     featured: insights.filter(i => i.featured).length
   };
 
+  // Inline setup flow if needed
+  if (showSetup) {
+    return (
+      <AdminSetup onSetupComplete={() => {
+        setShowSetup(false);
+        loadInsights();
+      }} />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       {/* Header */}
@@ -84,12 +128,19 @@ export const AdminDashboard = () => {
               <p className="text-slate-600 dark:text-slate-400">Welcome back, {user?.username}</p>
             </div>
             <div className="flex items-center gap-4">
-              <a
-                href="/admin/insights/new"
+              <button
+                onClick={() => setShowUploader(true)}
                 className="px-4 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors flex items-center gap-2"
               >
+                <Upload className="w-4 h-4" />
+                Upload PDF
+              </button>
+              <a
+                href="/admin/insights/new"
+                className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2"
+              >
                 <Plus className="w-4 h-4" />
-                New Insight
+                Manual Entry
               </a>
               <button
                 onClick={logout}
@@ -104,6 +155,81 @@ export const AdminDashboard = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Success/Error Messages */}
+        {successMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 rounded-lg border border-green-300 bg-green-50 dark:bg-green-900/20 dark:border-green-600"
+          >
+            <p className="text-green-800 dark:text-green-200">{successMessage}</p>
+          </motion.div>
+        )}
+        
+        {errorMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 rounded-lg border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-600"
+          >
+            <p className="text-red-800 dark:text-red-200">{errorMessage}</p>
+          </motion.div>
+        )}
+
+        {/* PDF Uploader Modal */}
+        {showUploader && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-white dark:bg-slate-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            >
+              <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Upload PDF Insight</h2>
+                <button
+                  onClick={() => setShowUploader(false)}
+                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                >
+                  ✕
+                </button>
+              </div>
+              <PDFInsightUploader
+                onUploadSuccess={handleUploadSuccess}
+                onUploadError={handleUploadError}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* Permission notice */}
+        {authError === 'Insufficient permissions' && (
+          <div className="mb-6 p-4 rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-600">
+            <p className="text-amber-800 dark:text-amber-200 font-medium mb-2">
+              Admin or Editor access required
+            </p>
+            <p className="text-amber-700 dark:text-amber-300 text-sm mb-3">
+              You are logged in as <span className="font-semibold">{user?.role}</span>. To access the admin insights, you need an account with the <span className="font-semibold">admin</span> or <span className="font-semibold">editor</span> role.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowSetup(true)}
+                className="px-4 py-2 bg-accent-600 text-white rounded-md hover:bg-accent-700 transition-colors"
+              >
+                Create Admin User
+              </button>
+              <button
+                onClick={logout}
+                className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
         {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">
           {[

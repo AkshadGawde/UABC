@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Lock, User, Eye, EyeOff } from 'lucide-react';
+import { Lock, User, Eye, EyeOff, UserPlus } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { AdminSetup } from '../components/AdminSetup';
 
 export const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [showSetup, setShowSetup] = useState(false);
   const { login, isLoading, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -33,6 +35,25 @@ export const AdminLogin = () => {
       setError(err.message || 'Invalid username or password');
     }
   };
+
+  const handleSetupComplete = () => {
+    setShowSetup(false);
+    // User will be automatically logged in after setup
+    navigate('/admin/dashboard');
+  };
+
+  if (showSetup) {
+    return <AdminSetup onSetupComplete={handleSetupComplete} />;
+  }
+
+  // Show setup component if requested
+  if (showSetup) {
+    return <AdminSetup onSetupComplete={() => {
+      setShowSetup(false);
+      // Reload the page to refresh authentication state
+      window.location.reload();
+    }} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-6">
@@ -127,11 +148,18 @@ export const AdminLogin = () => {
         </form>
 
         <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+          <button
+            onClick={() => setShowSetup(true)}
+            className="w-full py-2 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 mb-4"
+          >
+            <UserPlus className="w-4 h-4" />
+            Create Admin User
+          </button>
+          
           <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">Demo Credentials:</p>
-            <p className="text-xs font-mono text-slate-500 dark:text-slate-400">
-              Username: <span className="text-accent-600 dark:text-accent-400">admin</span><br />
-              Password: <span className="text-accent-600 dark:text-accent-400">admin123</span>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">No admin user yet?</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Click "Create Admin User" above to set up your first admin account.
             </p>
           </div>
         </div>
