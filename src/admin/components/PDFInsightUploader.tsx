@@ -14,6 +14,8 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
 }) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [featuredImage, setFeaturedImage] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageMode, setImageMode] = useState<'url' | 'upload'>('url');
   const [publishDate, setPublishDate] = useState(new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
@@ -58,6 +60,19 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
     }
   };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.type.startsWith('image/')) {
+        setImageFile(file);
+        // Clear URL if file is selected
+        setFeaturedImage('');
+      } else {
+        onUploadError?.('Please select an image file');
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -85,7 +100,10 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
       formData.append('pdf', pdfFile);
       formData.append('publishDate', publishDate);
       
-      if (featuredImage.trim()) {
+      // Handle image - either file upload or URL
+      if (imageFile) {
+        formData.append('image', imageFile);
+      } else if (featuredImage.trim()) {
         formData.append('featuredImage', featuredImage.trim());
       }
 
@@ -122,6 +140,8 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
       // Reset form
       setPdfFile(null);
       setFeaturedImage('');
+      setImageFile(null);
+      setImageMode('url');
       setPublishDate(new Date().toISOString().split('T')[0]);
       setPreview(null);
 
@@ -228,26 +248,106 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
           </div>
 
           {/* Featured Image */}
-          <div className="space-y-2">
-            <label htmlFor="featuredImage" className="block text-sm font-medium text-gray-700">
-              Featured Image URL
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Image className="h-4 w-4 text-gray-400" />
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="block text-sm font-medium text-gray-700">
+                Featured Image
+              </label>
+              <div className="flex bg-gray-100 rounded-lg p-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setImageMode('url');
+                    setImageFile(null);
+                  }}
+                  className={`px-3 py-1 text-xs rounded-md transition-colors ${
+                    imageMode === 'url'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                >
+                  URL
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setImageMode('upload');
+                    setFeaturedImage('');
+                  }}
+                  className={`px-3 py-1 text-xs rounded-md transition-colors ${
+                    imageMode === 'upload'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                >
+                  Upload
+                </button>
               </div>
-              <input
-                type="url"
-                id="featuredImage"
-                value={featuredImage}
-                onChange={(e) => setFeaturedImage(e.target.value)}
-                placeholder="https://example.com/image.jpg (optional)"
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
             </div>
-            <p className="text-xs text-gray-500">
-              Optional: Add a featured image URL for the insight card
-            </p>
+
+            {imageMode === 'url' ? (
+              <div className="space-y-2">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Image className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <input
+                    type="url"
+                    id="featuredImage"
+                    value={featuredImage}
+                    onChange={(e) => setFeaturedImage(e.target.value)}
+                    placeholder="https://example.com/image.jpg (optional)"
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <p className="text-xs text-gray-500">
+                  Enter a URL to an image for the insight card
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="flex items-center space-x-4">
+                  <label
+                    htmlFor="image-upload"
+                    className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Choose Image
+                    <input
+                      type="file"
+                      id="image-upload"
+                      accept="image/*"
+                      onChange={handleImageSelect}
+                      className="sr-only"
+                    />
+                  </label>
+                  {imageFile && (
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm text-gray-600">{imageFile.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => setImageFile(null)}
+                        className="text-sm text-red-600 hover:text-red-700"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500">
+                  Upload an image file (JPG, PNG, GIF, WebP)
+                </p>
+                {imageFile && (
+                  <div className="mt-2">
+                    <img
+                      src={URL.createObjectURL(imageFile)}
+                      alt="Preview"
+                      className="h-20 w-32 object-cover rounded-md border border-gray-200"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Publish Date */}

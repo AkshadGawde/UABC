@@ -7,18 +7,28 @@ const { authenticateToken, requireEditor } = require("../middleware/auth");
 
 const router = express.Router();
 
-// Configure multer for PDF upload (memory storage)
+// Configure multer for PDF and image upload (memory storage)
 const upload = multer({
   storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => {
-    if (file.mimetype === "application/pdf") {
-      cb(null, true);
+    if (file.fieldname === "pdf") {
+      if (file.mimetype === "application/pdf") {
+        cb(null, true);
+      } else {
+        cb(new Error("PDF field must contain a PDF file"), false);
+      }
+    } else if (file.fieldname === "image") {
+      if (file.mimetype.startsWith("image/")) {
+        cb(null, true);
+      } else {
+        cb(new Error("Image field must contain an image file"), false);
+      }
     } else {
-      cb(new Error("Only PDF files are allowed"), false);
+      cb(new Error("Unexpected field"), false);
     }
   },
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
+    fileSize: 10 * 1024 * 1024, // 10MB limit for both PDF and images
   },
 });
 
@@ -77,8 +87,11 @@ const generateExcerpt = (text) => {
 
 // Helper function to extract author from PDF text
 const extractAuthorFromPdf = (text) => {
-  const lines = text.split("\n").map(line => line.trim()).filter(line => line.length > 0);
-  
+  const lines = text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+
   // Common author patterns to look for
   const authorPatterns = [
     /^(?:by|author|written by|authored by)[:]\s*(.+)$/i,
@@ -89,42 +102,51 @@ const extractAuthorFromPdf = (text) => {
     /^prof\.?\s+(.+)$/i,
     /^(.+),\s*(?:phd|md|dr|prof)\.?$/i,
   ];
-  
+
   // Check first few lines for author patterns
   for (let i = 0; i < Math.min(10, lines.length); i++) {
     const line = lines[i];
-    
+
     for (const pattern of authorPatterns) {
       const match = line.match(pattern);
       if (match && match[1]) {
-        const author = match[1].trim()
-          .replace(/[^\w\s.-]/g, '') // Remove special characters except dots and hyphens
-          .replace(/\s+/g, ' ')
+        const author = match[1]
+          .trim()
+          .replace(/[^\w\s.-]/g, "") // Remove special characters except dots and hyphens
+          .replace(/\s+/g, " ")
           .trim();
-        
+
         // Validate author name (should be reasonable length)
-        if (author.length >= 2 && author.length <= 50 && /[a-zA-Z]/.test(author)) {
+        if (
+          author.length >= 2 &&
+          author.length <= 50 &&
+          /[a-zA-Z]/.test(author)
+        ) {
           return author;
         }
       }
     }
   }
-  
+
   // Look for potential author names in first paragraph
   // Names often appear as "FirstName LastName" patterns
-  const firstParagraph = lines.slice(0, 5).join(' ');
+  const firstParagraph = lines.slice(0, 5).join(" ");
   const namePattern = /\b[A-Z][a-z]+\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?\b/g;
   const matches = firstParagraph.match(namePattern);
-  
+
   if (matches && matches.length > 0) {
     // Return the first reasonable name found
     for (const match of matches) {
-      if (match.length <= 50 && !match.includes('PDF') && !match.includes('Document')) {
+      if (
+        match.length <= 50 &&
+        !match.includes("PDF") &&
+        !match.includes("Document")
+      ) {
         return match.trim();
       }
     }
   }
-  
+
   return null; // No author found
 };
 
@@ -135,7 +157,10 @@ router.post(
   "/upload",
   authenticateToken,
   requireEditor,
-  upload.single("pdf"),
+  upload.fields([
+    { name: "pdf", maxCount: 1 },
+    { name: "image", maxCount: 1 },
+  ]),
   insightUploadValidation,
   async (req, res) => {
     try {
@@ -156,7 +181,7 @@ router.post(
         });
       }
 
-      if (!req.file) {
+      if (!req.files || !req.files.pdf || !req.files.pdf[0]) {
         return res.status(400).json({
           success: false,
           message: "PDF file is required",
@@ -164,11 +189,13 @@ router.post(
       }
 
       const { featuredImage, publishDate } = req.body;
+      const pdfFile = req.files.pdf[0];
+      const imageFile = req.files.image ? req.files.image[0] : null;
 
       // Parse PDF to extract text
       let pdfText = "";
       try {
-        const pdfData = await pdfParse(req.file.buffer);
+        const pdfData = await pdfParse(pdfFile.buffer);
         pdfText = pdfData.text;
       } catch (pdfError) {
         console.error("PDF parsing error:", pdfError);
@@ -191,20 +218,31 @@ router.post(
       const author = extractAuthorFromPdf(pdfText);
 
       // Convert PDF to base64 for storage
-      const pdfBase64 = req.file.buffer.toString("base64");
+      const pdfBase64 = pdfFile.buffer.toString("base64");
+
+      // Handle image - either uploaded file or URL
+      let finalImageUrl;
+      if (imageFile) {
+        // Convert uploaded image to base64 data URL
+        const imageBase64 = imageFile.buffer.toString("base64");
+        finalImageUrl = `data:${imageFile.mimetype};base64,${imageBase64}`;
+      } else if (featuredImage) {
+        finalImageUrl = featuredImage;
+      } else {
+        finalImageUrl =
+          "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&q=80";
+      }
 
       // Create insight document
       const insightData = {
         title,
         excerpt,
-        author: author || 'Unknown Author',
-        category: 'Research', // Default category for PDF uploads
+        author: author || "Unknown Author",
+        category: "Research", // Default category for PDF uploads
         pdfData: pdfBase64,
-        pdfFilename: req.file.originalname,
-        pdfSize: req.file.size,
-        featuredImage:
-          featuredImage ||
-          "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&q=80",
+        pdfFilename: pdfFile.originalname,
+        pdfSize: pdfFile.size,
+        featuredImage: finalImageUrl,
         publishDate: publishDate ? new Date(publishDate) : new Date(),
         published: true, // Auto-publish PDF insights
       };

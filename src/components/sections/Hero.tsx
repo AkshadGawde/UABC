@@ -1,8 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useIsMobile, useShouldReduceMotion } from '../../utils/useDevice';
-import { optimizeImage } from '../../utils/imageUtils';
+import { optimizeImage, getInsightImageUrl } from '../../utils/imageUtils';
 import { ArrowRight, TrendingUp, ShieldCheck, FileText } from 'lucide-react';
+import { insightsService } from '../../admin/services/insightsService';
+
+// Interface for insight data
+interface InsightCard {
+  _id?: string;
+  id?: string;
+  title: string;
+  category: string;
+  image?: string;
+  featuredImage?: string;
+  publishDate?: string;
+  publishedAt?: string;
+  createdAt: string;
+  pdfFilename?: string;
+  featured?: boolean;
+}
 
 /**
  * Hero Section
@@ -28,37 +44,119 @@ export const Hero = () => {
     scale = useTransform(scrollY, [0, 300], [1, 0.95]);
   }
   
-  // Carousel State
+  // Carousel State with dynamic insights
   const [currentInsight, setCurrentInsight] = useState(0);
-  const insights = [
+  const [insights, setInsights] = useState<InsightCard[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fallback insights in case API fails or no data available
+  const fallbackInsights: InsightCard[] = [
     {
+      id: 'fallback-1',
       category: "Market Analysis",
       title: "Navigating Volatility in 2024 Global Markets",
       image: "https://images.unsplash.com/photo-1611974765270-ca12586343bb?auto=format&fit=crop&q=80&w=800",
-      date: "2 Days ago"
+      createdAt: new Date().toISOString()
     },
     {
+      id: 'fallback-2',
       category: "AI & Risk",
       title: "The Algorithmic Future of Insurance Underwriting",
       image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=800",
-      date: "1 Week ago"
+      createdAt: new Date().toISOString()
     },
     {
+      id: 'fallback-3',
       category: "Sustainability",
       title: "Green Bonds: A Strategic Asset for Growth",
       image: "https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?auto=format&fit=crop&q=80&w=800",
-      date: "2 Weeks ago"
+      createdAt: new Date().toISOString()
     }
   ];
 
+  // Fetch latest insights on component mount
   useEffect(() => {
+    const loadInsights = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Fetch latest insights (limit to 4, prioritize featured and recent)
+        const response = await insightsService.getPublicInsights({
+          limit: 4,
+          sort: 'newest'
+        });
+        
+        const publishedInsights = response.insights
+          .filter(insight => insight.published)
+          .slice(0, 4); // Ensure max 4 insights
+        
+        if (publishedInsights.length > 0) {
+          setInsights(publishedInsights);
+        } else {
+          // Use fallback if no published insights available
+          setInsights(fallbackInsights.slice(0, 3));
+        }
+        
+      } catch (error) {
+        console.error('Failed to load hero insights:', error);
+        setError('Failed to load insights');
+        // Use fallback insights on error
+        setInsights(fallbackInsights.slice(0, 3));
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadInsights();
+  }, []);
+
+  // Carousel timer with insights length check
+  useEffect(() => {
+    if (insights.length === 0) return;
+    
     const intervalDuration = isMobile ? 8000 : 5000;
     const timer = setInterval(() => {
       if (typeof document !== 'undefined' && document.hidden) return; // pause when tab is hidden
       setCurrentInsight((prev) => (prev + 1) % insights.length);
     }, intervalDuration);
     return () => clearInterval(timer);
-  }, []);
+  }, [insights.length, isMobile]);
+
+  // Helper functions
+  const formatDate = (insight: InsightCard) => {
+    const date = new Date(insight.publishDate || insight.publishedAt || insight.createdAt);
+    const now = new Date();
+    const diffInDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (diffInDays === 0) return 'Today';
+    if (diffInDays === 1) return '1 Day ago';
+    if (diffInDays < 7) return `${diffInDays} Days ago`;
+    if (diffInDays < 14) return '1 Week ago';
+    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} Weeks ago`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const getInsightImage = (insight: InsightCard) => {
+    return getInsightImageUrl(insight);
+  };
+
+  // Show loading skeleton or fallback if no insights
+  const displayInsights = loading ? fallbackInsights.slice(0, 3) : insights;
+  const currentInsightData = displayInsights[currentInsight] || fallbackInsights[0];
+
+  // Handle insight card click
+  const handleInsightClick = (insight: InsightCard) => {
+    // For PDF insights, open the PDF directly
+    if (insight.pdfFilename && (insight._id || insight.id)) {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      window.open(`${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`, '_blank');
+    } else if (insight._id || insight.id) {
+      // For regular insights, navigate to insights page or detail (implement as needed)
+      window.location.href = '/insights';
+    }
+  };
 
   return (
     <section id="home" className="relative min-h-screen snap-start flex items-center pt-20 overflow-hidden bg-light-bg dark:bg-dark-bg transition-colors duration-300">
@@ -171,7 +269,7 @@ export const Hero = () => {
                        <span className="font-bold text-slate-800 dark:text-white text-sm uppercase tracking-wider">Latest Insights</span>
                     </div>
                     <div className="flex gap-1">
-                      {insights.map((_, idx) => (
+                      {displayInsights.map((_, idx) => (
                         <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentInsight ? 'w-6 bg-accent-500' : 'w-1.5 bg-slate-300 dark:bg-white/20'}`} />
                       ))}
                     </div>
@@ -181,18 +279,28 @@ export const Hero = () => {
                  <div className="relative flex-1 rounded-xl overflow-hidden w-full h-full group">
                     <AnimatePresence mode="wait">
                 <motion.div
-                  key={currentInsight}
+                  key={`${currentInsight}-${currentInsightData?._id || currentInsightData?.id}`}
                   initial={disableParallax ? { opacity: 1 } : { opacity: 0, scale: 1.05 }}
                   animate={disableParallax ? { opacity: 1 } : { opacity: 1, scale: 1 }}
                   exit={disableParallax ? { opacity: 1 } : { opacity: 0 }}
                   transition={{ duration: disableParallax ? 0.2 : 0.8 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleInsightClick(currentInsightData)}
                   className="absolute inset-0 cursor-pointer"
                 >
                               <img 
                                 loading="lazy"
-                                src={optimizeImage(insights[currentInsight].image, isMobile)}
-                                alt={insights[currentInsight].title}
-                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                                src={optimizeImage(getInsightImage(currentInsightData), isMobile)}
+                                alt={currentInsightData?.title || 'Insight'}
+                                onError={(e) => {
+                                  const imgSrc = getInsightImage(currentInsightData);
+                                  console.log('Hero image failed to load:', imgSrc);
+                                  console.log('Current insight data:', { title: currentInsightData?.title, featuredImage: currentInsightData?.featuredImage, image: currentInsightData?.image });
+                                  const target = e.target as HTMLImageElement;
+                                  target.src = 'https://images.unsplash.com/photo-1611974765270-ca12586343bb?auto=format&fit=crop&q=80&w=800';
+                                }}
+                                className={`w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 ${loading ? 'animate-pulse bg-slate-200 dark:bg-slate-700' : ''}`}
                               />
                           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-90" />
                           
@@ -202,18 +310,19 @@ export const Hero = () => {
                                animate={{ y: 0, opacity: 1 }}
                                transition={{ delay: 0.2 }}
                              >
-                               <div className="inline-block px-3 py-1 mb-3 text-[10px] font-bold uppercase tracking-widest text-white bg-accent-600 rounded-full shadow-lg shadow-accent-600/20">
-                                  {insights[currentInsight].category}
+                               <div className={`inline-flex items-center gap-2 px-3 py-1 mb-3 text-[10px] font-bold uppercase tracking-widest text-white rounded-full shadow-lg ${currentInsightData?.pdfFilename ? 'bg-blue-600 shadow-blue-600/20' : 'bg-accent-600 shadow-accent-600/20'}`}>
+                                  {currentInsightData?.pdfFilename && <FileText className="w-2.5 h-2.5" />}
+                                  {currentInsightData?.category || 'Category'}
                                </div>
-                               <h3 className="text-xl md:text-2xl font-bold text-white leading-tight mb-3 drop-shadow-md">
-                                  {insights[currentInsight].title}
+                               <h3 className={`text-xl md:text-2xl font-bold text-white leading-tight mb-3 drop-shadow-md ${loading ? 'animate-pulse' : ''}`}>
+                                  {currentInsightData?.title || 'Loading...'}
                                </h3>
                                <p className="text-slate-300 text-xs flex items-center gap-2 font-medium">
                                   <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${currentInsightData?.featured ? 'bg-yellow-400' : 'bg-green-400'}`}></span>
+                                    <span className={`relative inline-flex rounded-full h-2 w-2 ${currentInsightData?.featured ? 'bg-yellow-500' : 'bg-green-500'}`}></span>
                                   </span>
-                                  {insights[currentInsight].date}
+                                  {loading ? 'Loading...' : formatDate(currentInsightData)}
                                </p>
                              </motion.div>
                           </div>
@@ -222,7 +331,7 @@ export const Hero = () => {
                  </div>
               </div>
 
-              {/* Floating Element 1 - Parallax + Float */}
+              {/* Floating Element 1 - Dynamic Content Based on Current Insight */}
               <motion.div 
                 style={{ y: y2 }}
                 animate={{ y: [0, -10, 0] }}
@@ -230,15 +339,23 @@ export const Hero = () => {
                 className="absolute -top-4 -right-4 w-48 bg-white dark:bg-dark-card border border-slate-200 dark:border-white/10 p-4 rounded-xl shadow-xl z-20"
               >
                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-green-500/10 dark:bg-green-500/20 rounded-lg">
-                       <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400" />
+                    <div className={`p-2 rounded-lg ${currentInsightData?.pdfFilename ? 'bg-blue-500/10 dark:bg-blue-500/20' : 'bg-green-500/10 dark:bg-green-500/20'}`}>
+                       {currentInsightData?.pdfFilename ? (
+                         <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                       ) : (
+                         <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400" />
+                       )}
                     </div>
-                    <span className="text-sm font-bold text-slate-900 dark:text-white">+124.5%</span>
+                    <span className="text-sm font-bold text-slate-900 dark:text-white">
+                      {currentInsightData?.pdfFilename ? 'PDF Available' : `${displayInsights.length} Insights`}
+                    </span>
                  </div>
-                 <div className="text-xs text-slate-500">ROI Optimization</div>
+                 <div className="text-xs text-slate-500">
+                   {currentInsightData?.pdfFilename ? 'Download Research' : 'Latest Analysis'}
+                 </div>
               </motion.div>
 
-              {/* Floating Element 2 */}
+              {/* Floating Element 2 - Category & Featured Status */}
               <motion.div 
                 style={{ y: useTransform(scrollY, [0, 500], [0, 50]) }}
                 animate={{ y: [0, 10, 0] }}
@@ -246,12 +363,16 @@ export const Hero = () => {
                 className="absolute -bottom-8 -left-8 w-64 bg-white dark:bg-dark-card border border-slate-200 dark:border-white/10 p-4 rounded-xl shadow-xl z-20"
               >
                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-brand-500/10 dark:bg-brand-500/20 rounded-lg">
-                       <ShieldCheck className="w-5 h-5 text-brand-600 dark:text-brand-400" />
+                    <div className={`p-2 rounded-lg ${currentInsightData?.featured ? 'bg-yellow-500/10 dark:bg-yellow-500/20' : 'bg-brand-500/10 dark:bg-brand-500/20'}`}>
+                       <ShieldCheck className={`w-5 h-5 ${currentInsightData?.featured ? 'text-yellow-600 dark:text-yellow-400' : 'text-brand-600 dark:text-brand-400'}`} />
                     </div>
                     <div>
-                       <div className="text-sm font-bold text-slate-900 dark:text-white">Risk Mitigated</div>
-                       <div className="text-xs text-slate-500">99.9% Compliance Rate</div>
+                       <div className="text-sm font-bold text-slate-900 dark:text-white">
+                         {currentInsightData?.featured ? 'Featured Content' : currentInsightData?.category || 'Research'}
+                       </div>
+                       <div className="text-xs text-slate-500">
+                         {currentInsightData?.featured ? 'Premium Analysis' : 'Expert Insights'}
+                       </div>
                     </div>
                  </div>
               </motion.div>

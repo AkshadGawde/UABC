@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { optimizeImage } from '../utils/imageUtils';
+import { optimizeImage, getInsightImageUrl } from '../utils/imageUtils';
 import { insightsService } from '../admin/services/insightsService';
+
+// CSS for smooth scrolling optimization
+const scrollOptimizationStyles = {
+  scrollBehavior: 'smooth',
+  overscrollBehavior: 'contain',
+  WebkitOverflowScrolling: 'touch',
+  transform: 'translateZ(0)', // Force hardware acceleration
+  backfaceVisibility: 'hidden', // Prevent flickering
+  perspective: '1000px' // Enable 3D rendering context
+} as React.CSSProperties;
 
 // Extended interface for insights that may include PDF data
 interface Insight {
@@ -57,6 +67,25 @@ export const Insights = () => {
 
   // Dynamic categories based on actual data
   const [categories, setCategories] = useState<string[]>([]);
+
+  // Scroll optimization effect
+  useEffect(() => {
+    // Enable smooth scrolling for the entire document
+    document.documentElement.style.scrollBehavior = 'smooth';
+    document.body.style.overscrollBehavior = 'contain';
+    
+    // Optimize for mobile
+    if ('ontouchstart' in window) {
+      document.body.style.WebkitOverflowScrolling = 'touch';
+    }
+    
+    return () => {
+      // Cleanup on unmount
+      document.documentElement.style.scrollBehavior = '';
+      document.body.style.overscrollBehavior = '';
+      document.body.style.WebkitOverflowScrolling = '';
+    };
+  }, []);
 
   useEffect(() => {
     loadInsights();
@@ -180,9 +209,9 @@ export const Insights = () => {
   }
 
   return (
-    <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24">
+    <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24" style={{ scrollBehavior: 'smooth' }}>
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg relative">
+      <section className="py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg relative will-change-transform">
         {/* Subtle Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
           <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent-200/10 rounded-full" />
@@ -194,12 +223,12 @@ export const Insights = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="text-center max-w-4xl mx-auto"
+            className="text-center max-w-4xl mx-auto will-change-transform"
           >
-            <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
+            {/* <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
               Insights & Research
             </div>
-            
+             */}
             <h1 className="text-4xl md:text-6xl font-bold mb-6 text-slate-900 dark:text-white">
               Expert Analysis & <br />
               <span className="text-accent-600 dark:text-accent-500 hover:scale-105 inline-block transition-transform duration-300 cursor-default">
@@ -220,14 +249,14 @@ export const Insights = () => {
       </section>
 
       {/* Main Insights Section */}
-      <section className="py-12">
+      <section className="py-12 will-change-transform">
         <div className="container mx-auto px-6">
           {/* Minimal Filter Controls */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-12"
+            className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-12 will-change-transform"
           >
             {/* Category Filter */}
             {categories.length > 1 && (
@@ -302,7 +331,8 @@ export const Insights = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+              className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 auto-rows-fr"
+              style={{ containIntrinsicSize: 'auto 600px', contentVisibility: 'auto' }}
             >
               {filteredInsights.map((insight, index) => {
                 const isFeatured = insight.featured;
@@ -310,86 +340,176 @@ export const Insights = () => {
                 return (
                   <motion.article
                     key={insight._id || insight.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.4, delay: index * 0.05 }}
-                    className={`rounded-2xl overflow-hidden shadow-lg group cursor-pointer h-full flex flex-col relative transition-all duration-300 hover:-translate-y-2 hover:shadow-xl ${
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.02 }}
+                    whileHover={isPDF ? {
+                      scale: 1.02,
+                      boxShadow: "0 25px 50px rgba(59, 130, 246, 0.3)",
+                      transition: { duration: 0.4, ease: "easeOut" }
+                    } : {}}
+                    className={`rounded-2xl overflow-hidden shadow-lg group cursor-pointer h-full flex flex-col relative transition-all duration-200 hover:-translate-y-1 hover:shadow-xl will-change-transform ${
                       isFeatured 
-                        ? 'bg-gradient-to-br from-white to-accent-50 dark:from-dark-card dark:to-accent-900/10 border-2 border-accent-200 dark:border-accent-700 lg:col-span-2 xl:col-span-2 2xl:col-span-1 hover:border-accent-300 dark:hover:border-accent-600' 
+                        ? 'bg-gradient-to-br from-white to-accent-50 dark:from-dark-card dark:to-accent-900/10 border-2 border-accent-200 dark:border-accent-700 hover:border-accent-300 dark:hover:border-accent-600' 
                         : 'bg-white dark:bg-dark-card border border-slate-100 dark:border-slate-700 hover:border-accent-200 dark:hover:border-accent-800'
                     }`}
                     onClick={() => handleInsightClick(insight)}
                   >
-                    <div className="relative overflow-hidden">
+                    {/* Animated background elements for PDF cards */}
+                    {isPDF && (
+                      <div className="absolute inset-0 pointer-events-none opacity-20">
+                        <motion.div
+                          animate={{
+                            x: [0, 30, -30, 0],
+                            y: [0, -20, 20, 0],
+                            rotate: [0, 90, 180, 270, 360]
+                          }}
+                          transition={{
+                            duration: 20,
+                            repeat: Infinity,
+                            ease: "linear"
+                          }}
+                          className="absolute top-4 right-4 w-8 h-8 bg-blue-500/20 rounded-full blur-sm"
+                        />
+                        <motion.div
+                          animate={{
+                            x: [0, -20, 20, 0],
+                            y: [0, 20, -20, 0],
+                            scale: [1, 1.2, 0.8, 1]
+                          }}
+                          transition={{
+                            duration: 15,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                          className="absolute bottom-4 left-4 w-6 h-6 bg-indigo-500/15 rounded-full blur-sm"
+                        />
+                        <motion.div
+                          animate={{
+                            rotate: 360,
+                            scale: [1, 1.1, 1]
+                          }}
+                          transition={{
+                            rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+                            scale: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+                          }}
+                          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-blue-400/10 rounded-full blur-xl"
+                        />
+                      </div>
+                    )}
+                    <div className="relative overflow-hidden will-change-transform">
                       {/* Gradient overlay on hover */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10" />
                       
                       <img 
-                        src={optimizeImage(insight.image || insight.featuredImage, isFeatured ? 600 : 400)}
+                        src={optimizeImage(getInsightImageUrl(insight))}
                         alt={insight.title}
-                        className={`w-full object-cover transition-transform duration-500 group-hover:scale-110 ${
-                          isFeatured ? 'h-64' : 'h-48'
-                        }`}
+                        loading="lazy"
+                        decoding="async"
+                        onError={(e) => {
+                          const imgSrc = getInsightImageUrl(insight);
+                          console.log('Image failed to load:', imgSrc);
+                          console.log('Insight data:', { title: insight.title, featuredImage: insight.featuredImage, image: insight.image });
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&q=80';
+                        }}
+                        className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105 will-change-transform"
                       />
                       <div className="absolute top-4 left-4 flex gap-2 z-20">
-                        <span className="px-3 py-1 bg-accent-600 text-white text-xs font-bold rounded-full transform group-hover:scale-110 group-hover:rotate-1 transition-all duration-300">
+                        <span className="px-3 py-1 bg-accent-600 text-white text-xs font-bold rounded-full transform group-hover:scale-105 group-hover:rotate-1 transition-all duration-200 will-change-transform">
                           {insight.category}
                         </span>
                         {isFeatured && (
-                          <span className="px-2 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold rounded-full flex items-center gap-1 transform group-hover:scale-110 group-hover:-rotate-1 transition-all duration-300">
-                            <TrendingUp className="w-3 h-3 group-hover:rotate-12 transition-transform duration-300" />
+                          <span className="px-2 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold rounded-full flex items-center gap-1 transform group-hover:scale-105 group-hover:-rotate-1 transition-all duration-200 will-change-transform">
+                            <TrendingUp className="w-3 h-3 group-hover:rotate-6 transition-transform duration-200" />
                             Featured
                           </span>
                         )}
                       </div>
                       {isPDF && (
                         <div className="absolute top-4 right-4 z-20">
-                          <span className="px-2 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-medium rounded-full flex items-center gap-1 transform group-hover:scale-110 group-hover:rotate-1 transition-all duration-300">
-                            <FileText className="w-3 h-3 group-hover:scale-125 transition-transform duration-300" />
+                          <span className="px-2 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-medium rounded-full flex items-center gap-1 transform group-hover:scale-105 group-hover:rotate-1 transition-all duration-200 will-change-transform">
+                            <motion.div
+                              whileHover={{ 
+                                rotate: 360,
+                                scale: 1.2,
+                                transition: { duration: 0.6, ease: "easeOut" }
+                              }}
+                              animate={{
+                                y: [0, -2, 0],
+                                rotate: [0, 3, -3, 0]
+                              }}
+                              transition={{
+                                y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                                rotate: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+                              }}
+                            >
+                              <FileText className="w-3 h-3" />
+                            </motion.div>
                             PDF
                           </span>
                         </div>
                       )}
                     </div>
-                    <div className={`flex flex-col flex-1 ${isFeatured ? 'p-8' : 'p-6'} relative`}>
-                      <h3 className={`font-bold text-slate-900 dark:text-white mb-3 group-hover:text-accent-600 dark:group-hover:text-accent-500 transition-colors duration-300 line-clamp-2 ${
-                          isFeatured ? 'text-xl' : 'text-lg'
-                        }`}
-                      >
+                    <div className="flex flex-col flex-1 p-6 relative min-h-0">
+                      <h3 className="font-bold text-slate-900 dark:text-white mb-3 group-hover:text-accent-600 dark:group-hover:text-accent-500 transition-colors duration-200 text-lg leading-tight line-clamp-2 min-h-[3.5rem]">
                         {insight.title}
                       </h3>
                       
-                      <p className={`text-slate-600 dark:text-slate-400 mb-4 line-clamp-3 flex-1 transition-colors duration-300 group-hover:text-slate-700 dark:group-hover:text-slate-300 ${
-                          isFeatured ? 'text-base' : 'text-sm'
-                        }`}
-                      >
-                        {insight.excerpt}
-                      </p>
-                      <div className="mt-auto">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className={`text-slate-500 dark:text-slate-400 ${isFeatured ? 'text-sm' : 'text-xs'}`}>
-                            <span className="font-medium group-hover:text-accent-600 transition-colors duration-300">{insight.author || 'Unknown Author'}</span>
+                      <div className={`mb-4 flex-1 min-h-[4.5rem] ${isPDF ? 'relative overflow-hidden' : ''}`}>
+                        <p className={`text-slate-600 dark:text-slate-400 line-clamp-3 transition-all duration-300 group-hover:text-slate-700 dark:group-hover:text-slate-300 text-sm leading-relaxed ${
+                          isPDF ? 'group-hover:blur-[2px] group-hover:text-slate-500 group-hover:scale-[0.98]' : ''
+                        }`}>
+                          {insight.excerpt}
+                        </p>
+                        {isPDF && (
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/90 dark:to-dark-card/90 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none" />
+                        )}
+                        {isPDF && (
+                          <div className="absolute bottom-0 left-0 right-0 text-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-3 group-hover:translate-y-0">
+                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300 bg-white/95 dark:bg-dark-bg/95 px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm border border-blue-200 dark:border-blue-700 animate-pulse">
+                              <FileText className="w-3.5 h-3.5 animate-bounce" />
+                              🔓 Access Full Research
+                            </span>
                           </div>
-                          <div className={`flex items-center gap-3 text-slate-500 dark:text-slate-400 ${isFeatured ? 'text-sm' : 'text-xs'}`}>
-                            <div className="flex items-center gap-1 group-hover:text-blue-600 transition-colors duration-300">
+                        )}
+                      </div>
+                      <div className="mt-auto space-y-4">
+                        {/* Metadata Section */}
+                        <div className="flex items-center justify-between">
+                          {!isPDF && (
+                            <div className="text-slate-500 dark:text-slate-400 text-xs">
+                              <span className="font-medium group-hover:text-accent-600 transition-colors duration-200">{insight.author || 'Unknown Author'}</span>
+                            </div>
+                          )}
+                          <div className={`flex items-center gap-3 text-slate-500 dark:text-slate-400 text-xs ${isPDF ? 'w-full justify-center' : ''}`}>
+                            <div className="flex items-center gap-1 group-hover:text-blue-600 transition-colors duration-200">
                               <Calendar className="w-3 h-3" />
                               {formatDate(insight.publishDate || insight.publishedAt || insight.createdAt)}
                             </div>
-                            <div className="flex items-center gap-1 group-hover:text-green-600 transition-colors duration-300">
-                              <Eye className="w-3 h-3" />
-                              {formatViews(insight.views)}
-                            </div>
+                            {!isPDF && (
+                              <div className="flex items-center gap-1 group-hover:text-green-600 transition-colors duration-200">
+                                <Eye className="w-3 h-3" />
+                                {formatViews(insight.views)}
+                              </div>
+                            )}
                           </div>
                         </div>
-                        {isFeatured && (
-                          <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
-                            <div className="flex items-center gap-2 text-accent-600 dark:text-accent-500 font-medium group-hover:gap-3 transition-all duration-300">
-                              <span>{isPDF ? 'View PDF' : 'Read More'}</span>
-                              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                            </div>
+                        
+                        {/* Action Button - Show for all cards */}
+                        <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+                          <div className={`flex items-center gap-2 font-medium group-hover:gap-3 transition-all duration-200 ${
+                            isPDF 
+                              ? 'text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300' 
+                              : 'text-accent-600 dark:text-accent-500'
+                          }`}>
+                            <span className="flex items-center gap-1">
+                              {isPDF && <FileText className="w-4 h-4" />}
+                              {isPDF ? 'View Pdf' : 'Read Full Article'}
+                            </span>
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
                           </div>
-                        )}
+                        </div>
                       </div>
                     </div>
                   </motion.article>
@@ -435,162 +555,30 @@ export const Insights = () => {
       </section>
 
       {/* Newsletter Signup */}
-      <section className="py-24 relative overflow-hidden">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 pointer-events-none">
-          <motion.div
-            animate={{
-              x: [0, 50, -50, 0],
-              y: [0, -30, 30, 0],
-              rotate: [0, 90, 180, 270, 360]
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-            className="absolute top-10 left-1/4 w-16 h-16 bg-white/10 rounded-full blur-xl"
-          />
-          <motion.div
-            animate={{
-              x: [0, -40, 40, 0],
-              y: [0, 40, -40, 0],
-              scale: [1, 1.2, 0.8, 1]
-            }}
-            transition={{
-              duration: 15,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="absolute bottom-10 right-1/4 w-12 h-12 bg-white/5 rounded-full blur-lg"
-          />
-        </div>
-        
-        <div className="container mx-auto px-6 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
-            whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-            whileHover={{
-              scale: 1.02,
-              boxShadow: "0 25px 50px rgba(59, 130, 246, 0.3)",
-              transition: { duration: 0.4, ease: "easeOut" }
-            }}
-            className="bg-gradient-to-r from-accent-600 via-accent-500 to-purple-600 rounded-3xl p-12 text-center text-white relative overflow-hidden"
-          >
-            {/* Inner floating elements */}
-            <motion.div
-              animate={{
-                rotate: 360,
-                scale: [1, 1.1, 1]
-              }}
-              transition={{
-                rotate: { duration: 20, repeat: Infinity, ease: "linear" },
-                scale: { duration: 4, repeat: Infinity, ease: "easeInOut" }
-              }}
-              className="absolute top-6 right-6 w-20 h-20 bg-white/10 rounded-full blur-2xl"
-            />
-            
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.8 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <motion.div
-                whileHover={{ 
-                  rotate: 360,
-                  scale: 1.1,
-                  transition: { duration: 0.6, ease: "easeOut" }
-                }}
-                animate={{
-                  y: [0, -10, 0],
-                  rotate: [0, 5, -5, 0]
-                }}
-                transition={{
-                  y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-                  rotate: { duration: 6, repeat: Infinity, ease: "easeInOut" }
-                }}
-              >
-                <FileText className="w-16 h-16 mx-auto mb-6 opacity-90" />
-              </motion.div>
-              
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="text-3xl md:text-4xl font-bold mb-6"
-              >
-                <motion.span
-                  whileHover={{ scale: 1.05 }}
-                  className="inline-block"
-                >
-                  Stay Informed with Our Research
-                </motion.span>
-              </motion.h2>
-              
-              <motion.p
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-xl text-accent-100 mb-8 max-w-2xl mx-auto"
-              >
-                Get the latest insights, market analysis, and research updates delivered directly to your inbox.
-              </motion.p>
-              
-              <motion.div
-                initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-                className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
-              >
-                <motion.input
-                  whileFocus={{ 
-                    scale: 1.02,
-                    boxShadow: "0 0 0 3px rgba(255, 255, 255, 0.3)"
-                  }}
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 rounded-lg text-slate-900 focus:ring-2 focus:ring-white focus:outline-none transition-all duration-300"
-                />
-                <motion.button 
-                  whileHover={{ 
-                    scale: 1.05,
-                    boxShadow: "0 10px 30px rgba(255, 255, 255, 0.2)"
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  className="px-6 py-3 bg-white text-accent-600 rounded-lg font-bold hover:bg-accent-50 transition-all duration-300 relative overflow-hidden group"
-                >
-                  <motion.span
-                    whileHover={{ x: 2 }}
-                    className="relative z-10"
-                  >
-                    Subscribe
-                  </motion.span>
-                  <motion.div
-                    initial={{ x: "-100%" }}
-                    whileHover={{ x: "0%" }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute inset-0 bg-gradient-to-r from-accent-100 to-white"
-                  />
-                </motion.button>
-              </motion.div>
-              
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-                className="text-sm text-accent-200 mt-4"
-              >
-                No spam, unsubscribe at any time.
-              </motion.p>
-            </motion.div>
-          </motion.div>
+      <section className="py-24">
+        <div className="container mx-auto px-6">
+          <div className="bg-gradient-to-r from-accent-600 via-accent-500 to-purple-600 rounded-3xl p-12 text-center text-white">
+            <FileText className="w-16 h-16 mx-auto mb-6 opacity-90" />
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Stay Informed with Our Research
+            </h2>
+            <p className="text-xl text-accent-100 mb-8 max-w-2xl mx-auto">
+              Get the latest insights, market analysis, and research updates delivered directly to your inbox.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 px-4 py-3 rounded-lg text-slate-900 focus:ring-2 focus:ring-white focus:outline-none"
+              />
+              <button className="px-6 py-3 bg-white text-accent-600 rounded-lg font-bold hover:bg-accent-50 transition-colors">
+                Subscribe
+              </button>
+            </div>
+            <p className="text-sm text-accent-200 mt-4">
+              No spam, unsubscribe at any time.
+            </p>
+          </div>
         </div>
       </section>
 
