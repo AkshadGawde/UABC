@@ -5,7 +5,7 @@ import { ScrollProgress } from './components/layout/ScrollProgress';
 import { ScrollToTop } from './components/layout/ScrollToTop';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
-import { Home, AboutUs, ServicesPage, Insights, Careers, ContactUs } from './pages';
+import { Home, AboutUs, AboutOverview, AboutApproach, AboutManagement, AboutSuccessStories, ServicesPage, Insights, Careers, ContactUs } from './pages';
 import { AuthProvider } from './admin/hooks/useAuth';
 import { AdminLogin } from './admin/pages/AdminLogin';
 import { AdminDashboard } from './admin/pages/AdminDashboard';
@@ -95,7 +95,10 @@ const App = () => {
                   <main>
                     <Routes>
                       <Route path="/" element={<Home />} />
-                      <Route path="/about" element={<AboutUs />} />
+                      <Route path="/about" element={<AboutOverview />} />
+                      <Route path="/about/approach" element={<AboutApproach />} />
+                      <Route path="/about/management" element={<AboutManagement />} />
+                      <Route path="/about/success-stories" element={<AboutSuccessStories />} />
                       <Route path="/services" element={<ServicesPage />} />
                       <Route path="/insights" element={<Insights />} />
                       <Route path="/careers" element={<Careers />} />

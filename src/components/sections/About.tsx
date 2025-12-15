@@ -39,7 +39,10 @@ export const About = () => {
               <span className="text-slate-500">Through Actuarial Science.</span>
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed mb-8">
-              At Universal Acutrials, we don't just advise; we engineer resilience. Our methodology combines deep actuarial industry knowledge with cutting-edge financial technology.
+              Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001 -2013 certified
+2013 certified actuarial and Benefits consulting firm serving multiple clients in India and
+across the world. We have 80 + years of total experience delivering quality service with
+a singular objective to enhance client value and experience
             </p>
             <ul className="space-y-4">
               {[

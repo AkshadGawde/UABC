@@ -54,64 +54,37 @@ export const ContactUs = () => {
 
   const offices = [
     {
-      city: "New York",
-      address: "350 Fifth Avenue, Suite 4820",
-      postalCode: "New York, NY 10118",
-      phone: "+1 (212) 555-0123",
-      email: "ny@universalactuarials.com",
-      timezone: "EST",
-      image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&q=80&w=600"
-    },
-    {
-      city: "London",
-      address: "1 Canary Wharf, Level 40",
-      postalCode: "London E14 5AB, UK",
-      phone: "+44 20 7946 0958",
-      email: "london@universalactuarials.com",
-      timezone: "GMT",
-      image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=600"
-    },
-    {
-      city: "Singapore",
-      address: "Marina Bay Financial Centre",
-      postalCode: "Singapore 018981",
-      phone: "+65 6789 4567",
-      email: "singapore@universalactuarials.com",
-      timezone: "SGT",
-      image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&q=80&w=600"
-    },
-    {
-      city: "Toronto",
-      address: "Royal Bank Plaza, South Tower",
-      postalCode: "Toronto, ON M5J 2J1",
-      phone: "+1 (416) 555-0189",
-      email: "toronto@universalactuarials.com",
-      timezone: "EST",
-      image: "https://images.unsplash.com/photo-1517391129804-9a5f39f12e0f?auto=format&fit=crop&q=80&w=600"
+      city: "Mumbai",
+      address: "Universal Actuaries &amp; Benefit Consultants 1112-A, C Wing, Kailas Business Park, Veer Savarkar Marg, Park Site, Vikhroli (West)",
+      postalCode: "Mumbai – 400079 Maharashtra, India",
+      phone: "+91 22 49632112",
+      email: "universalactuaries@uabc.co.in",
+      timezone: "IST",
+      image: "https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?auto=format&fit=crop&q=80&w=600"
     }
   ];
 
   const contactMethods = [
     {
       icon: Phone,
-      title: "Call Us",
-      description: "Speak directly with our experts",
-      contact: "+1 (212) 555-0123",
-      availability: "Mon-Fri 9AM-6PM EST"
+      title: "Phone",
+      description: "Reach our Mumbai headquarters",
+      contact: "+91 22 49632112",
+      availability: "Mon-Fri 9AM-6PM IST"
     },
     {
       icon: Mail,
-      title: "Email Us",
-      description: "Get a response within 24 hours",
-      contact: "info@universalactuarials.com",
-      availability: "24/7 Support"
+      title: "Email",
+      description: "Corporate enquiries",
+      contact: "universalactuaries@uabc.co.in",
+      availability: "24/7 Inbox"
     },
     {
-      icon: MessageSquare,
-      title: "Live Chat",
-      description: "Instant support during business hours",
-      contact: "Start Chat",
-      availability: "Mon-Fri 9AM-6PM EST"
+      icon: Mail,
+      title: "Email (Chitra Jayasimha)",
+      description: "Direct contact",
+      contact: "chitra.jayasimha@uabc.co.in",
+      availability: "Mon-Fri 9AM-6PM IST"
     }
   ];
 
@@ -366,10 +339,10 @@ export const ContactUs = () => {
                       <Building2 className="w-6 h-6 text-accent-600 dark:text-accent-500" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-slate-900 dark:text-white mb-1">Headquarters</h4>
+                      <h4 className="font-bold text-slate-900 dark:text-white mb-1">Universal Actuaries and Benefit Consultants.</h4>
                       <p className="text-slate-600 dark:text-slate-400">
-                        350 Fifth Avenue, Suite 4820<br />
-                        New York, NY 10118, USA
+                        Universal Actuaries &amp; Benefit Consultants 1112-A, C Wing, Kailas Business Park, Veer Savarkar Marg, Park Site, Vikhroli (West)<br />
+                        Mumbai – 400079 Maharashtra, India
                       </p>
                     </div>
                   </div>
@@ -380,7 +353,8 @@ export const ContactUs = () => {
                     </div>
                     <div>
                       <h4 className="font-bold text-slate-900 dark:text-white mb-1">Phone</h4>
-                      <p className="text-slate-600 dark:text-slate-400">+1 (212) 555-0123</p>
+                      <p className="text-slate-600 dark:text-slate-400">+91-9987-769-877 (Chitra Jayasimha)</p>
+                      <p className="text-slate-600 dark:text-slate-400">+91 22 49632112</p>
                     </div>
                   </div>
 
@@ -390,7 +364,8 @@ export const ContactUs = () => {
                     </div>
                     <div>
                       <h4 className="font-bold text-slate-900 dark:text-white mb-1">Email</h4>
-                      <p className="text-slate-600 dark:text-slate-400">info@universalactuarials.com</p>
+                      <p className="text-slate-600 dark:text-slate-400">chitra.jayasimha@uabc.co.in</p>
+                      <p className="text-slate-600 dark:text-slate-400">universalactuaries@uabc.co.in</p>
                     </div>
                   </div>
 
@@ -401,8 +376,8 @@ export const ContactUs = () => {
                     <div>
                       <h4 className="font-bold text-slate-900 dark:text-white mb-1">Business Hours</h4>
                       <p className="text-slate-600 dark:text-slate-400">
-                        Monday - Friday: 9:00 AM - 6:00 PM EST<br />
-                        Saturday: 10:00 AM - 2:00 PM EST<br />
+                        Monday - Friday: 9:00 AM - 6:00 PM IST<br />
+                        Saturday: 10:00 AM - 2:00 PM IST<br />
                         Sunday: Closed
                       </p>
                     </div>

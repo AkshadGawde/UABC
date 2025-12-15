@@ -216,23 +216,45 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-5xl md:text-7xl font-bold leading-tight text-slate-900 dark:text-white"
+            className="text-4xl md:text-6xl font-bold leading-tight text-slate-900 dark:text-white"
           >
-            Strategic <br />
-            <span className="text-brand-950 dark:text-slate-200">Precision.</span> <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-600 to-brand-600 dark:from-accent-500 dark:to-brand-400">
-              Maximum Impact.
+            Offering a wide range of <br />
+            
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-600 to-brand-600 dark:from-accent-500 dark:to-brand-400">Actuarial services</span> <br/>
+            <span className="text-brand-950 dark:text-slate-200">
+              &amp; Benefit Services
             </span>
           </motion.h1>
           
-          <motion.p 
+          <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-lg text-slate-600 dark:text-slate-400 max-w-lg leading-relaxed border-l-2 border-accent-500/30 pl-6"
+            className="max-w-2xl space-y-6"
           >
-            Universal Acutrials combines actuarial science with strategic foresight to secure your assets and accelerate growth in an uncertain world.
-          </motion.p>
+            <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed border-l-2 border-accent-500/30 pl-6">
+              Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001-2013 certified actuarial and Benefits consulting firm serving multiple clients in India and across the world. We have 80+ years of total experience delivering quality service with a singular objective to enhance client value and experience.
+            </p>
+            
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <div className="w-2 h-2 bg-accent-500 rounded-full"></div>
+                <span>Global Expertise, Local Insight</span>
+              </div>
+              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <div className="w-2 h-2 bg-accent-500 rounded-full"></div>
+                <span>Data-Driven Decision Making</span>
+              </div>
+              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <div className="w-2 h-2 bg-accent-500 rounded-full"></div>
+                <span>Sustainable Growth Strategies</span>
+              </div>
+              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <div className="w-2 h-2 bg-accent-500 rounded-full"></div>
+                <span>Comprehensive Risk Management</span>
+              </div>
+            </div>
+          </motion.div>
           
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -253,7 +275,7 @@ export const Hero = () => {
         <div className="relative hidden md:block h-[600px] w-full perspective-1000">
            {/* Geometric composition mimicking data/structure */}
            <motion.div
-             style={{ y: y1, rotate: -2 }}
+             style={{ y: y1, rotate: 0 }}
              initial={{ opacity: 0, scale: 0.9 }}
              animate={{ opacity: 1, scale: 1 }}
              transition={{ duration: 1.2, ease: "easeOut" }}

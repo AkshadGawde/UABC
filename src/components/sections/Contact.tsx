@@ -47,9 +47,11 @@ export const Contact = () => {
                     <MapPin className="text-accent-600 dark:text-accent-500 w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="text-slate-900 dark:text-white font-bold text-lg mb-1">Headquarters</h4>
-                    <p className="text-slate-600 dark:text-slate-400">Zurich, Switzerland</p>
-                    <p className="text-slate-600 dark:text-slate-400">Bahnhofstrasse 10, 8001</p>
+                    <h4 className="text-slate-900 dark:text-white font-bold text-lg mb-1">Universal Actuaries &amp; Benefit Consultants</h4>
+                    <p className="text-slate-600 dark:text-slate-400">1112-A, C Wing, Kailas Business Park,</p>
+                    <p className="text-slate-600 dark:text-slate-400">Veer Savarkar Marg, Park Site,</p>
+                    <p className="text-slate-600 dark:text-slate-400">Vikhroli (West), Mumbai – 400079</p>
+                    <p className="text-slate-600 dark:text-slate-400">Maharashtra, India</p>
                   </div>
                 </motion.div>
                 
@@ -59,8 +61,8 @@ export const Contact = () => {
                   </div>
                   <div>
                     <h4 className="text-slate-900 dark:text-white font-bold text-lg mb-1">Email Us</h4>
-                    <p className="text-slate-600 dark:text-slate-400">contact@acutrials.com</p>
-                    <p className="text-slate-600 dark:text-slate-400">support@acutrials.com</p>
+                    <p className="text-slate-600 dark:text-slate-400">chitra.jayasimha@uabc.co.in</p>
+                    <p className="text-slate-600 dark:text-slate-400">universalactuaries@uabc.co.in</p>
                   </div>
                 </motion.div>
 
@@ -70,8 +72,9 @@ export const Contact = () => {
                   </div>
                   <div>
                     <h4 className="text-slate-900 dark:text-white font-bold text-lg mb-1">Call Us</h4>
-                    <p className="text-slate-600 dark:text-slate-400">+41 44 123 45 67</p>
-                    <p className="text-slate-500 text-sm mt-1">Mon-Fri, 9am - 6pm CET</p>
+                    <p className="text-slate-600 dark:text-slate-400">Chitra Jayasimha: +91-9987-769-877</p>
+                    <p className="text-slate-600 dark:text-slate-400">UABC: +91 22 49632112</p>
+                    <p className="text-slate-500 text-sm mt-1">Mon-Fri, 9am - 6pm IST</p>
                   </div>
                 </motion.div>
               </div>

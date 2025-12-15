@@ -1,5 +1,9 @@
 export { Home } from './Home';
 export { AboutUs } from './AboutUs';
+export { AboutOverview } from './AboutOverview';
+export { AboutApproach } from './AboutApproach';
+export { AboutManagement } from './AboutManagement';
+export { AboutSuccessStories } from './AboutSuccessStories';
 export { ServicesPage } from './ServicesPage';
 export { Insights } from './Insights';
 export { Careers } from './Careers';

@@ -78,7 +78,7 @@ export const Services = () => {
           transition={{ duration: disableParallax ? 0.3 : 0.6 }}
           className="text-3xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white"
         >
-              Our <span className="text-accent-600 dark:text-accent-500">Expertise</span>
+              Our<span className="text-accent-600 dark:text-accent-500"> Expertise</span>
             </motion.h2>
             <p className="text-slate-600 dark:text-slate-400 text-lg">
               Comprehensive solutions tailored to the unique challenges of modern enterprises.
