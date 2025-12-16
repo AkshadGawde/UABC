@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { optimizeImage } from '../utils/imageUtils';
 import { 
@@ -21,32 +21,63 @@ import {
  * Services Page Component
  */
 export const ServicesPage = () => {
+  // Refs for parallax sections
+  const mainServicesRef = useRef<HTMLDivElement>(null);
+  const specializedRef = useRef<HTMLDivElement>(null);
+  const processRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLDivElement>(null);
+
+  // Parallax hooks for each section
+  const { scrollYProgress: mainServicesScroll } = useScroll({
+    target: mainServicesRef,
+    offset: ["start end", "end start"]
+  });
+  const { scrollYProgress: specializedScroll } = useScroll({
+    target: specializedRef,
+    offset: ["start end", "end start"]
+  });
+  const { scrollYProgress: processScroll } = useScroll({
+    target: processRef,
+    offset: ["start end", "end start"]
+  });
+  const { scrollYProgress: featuresScroll } = useScroll({
+    target: featuresRef,
+    offset: ["start end", "end start"]
+  });
+
+  // Parallax transforms - subtle and smooth
+  const mainServicesX = useTransform(mainServicesScroll, [0, 1], [-25, 25]);
+  const specializedX = useTransform(specializedScroll, [0, 1], [25, -25]);
+  const processX = useTransform(processScroll, [0, 1], [-20, 20]);
+  const featuresLeftX = useTransform(featuresScroll, [0, 1], [-30, 30]);
+  const featuresRightX = useTransform(featuresScroll, [0, 1], [30, -30]);
+
   const mainServices = [
     {
       icon: Calculator,
-      title: "Actuarial Consulting",
-      description: "Comprehensive actuarial analysis and modeling for insurance, pension, and investment portfolios.",
+      title: "Employee Benefits",
+      description: "Employee Stock Options (ESOP), Design and valuation services under IND AS 102 including Share Appreciation Rights (SAR)",
       features: ["Risk Assessment", "Pricing Models", "Reserving Analysis", "Capital Adequacy"],
       image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=600"
     },
     {
       icon: Shield,
-      title: "Risk Management",
-      description: "Advanced risk identification, measurement, and mitigation strategies for complex financial portfolios.",
+      title: "Insurance Consulting",
+      description: "Insurance Consulting (Life ,General and Health) including Risk management, Planning & Strategic consulting, Financial & statutory reporting etc",
       features: ["Enterprise Risk", "Operational Risk", "Market Risk", "Credit Risk"],
       image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&q=80&w=600"
     },
     {
       icon: TrendingUp,
-      title: "Financial Modeling",
-      description: "Sophisticated financial models for forecasting, valuation, and strategic decision-making.",
+      title: "Retirement Consulting",
+      description: "Retirement Consulting including retirement plans set up, Retirement income adequacy check Governance of retirement trusts, Compliance study of Regulatory benefits etc",
       features: ["Cash Flow Models", "Stochastic Models", "Monte Carlo", "Stress Testing"],
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600"
     },
     {
       icon: FileText,
-      title: "Regulatory Compliance",
-      description: "Navigate complex regulatory requirements with confidence and precision.",
+      title: "Benefit Consulting",
+      description: "Benefits Consulting including benefits design, Redesign, Merger & Acquisitions in benefits, Flexible Benefits design, Benefits utilization, Benefit cost impact analysis and Benefits Audits",
       features: ["Solvency II", "IFRS 17", "Basel III", "Risk Reporting"],
       image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=600"
     }
@@ -55,24 +86,40 @@ export const ServicesPage = () => {
   const specializedServices = [
     {
       icon: Users,
-      title: "Pension & Benefits",
-      description: "Comprehensive pension plan valuation and employee benefit consulting."
+      title: "Actuarial valuation of employee benefits",
+      description: "Actuarial valuation of employee benefits schemes under Indian GAAP (AS 15 R/IND AS 19), IFRS (IAS 19), US GAAP (ASC 712, 715) ,PAS 19, NAS 19, SLAS 19 etc"
     },
     {
       icon: BarChart3,
-      title: "Data Analytics",
-      description: "Advanced analytics and machine learning for risk and pricing models."
+      title: "Employee Stock Options (ESOP)",
+      description: "Employee Stock Options (ESOP) Design and valuation services under IND AS 102 including Share Appreciation Rights (SAR)"
     },
     {
       icon: AlertTriangle,
-      title: "Crisis Management",
-      description: "Emergency risk assessment and mitigation during market volatility."
+      title: "Insurance Consulting",
+      description: "Insurance Consulting (Life ,General and Health) including Risk management, Planning & Strategic consulting, Financial & statutory reporting etc"
     },
     {
       icon: Award,
-      title: "Training & Development",
-      description: "Actuarial education and professional development programs."
+      title: "Retirement Consulting",
+      description: "Retirement Consulting including Retirement plans set up, Retirement income adequacy check Governance of retirement trusts, Compliance study of Regulatory benefits etc"
+    },
+    {
+      icon: Award,
+      title: "Benefits Consulting",
+      description: "Benefits Consulting including Benefits design, Redesign, Merger & Acquisitions in benefits, Flexible Benefits design, Benefits utilization, Benefit cost impact analysis and Benefits Audits"
+    },
+    {
+      icon: Award,
+      title: "Asset Liability Management",
+      description: "Asset Liability Management strategies for Employee Benefits and other relevant areas"
+    },
+    {
+      icon: Award,
+      title: "Risk Management",
+      description: "Risk Management, Business and investment consulting advisory"
     }
+
   ];
 
   const processSteps = [
@@ -129,24 +176,25 @@ export const ServicesPage = () => {
       </section>
 
       {/* Main Services Section */}
-      <section className="py-24">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
-              Core Services
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900 dark:text-white">
-              Expert Solutions for Every Challenge
-            </h2>
-          </motion.div>
+      <section ref={mainServicesRef} className="py-24 bg-light-bg dark:bg-dark-bg">
+        <motion.div style={{ x: mainServicesX }}>
+          <div className="container mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
+                Core Services
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900 dark:text-white">
+                Expert Solutions for Every Challenge
+              </h2>
+            </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-12">
+            <div className="grid lg:grid-cols-2 gap-12">
             {mainServices.map((service, index) => {
               const IconComponent = service.icon;
               return (
@@ -161,7 +209,7 @@ export const ServicesPage = () => {
                   <div className="md:flex">
                     <div className="md:w-1/3">
                       <img 
-                        src={optimizeImage(service.image, 400)}
+                        src={optimizeImage(service.image, false)}
                         alt={service.title}
                         className="w-full h-48 md:h-full object-cover"
                       />
@@ -190,104 +238,110 @@ export const ServicesPage = () => {
                 </motion.div>
               );
             })}
+            </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Specialized Services Section */}
-      <section className="py-24 bg-slate-50 dark:bg-dark-card">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
-              Specialized Services
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900 dark:text-white">
-              Tailored Expertise
-            </h2>
-          </motion.div>
+      <section ref={specializedRef} className="py-24 bg-slate-50 dark:bg-dark-card">
+        <motion.div style={{ x: specializedX }}>
+          <div className="container mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
+                Specialized Services
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900 dark:text-white">
+                Tailored Expertise
+              </h2>
+            </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {specializedServices.map((service, index) => {
-              const IconComponent = service.icon;
-              return (
-                <motion.div
-                  key={service.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-white dark:bg-dark-bg p-6 rounded-xl text-center group hover:shadow-lg transition-all"
-                >
-                  <div className="w-16 h-16 bg-accent-100 dark:bg-accent-900/30 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                    <IconComponent className="w-8 h-8 text-accent-600 dark:text-accent-500" />
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3">{service.title}</h3>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">{service.description}</p>
-                </motion.div>
-              );
-            })}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {specializedServices.map((service, index) => {
+                const IconComponent = service.icon;
+                return (
+                  <motion.div
+                    key={service.title}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    className="bg-white dark:bg-dark-bg p-8 rounded-2xl text-center group hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 dark:border-slate-700"
+                  >
+                    <div className="w-16 h-16 bg-accent-100 dark:bg-accent-900/30 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                      <IconComponent className="w-8 h-8 text-accent-600 dark:text-accent-500" />
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug">{service.title}</h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{service.description}</p>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Process Section */}
-      <section className="py-24">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
-              Our Process
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900 dark:text-white">
-              How We Work With You
-            </h2>
-          </motion.div>
+      <section ref={processRef} className="py-24 bg-light-bg dark:bg-dark-bg">
+        <motion.div style={{ x: processX }}>
+          <div className="container mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
+                Our Process
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900 dark:text-white">
+                How We Work With You
+              </h2>
+            </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {processSteps.map((step, index) => {
-              const IconComponent = step.icon;
-              return (
-                <motion.div
-                  key={step.step}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="text-center relative"
-                >
-                  {index < processSteps.length - 1 && (
-                    <div className="hidden lg:block absolute top-8 left-full w-full h-0.5 bg-accent-200 dark:bg-accent-800 -translate-x-4"></div>
-                  )}
-                  <div className="w-16 h-16 bg-accent-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 relative z-10">
-                    <span className="font-bold">{step.step}</span>
-                  </div>
-                  <div className="w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <IconComponent className="w-6 h-6 text-accent-600 dark:text-accent-500" />
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3">{step.title}</h3>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">{step.description}</p>
-                </motion.div>
-              );
-            })}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {processSteps.map((step, index) => {
+                const IconComponent = step.icon;
+                return (
+                  <motion.div
+                    key={step.step}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    className="text-center relative"
+                  >
+                    {index < processSteps.length - 1 && (
+                      <div className="hidden lg:block absolute top-8 left-full w-full h-0.5 bg-accent-200 dark:bg-accent-800 -translate-x-4"></div>
+                    )}
+                    <div className="w-16 h-16 bg-accent-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 relative z-10">
+                      <span className="font-bold">{step.step}</span>
+                    </div>
+                    <div className="w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center mx-auto mb-4">
+                      <IconComponent className="w-6 h-6 text-accent-600 dark:text-accent-500" />
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3">{step.title}</h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">{step.description}</p>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Features Section */}
-      <section className="py-24 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
+      <section ref={featuresRef} className="py-24 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
+        <motion.div style={{ x: featuresLeftX }}>
+          <div className="container mx-auto px-6">
+            <div className="grid md:grid-cols-2 gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -299,7 +353,7 @@ export const ServicesPage = () => {
               </div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900 dark:text-white">
                 Unmatched Expertise, <br />
-                <span className="text-slate-500">Proven Results</span>
+                <span className="text-slate-500 dark:text-slate-400">Proven Results</span>
               </h2>
               <div className="space-y-6">
                 {[
@@ -339,15 +393,17 @@ export const ServicesPage = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
+              style={{ x: featuresRightX }}
             >
               <img 
-                src={optimizeImage("https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=800", 800)}
+                src={optimizeImage("https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=800", false)}
                 alt="Our expertise"
                 className="rounded-2xl shadow-2xl"
               />
             </motion.div>
+            </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* CTA Section */}
@@ -366,10 +422,10 @@ export const ServicesPage = () => {
               Let's discuss how our actuarial expertise can help solve your business challenges.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/contact" className="inline-block px-8 py-4 bg-white text-accent-600 rounded-md font-bold text-lg hover:bg-accent-50 transition-colors shadow-lg text-center">
+              <Link to="/contact" className="inline-block px-8 py-4 bg-white text-accent-600 rounded-lg font-bold text-lg hover:bg-accent-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 text-center">
                 Get a Quote
               </Link>
-              <Link to="/contact" className="inline-block px-8 py-4 border-2 border-white text-white rounded-md font-bold text-lg hover:bg-white hover:text-accent-600 transition-colors text-center">
+              <Link to="/contact" className="inline-block px-8 py-4 border-2 border-white text-white rounded-lg font-bold text-lg hover:bg-white hover:text-accent-600 transition-all text-center">
                 Schedule Consultation
               </Link>
             </div>

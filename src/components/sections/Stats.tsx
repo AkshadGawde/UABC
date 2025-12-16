@@ -40,7 +40,7 @@ const InfoCard = ({ card, xMotion }: { card: typeof cardsData[0], xMotion: any }
     <motion.div
       style={{ x: xMotion }}
       onMouseMove={handleMouseMove}
-      className={`group relative overflow-hidden rounded-3xl border bg-white dark:bg-slate-800 backdrop-blur-md p-6 md:p-12 transition-colors duration-500 border-slate-300 dark:border-slate-700 ${card.border}`}
+      className={`group relative overflow-hidden rounded-2xl sm:rounded-3xl border bg-white dark:bg-slate-800 backdrop-blur-md p-4 sm:p-6 md:p-12 transition-colors duration-500 border-slate-300 dark:border-slate-700 ${card.border}`}
     >
       {/* Hover Spotlight Effect */}
       <motion.div
@@ -96,50 +96,45 @@ export const Stats = () => {
   return (
     <section 
       ref={containerRef} 
-      className="relative overflow-hidden bg-light-bg dark:bg-dark-bg py-20 md:py-32 border-y border-slate-200/40 dark:border-slate-700"
+      className="relative overflow-hidden bg-light-bg dark:bg-dark-bg py-8 sm:py-12 lg:py-16 border-y border-slate-200/40 dark:border-slate-700"
     >
       {/* Animated Background Grid */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" aria-hidden />
         <motion.div 
           style={{ y: yBackground }}
-          className="absolute left-1/2 -translate-x-1/2 top-0 -z-10 m-auto h-[260px] w-[260px] rounded-full bg-accent-50 dark:bg-brand-500 opacity-8 dark:opacity-20 blur-[100px]" 
+          className="absolute left-1/2 -translate-x-1/2 top-0 -z-10 m-auto h-[200px] sm:h-[260px] w-[200px] sm:w-[260px] rounded-full bg-accent-50 dark:bg-brand-500 opacity-8 dark:opacity-20 blur-[80px] sm:blur-[100px]" 
           aria-hidden
         />
         <motion.div 
           style={{ y: useTransform(scrollYProgress, [0, 1], [50, -50]) }}
-          className="absolute right-0 bottom-0 -z-10 h-[340px] w-[340px] rounded-full bg-accent-50 dark:bg-purple-500 opacity-4 dark:opacity-10 blur-[120px]" 
+          className="absolute right-0 bottom-0 -z-10 h-[240px] sm:h-[340px] w-[240px] sm:w-[340px] rounded-full bg-accent-50 dark:bg-purple-500 opacity-4 dark:opacity-10 blur-[100px] sm:blur-[120px]" 
           aria-hidden
         />
       </div>
 
-      <div className="container relative z-10 mx-auto px-4 md:px-6">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
         
         {/* Section Header */}
-        <div className="mb-12 md:mb-24 text-center max-w-3xl mx-auto px-2">
+        <div className="mb-6 sm:mb-8 lg:mb-12 text-center max-w-3xl mx-auto px-2">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ duration: 0.6 }}
           >
-            {/* <h2 className="text-sm font-semibold text-brand-400 uppercase tracking-widest mb-3">
-              Who We Are
-            </h2> */}
-
-            
-            <h2 className="text-4xl md:text-6xl font-bold mb-6 text-slate-900 dark:text-white">
+            <h2 className="text-xl sm:text-2xl lg:text-4xl font-bold mb-2 sm:mb-3 text-slate-900 dark:text-white">
               Driving Digital
               <span className="text-accent-600 dark:text-accent-500"> Transformation </span>
             </h2>
-            <p className="text-slate-700 dark:text-slate-400 text-lg md:text-xl">
+            <p className="text-slate-700 dark:text-slate-400 text-xs sm:text-sm lg:text-base">
               Building the future with precision, passion, and unparalleled expertise.
             </p>
           </motion.div>
         </div>
 
         {/* Mission & Vision Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-10">
           <InfoCard card={cardsData[0]} xMotion={xLeft} />
           <InfoCard card={cardsData[1]} xMotion={xRight} />
         </div>

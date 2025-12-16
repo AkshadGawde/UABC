@@ -32,12 +32,12 @@ export const ServiceCard = ({ icon: Icon, title, description, delay }: ServiceCa
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: false }}
       transition={{ delay, duration: 0.5 }}
       whileHover={isMobile ? undefined : { y: -8 }}
-  onMouseMove={isMobile ? undefined : handleMouseMove}
-    className="group p-8 bg-white dark:bg-brand-900/5 border border-slate-100 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-brand-900/20 hover:border-accent-200 dark:hover:border-accent-500/30 transition-all duration-300 relative overflow-hidden shadow-sm hover:shadow-xl rounded-xl"
-    style={isMobile ? undefined : { willChange: 'transform, opacity' }}
+      onMouseMove={isMobile ? undefined : handleMouseMove}
+      className="group p-4 sm:p-6 lg:p-8 bg-white dark:bg-brand-900/5 border border-slate-100 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-brand-900/20 hover:border-accent-200 dark:hover:border-accent-500/30 transition-all duration-300 relative overflow-hidden shadow-sm hover:shadow-xl rounded-lg sm:rounded-xl"
+      style={isMobile ? undefined : { willChange: 'transform, opacity' }}
     >
       {/* Dynamic Hover Gradient/Spotlight Effect */}
       <motion.div 
@@ -48,15 +48,15 @@ export const ServiceCard = ({ icon: Icon, title, description, delay }: ServiceCa
       />
       
       <div className="relative z-10">
-        <div className="w-12 h-12 bg-brand-50 dark:bg-white/5 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 border border-brand-100 dark:border-white/10 group-hover:border-accent-200 dark:group-hover:border-accent-500/50">
-          <Icon className="w-6 h-6 text-brand-600 dark:text-brand-400 group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors" />
+        <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-brand-50 dark:bg-white/5 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 group-hover:scale-110 transition-transform duration-300 border border-brand-100 dark:border-white/10 group-hover:border-accent-200 dark:group-hover:border-accent-500/50">
+          <Icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-brand-600 dark:text-brand-400 group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors" />
         </div>
-        <h3 className="text-xl font-bold mb-3 text-slate-900 dark:text-white group-hover:text-accent-600 dark:group-hover:text-accent-100 transition-colors">{title}</h3>
-        <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+        <h3 className="text-base sm:text-lg lg:text-xl font-bold mb-2 sm:mb-3 text-slate-900 dark:text-white group-hover:text-accent-600 dark:group-hover:text-accent-100 transition-colors">{title}</h3>
+        <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">
           {description}
         </p>
-        <a href="#contact" className="inline-flex items-center text-sm font-bold uppercase tracking-wider text-accent-600 dark:text-accent-500 hover:text-accent-500 dark:hover:text-accent-400 transition-colors">
-          Learn More <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+        <a href="#contact" className="inline-flex items-center text-xs sm:text-sm font-bold uppercase tracking-wider text-accent-600 dark:text-accent-500 hover:text-accent-500 dark:hover:text-accent-400 transition-colors">
+          Learn More <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 group-hover:translate-x-1 transition-transform" />
         </a>
       </div>
     </motion.div>

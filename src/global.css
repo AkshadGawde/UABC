@@ -1,0 +1,280 @@
+/* Global Responsive Styles - Comprehensive */
+
+/* Reset and Base Styles */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  background-color: #ffffff;
+  min-height: 100vh;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Base Font Sizes - Mobile First with Proper Scaling */
+html {
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-size: 14px;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+/* Small Devices */
+@media (min-width: 375px) {
+  html {
+    font-size: 14px;
+  }
+  body {
+    font-size: 14px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+  body {
+    font-size: 15px;
+  }
+}
+
+/* Medium Devices */
+@media (min-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+  body {
+    font-size: 15px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  html {
+    font-size: 16px;
+  }
+  body {
+    font-size: 16px;
+  }
+}
+
+/* Responsive Container */
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+/* Responsive Typography with Proper Scaling */
+h1 {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  line-height: 1.1;
+  margin: 0.75rem 0;
+  word-wrap: break-word;
+}
+
+h2 {
+  font-size: clamp(1.25rem, 3.5vw, 2rem);
+  line-height: 1.2;
+  margin: 0.6rem 0;
+  word-wrap: break-word;
+}
+
+h3 {
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  line-height: 1.3;
+  margin: 0.5rem 0;
+  word-wrap: break-word;
+}
+
+h4, h5, h6 {
+  font-size: clamp(0.9rem, 2vw, 1.25rem);
+  line-height: 1.4;
+  margin: 0.4rem 0;
+  word-wrap: break-word;
+}
+
+p {
+  font-size: clamp(0.85rem, 1.1vw, 1rem);
+  line-height: 1.6;
+  margin: 0.4rem 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Input Font Size - Prevents Zoom on iOS */
+input, select, textarea, button {
+  font-size: 16px;
+}
+
+/* Image and Media Responsiveness */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Main Content Fills Available Space */
+main {
+  flex: 1;
+  width: 100%;
+}
+
+/* Spacing Utilities */
+.gap-responsive {
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .gap-responsive {
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gap-responsive {
+    gap: 1.5rem;
+  }
+}
+
+/* Padding Utilities */
+.px-responsive {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .px-responsive {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .px-responsive {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.py-responsive {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .py-responsive {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .py-responsive {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+/* Safe Area Support for Notched Devices */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(env(safe-area-inset-left), 0);
+    padding-right: max(env(safe-area-inset-right), 0);
+  }
+  
+  main {
+    padding-left: max(env(safe-area-inset-left), 0);
+    padding-right: max(env(safe-area-inset-right), 0);
+  }
+}
+
+/* Prevent layout shift on scrollbar */
+html {
+  overflow-y: scroll;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #e5e7eb;
+    background-color: #111827;
+  }
+}
+
+/* Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Fix for navbar and layout issues */
+body, html {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+nav {
+  width: 100%;
+}
+
+section {
+  width: 100%;
+}

@@ -197,16 +197,16 @@ export const Hero = () => {
         />
       </motion.div>
 
-      <div className="container mx-auto px-6 relative z-10 grid md:grid-cols-2 gap-12 items-center">
-        <motion.div className="space-y-8" style={{ opacity, scale }}>
+      <div className="container mx-auto px-4 sm:px-6 relative z-10 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center py-6 sm:py-8 lg:py-10">
+        <motion.div className="space-y-4 sm:space-y-5 md:space-y-6" style={{ opacity, scale }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-500/20 bg-brand-500/5 backdrop-blur-sm">
-               <span className="w-2 h-2 rounded-full bg-accent-500 animate-pulse" />
-               <span className="text-brand-900 dark:text-brand-200 text-xs font-bold uppercase tracking-widest">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full border border-brand-500/20 bg-brand-500/5 backdrop-blur-sm">
+               <span className="w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse" />
+               <span className="text-brand-900 dark:text-brand-200 text-[11px] sm:text-xs font-bold uppercase tracking-widest">
                 Global Consulting Leaders
                </span>
             </div>
@@ -216,7 +216,7 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-4xl md:text-6xl font-bold leading-tight text-slate-900 dark:text-white"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-slate-900 dark:text-white"
           >
             Offering a wide range of <br />
             
@@ -230,27 +230,27 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="max-w-2xl space-y-6"
+            className="max-w-2xl space-y-3 sm:space-y-4"
           >
-            <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed border-l-2 border-accent-500/30 pl-6">
+            <p className="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-400 leading-relaxed border-l-2 border-accent-500/30 pl-3 sm:pl-4">
               Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001-2013 certified actuarial and Benefits consulting firm serving multiple clients in India and across the world. We have 80+ years of total experience delivering quality service with a singular objective to enhance client value and experience.
             </p>
             
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-[11px] sm:text-xs md:text-sm">
               <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                <div className="w-2 h-2 bg-accent-500 rounded-full"></div>
+                <div className="w-1.5 h-1.5 bg-accent-500 rounded-full shrink-0"></div>
                 <span>Global Expertise, Local Insight</span>
               </div>
               <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                <div className="w-2 h-2 bg-accent-500 rounded-full"></div>
+                <div className="w-1.5 h-1.5 bg-accent-500 rounded-full shrink-0"></div>
                 <span>Data-Driven Decision Making</span>
               </div>
               <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                <div className="w-2 h-2 bg-accent-500 rounded-full"></div>
+                <div className="w-1.5 h-1.5 bg-accent-500 rounded-full shrink-0"></div>
                 <span>Sustainable Growth Strategies</span>
               </div>
               <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                <div className="w-2 h-2 bg-accent-500 rounded-full"></div>
+                <div className="w-1.5 h-1.5 bg-accent-500 rounded-full shrink-0"></div>
                 <span>Comprehensive Risk Management</span>
               </div>
             </div>
@@ -260,19 +260,19 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-wrap gap-4"
+            className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3"
           >
-            <a href="#services" className="group px-8 py-4 bg-slate-900 dark:bg-white text-white dark:text-dark-bg font-bold rounded-md flex items-center gap-2 hover:bg-accent-600 dark:hover:bg-slate-200 transition-colors shadow-lg hover:shadow-accent-500/25">
+            <a href="#services" className="group px-4 sm:px-5 py-2 sm:py-2.5 bg-slate-900 dark:bg-white text-white dark:text-dark-bg font-bold rounded-md flex items-center justify-center sm:justify-start gap-2 hover:bg-accent-600 dark:hover:bg-slate-200 transition-colors shadow-lg hover:shadow-accent-500/25 text-xs sm:text-sm">
               Explore Services
-              <ArrowRight className="w-4 h-4 text-white dark:text-accent-600 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-white dark:text-accent-600 group-hover:translate-x-1 transition-transform" />
             </a>
-            <a href="#about" className="px-8 py-4 border border-slate-300 dark:border-white/20 text-slate-900 dark:text-white font-medium rounded-md hover:bg-slate-100 dark:hover:bg-white/5 hover:border-accent-500/50 transition-colors">
+            <a href="#about" className="px-4 sm:px-5 py-2 sm:py-2.5 border border-slate-300 dark:border-white/20 text-slate-900 dark:text-white font-medium rounded-md hover:bg-slate-100 dark:hover:bg-white/5 hover:border-accent-500/50 transition-colors text-center sm:text-left text-xs sm:text-sm">
               Our Methodology
             </a>
           </motion.div>
         </motion.div>
 
-        <div className="relative hidden md:block h-[600px] w-full perspective-1000">
+        <div className="relative h-[300px] sm:h-[400px] md:h-[450px] w-full perspective-1000 hidden md:block">
            {/* Geometric composition mimicking data/structure */}
            <motion.div
              style={{ y: y1, rotate: 0 }}

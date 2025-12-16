@@ -17,6 +17,7 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [mobileDropdown, setMobileDropdown] = useState<string | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -65,19 +66,19 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
 
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white dark:bg-dark-bg border-b border-slate-200 dark:border-white/5 ${
         isScrolled 
-          ? 'bg-white/80 dark:bg-dark-bg/80 md:backdrop-blur-md border-b border-slate-200 dark:border-white/5 py-3 shadow-lg shadow-brand-900/5 dark:shadow-brand-900/10' 
-          : 'bg-transparent py-6'
+          ? 'md:backdrop-blur-md py-3 shadow-lg shadow-brand-900/5 dark:shadow-brand-900/10' 
+          : 'py-6'
       }`}
     >
-      <div className="container mx-auto px-6 flex items-center justify-between">
-        <button onClick={() => handleNavClick('home')} className="flex items-center gap-2 group">
-          <Logo className="h-10" />
-        </button>
+      <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-2 group shrink-0">
+          <Logo className="h-8 sm:h-10" />
+        </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-4 lg:gap-8 flex-wrap justify-end">
           {navLinks.map((link) => (
             <div 
               key={link.name} 
@@ -87,7 +88,7 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
             >
               <Link 
                 to={link.path}
-                className={`text-sm font-medium transition-colors relative group uppercase tracking-wide flex items-center gap-1 ${
+                className={`text-xs sm:text-sm lg:text-sm font-medium transition-colors relative group uppercase tracking-wide flex items-center gap-1 ${
                   location.pathname === link.path || (link.dropdown && link.dropdown.some(item => location.pathname === item.path))
                     ? 'text-accent-600 dark:text-accent-500' 
                     : 'text-slate-600 dark:text-slate-300 hover:text-accent-600 dark:hover:text-accent-500'
@@ -162,23 +163,77 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
             animate={{ opacity: 1, scaleY: 1 }}
             exit={{ opacity: 0, scaleY: 0 }}
             style={{ transformOrigin: 'top' }}
-            className="md:hidden bg-white dark:bg-dark-card border-b border-slate-200 dark:border-white/10 overflow-hidden"
+            className="md:hidden bg-white dark:bg-dark-card border-b border-slate-200 dark:border-white/10 overflow-hidden max-h-[80vh] overflow-y-auto"
           >
-            <div className="flex flex-col p-6 gap-4">
+            <div className="flex flex-col p-4 sm:p-6 gap-3 sm:gap-4">
               {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
-                  to={link.path}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`text-left font-medium uppercase tracking-wide transition-colors ${
-                    location.pathname === link.path 
-                      ? 'text-accent-600 dark:text-accent-500' 
-                      : 'text-slate-700 dark:text-slate-300 hover:text-accent-600 dark:hover:text-accent-500'
-                  }`}
-                >
-                  {link.name}
-                </Link>
+                <div key={link.name} className="flex flex-col gap-1">
+                  {link.dropdown ? (
+                    <>
+                      <button
+                        onClick={() => setMobileDropdown(mobileDropdown === link.name ? null : link.name)}
+                        className={`text-left font-medium uppercase tracking-wide transition-colors flex items-center justify-between text-sm sm:text-base ${
+                          location.pathname === link.path || (link.dropdown && link.dropdown.some(item => location.pathname === item.path))
+                            ? 'text-accent-600 dark:text-accent-500' 
+                            : 'text-slate-700 dark:text-slate-300 hover:text-accent-600 dark:hover:text-accent-500'
+                        }`}
+                      >
+                        {link.name}
+                        <ChevronDown className={`w-4 h-4 transition-transform ${mobileDropdown === link.name ? 'rotate-180' : ''}`} />
+                      </button>
+                      <AnimatePresence>
+                        {mobileDropdown === link.name && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="flex flex-col gap-2 pl-4 border-l-2 border-accent-400 dark:border-accent-600 mt-2"
+                          >
+                            {link.dropdown.map((item) => (
+                              <Link
+                                key={item.name}
+                                to={item.path}
+                                onClick={() => {
+                                  setIsMobileMenuOpen(false);
+                                  setMobileDropdown(null);
+                                }}
+                                className={`text-sm sm:text-base transition-colors ${
+                                  location.pathname === item.path
+                                    ? 'text-accent-600 dark:text-accent-400 font-medium'
+                                    : 'text-slate-600 dark:text-slate-400 hover:text-accent-600 dark:hover:text-accent-400'
+                                }`}
+                              >
+                                {item.name}
+                              </Link>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </>
+                  ) : (
+                    <Link 
+                      to={link.path}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`text-left font-medium uppercase tracking-wide transition-colors text-sm sm:text-base ${
+                        location.pathname === link.path 
+                          ? 'text-accent-600 dark:text-accent-500' 
+                          : 'text-slate-700 dark:text-slate-300 hover:text-accent-600 dark:hover:text-accent-500'
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  )}
+                </div>
               ))}
+              <div className="border-t border-slate-200 dark:border-white/10 pt-4 mt-2">
+                <Link 
+                  to="/contact"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full px-4 py-2 bg-gradient-to-r from-accent-600 to-accent-500 hover:from-accent-500 hover:to-accent-400 text-white rounded-md text-xs sm:text-sm font-bold uppercase tracking-wider transition-all text-center block"
+                >
+                  Get in touch
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}

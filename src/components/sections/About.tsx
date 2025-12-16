@@ -23,22 +23,22 @@ export const About = () => {
   const xImage = disableParallax ? 0 : useTransform(scrollYProgress, [0, 1], [20, -20]);
 
   return (
-    <section ref={ref} id="about" className="py-24 min-h-screen flex items-center snap-start bg-light-bg dark:bg-dark-bg relative transition-colors duration-300 overflow-hidden">
-      <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
+    <section ref={ref} id="about" className="py-8 sm:py-10 lg:py-14 min-h-screen flex items-center snap-start bg-light-bg dark:bg-dark-bg relative transition-colors duration-300 overflow-hidden">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 items-center">
           <motion.div
              style={{ y: yContent, x: xContent }}
              initial={{ opacity: 0, x: -50 }}
              whileInView={{ opacity: 1, x: 0 }}
-             viewport={{ once: true, margin: "-100px" }}
+             viewport={{ once: false, margin: "-100px" }}
              transition={{ duration: 0.8 }}
           >
-            <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">Who We Are</div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 text-slate-900 dark:text-white">
+            <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-2 sm:mb-3 text-xs sm:text-sm">Who We Are</div>
+            <h2 className="text-xl sm:text-2xl lg:text-4xl font-bold mb-3 sm:mb-4 text-slate-900 dark:text-white">
               Empowering Business <br />
               <span className="text-slate-500">Through Actuarial Science.</span>
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed mb-8">
+            <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm lg:text-base leading-relaxed mb-4 sm:mb-6">
               Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001 -2013 certified
 2013 certified actuarial and Benefits consulting firm serving multiple clients in India and
 across the world. We have 80 + years of total experience delivering quality service with
@@ -55,12 +55,12 @@ a singular objective to enhance client value and experience
                   key={i}
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: false }}
                   transition={{ delay: 0.1 * i }}
                   className="flex items-center gap-3 text-slate-700 dark:text-slate-200 group"
                 >
-                  <CheckCircle2 className="w-5 h-5 text-accent-500 group-hover:scale-110 transition-transform" />
-                  {item}
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-accent-500 group-hover:scale-110 transition-transform shrink-0" />
+                  <span className="text-xs sm:text-sm lg:text-base text-slate-700 dark:text-slate-200">{item}</span>
                 </motion.li>
               ))}
             </ul>
@@ -70,7 +70,7 @@ a singular objective to enhance client value and experience
             style={{ y: yImage, x: xImage }}
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ duration: 1, ease: "easeOut" }}
             className="relative"
           >

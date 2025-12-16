@@ -5,24 +5,25 @@ import { ScrollProgress } from './components/layout/ScrollProgress';
 import { ScrollToTop } from './components/layout/ScrollToTop';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
-import { Home, AboutUs, AboutOverview, AboutApproach, AboutManagement, AboutSuccessStories, ServicesPage, Insights, Careers, ContactUs } from './pages';
+import { Home, AboutUs, AboutOverview, AboutApproach, AboutManagement, AboutSuccessStories, ServicesPage, EmployeeBenefits, Insights, Careers, ContactUs, InsuranceConsulting, RetirementConsulting } from './pages';
 import { AuthProvider } from './admin/hooks/useAuth';
 import { AdminLogin } from './admin/pages/AdminLogin';
 import { AdminDashboard } from './admin/pages/AdminDashboard';
 import { InsightEditor } from './admin/pages/InsightEditor';
 import { InsightPreview } from './admin/pages/InsightPreview';
 import { ProtectedRoute } from './admin/components/ProtectedRoute';
+import './global.css';
 
 /**
  * Main App Component
  */
 const App = () => {
   const [theme, setTheme] = useState(() => {
-    // Default to dark mode to match reference, but respect saved preference
+    // Default to light mode, but respect saved preference
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('theme') || 'dark';
+      return localStorage.getItem('theme') || 'light';
     }
-    return 'dark';
+    return 'light';
   });
 
   useEffect(() => {
@@ -38,6 +39,13 @@ const App = () => {
   const toggleTheme = () => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
+
+  useEffect(() => {
+    const rootElement = document.getElementById('root');
+    if (!rootElement) {
+      console.error('Root element not found');
+    }
+  }, []);
 
   return (
     <AuthProvider>
@@ -100,6 +108,9 @@ const App = () => {
                       <Route path="/about/management" element={<AboutManagement />} />
                       <Route path="/about/success-stories" element={<AboutSuccessStories />} />
                       <Route path="/services" element={<ServicesPage />} />
+                      <Route path="/services/employee-benefits" element={<EmployeeBenefits />} />
+                      <Route path="/services/insurance-consulting" element={<InsuranceConsulting />} />
+                      <Route path="/services/retirement-consulting" element={<RetirementConsulting />} />
                       <Route path="/insights" element={<Insights />} />
                       <Route path="/careers" element={<Careers />} />
                       <Route path="/contact" element={<ContactUs />} />
