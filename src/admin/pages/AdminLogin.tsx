@@ -66,14 +66,11 @@ export const AdminLogin = () => {
         <div className="text-center mb-8">
           {/* Logo */}
           <div className="flex items-center justify-center mb-6">
-            <div className="relative h-12 w-auto aspect-[4/5] flex items-center justify-center">
-              <svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full w-auto">
-                <path d="M20 0 V60 C20 85 35 100 60 100 C75 100 85 92 92 80 L75 80 C70 88 65 85 60 85 C50 85 40 75 40 60 V0 H20 Z" fill="#6366f1"/>
-                <path d="M80 0 V60 H100 V0 H80 Z" fill="#6366f1"/>
-                <path d="M10 90 L40 50 L65 50 L25 105 Z" fill="#ef4444"/>
-                <path d="M50 40 L80 0 L100 0 L60 55 Z" fill="#ef4444"/>
-              </svg>
-            </div>
+            <img 
+              src="/UABC Logo.png"
+              alt="UABC Logo"
+              className="h-12 object-contain"
+            />
           </div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Admin Portal</h1>
           <p className="text-slate-600 dark:text-slate-400">Sign in to manage insights</p>

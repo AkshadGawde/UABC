@@ -30,7 +30,8 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
   "http://127.0.0.1:5173",
-  "https://uabc-cms.vercel.app", // Add your future frontend domain
+  "https://uabc.vercel.app",
+  "https://uabc-cms.vercel.app",
   "https://your-frontend-domain.com", // Replace with actual frontend domain when deployed
 ];
 

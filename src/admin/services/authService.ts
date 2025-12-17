@@ -60,6 +60,10 @@ class AuthService {
         body: JSON.stringify({ username, password })
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
       const data = await response.json();
 
       if (data.success) {
@@ -84,9 +88,11 @@ class AuthService {
       };
     } catch (error) {
       console.error('Login error:', error);
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      console.error('API URL attempted:', API_URL);
       return {
         success: false,
-        message: 'Network error. Please check your connection.'
+        message: `Connection failed: ${errorMsg}. Backend may be offline. Please ensure the server is running.`
       };
     }
   }
