@@ -61,9 +61,9 @@ export const Services = () => {
     <section ref={ref} id="services" className="py-8 sm:py-10 lg:py-14 min-h-screen flex flex-col justify-center snap-start bg-slate-50 dark:bg-[#01040f] relative border-t border-slate-200 dark:border-white/5 transition-colors duration-300 overflow-hidden">
       {/* Background Parallax Typography */}
     {!disableParallax && (
-    <div className="absolute top-10 sm:top-20 left-0 w-full overflow-hidden pointer-events-none opacity-[0.03] dark:opacity-[0.05]">
+    <div className="absolute top-10 sm:top-20 left-0 w-full overflow-hidden pointer-events-none opacity-[0.08] dark:opacity-[0.05]">
       <motion.div style={{ x: xBgText }} className="text-[12vw] sm:text-[15vw] lg:text-[20vw] font-bold leading-none whitespace-nowrap text-slate-900 dark:text-white uppercase select-none">
-        DDtech
+        U A B C
       </motion.div>
     </div>
     )}

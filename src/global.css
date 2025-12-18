@@ -1,5 +1,8 @@
 /* Global Responsive Styles - Comprehensive */
 
+/* Import animations */
+@import './animations.css';
+
 /* Reset and Base Styles */
 html, body {
   margin: 0;
@@ -23,12 +26,36 @@ html, body {
   box-sizing: border-box;
 }
 
-/* Base Font Sizes - Mobile First with Proper Scaling */
+/* Ultra-Smooth Scroll Behavior - Optimized */
 html {
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: auto; /* Disable native smooth scroll for better GSAP performance */
+  overflow-y: scroll;
+  overflow-x: hidden;
+  
+  /* Hardware acceleration */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* Remove smooth scrolling to prevent conflicts with animations */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    scroll-behavior: auto;
+  }
 }
 
 body {
@@ -38,6 +65,75 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+  
+  /* Hardware acceleration for body */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Mobile optimization for smooth touch scrolling */
+@media (max-width: 768px) {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  
+  body {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* GPU acceleration for smooth animations */
+.will-change-transform,
+[class*="motion-"],
+[class*="animate-"] {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Accordion fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Smooth transitions for interactive elements */
+a, button, input, select, textarea {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Prevent layout shifts */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Optimize rendering performance */
+@media (hover: hover) and (pointer: fine) {
+  * {
+    transition-duration: 0.3s;
+  }
 }
 
 /* Small Devices */

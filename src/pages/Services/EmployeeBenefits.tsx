@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
 import { optimizeImage } from '../../utils/imageUtils';
+import { ScrollReveal, StaggerReveal, ParallaxScroll, TextReveal } from '../../components/PageTransition';
 import {
   CheckCircle2,
   Users,
@@ -19,6 +20,105 @@ import {
 } from 'lucide-react';
 
 // --- Components ---
+
+// Separate accordion item component with error handling
+const AccordionItem = ({ step, index, isOpen, onToggle }: {
+  step: any;
+  index: number;
+  isOpen: boolean;
+  onToggle: () => void;
+}) => {
+  try {
+    return (
+      <div
+        className={`rounded-3xl border transition-all duration-300 ${
+          isOpen 
+            ? 'bg-slate-50 dark:bg-slate-800/50 border-accent-300 dark:border-accent-700 shadow-xl' 
+            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm hover:border-accent-200 dark:hover:border-accent-800 hover:shadow-md'
+        }`}
+      >
+        <button
+          onClick={onToggle}
+          className="w-full text-left p-4 md:p-6 flex items-center justify-between gap-4 focus:outline-none"
+          type="button"
+        >
+          <div className="flex items-center gap-4 flex-1">
+            <span className={`text-2xl md:text-3xl font-black transition-all duration-300 ${
+              isOpen ? 'text-accent-600' : 'text-slate-200 dark:text-slate-700'
+            }`}>
+              {step.number}
+            </span>
+            <div className="flex-1">
+              <h3 className={`text-lg md:text-xl font-bold transition-colors duration-300 ${
+                isOpen ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'
+              }`}>
+                {step.title}
+              </h3>
+              {!isOpen && (
+                <p className="text-sm text-slate-400 mt-1 hidden md:block">
+                  {step.subtitle}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className={`p-2 rounded-full transition-all duration-300 ${
+            isOpen 
+              ? 'bg-accent-600 text-white rotate-180' 
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+          }`}>
+            <ChevronDown className="w-5 h-5" />
+          </div>
+        </button>
+
+        {isOpen && (
+          <div className="px-4 md:px-6 pb-6 pt-2">
+            <div className="grid md:grid-cols-2 gap-6 items-center">
+              <div className="space-y-3 order-2 md:order-1">
+                <h4 className="text-base font-bold text-accent-600 dark:text-accent-400">
+                  {step.subtitle}
+                </h4>
+                <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm md:text-base">
+                  {step.description}
+                </p>
+                <div className="pt-4 grid grid-cols-1 gap-3">
+                  {step.points.map((point: string, i: number) => (
+                    <div 
+                      key={i}
+                      className="flex items-center gap-3"
+                    >
+                      <CheckCircle2 className="w-5 h-5 text-accent-500 shrink-0" />
+                      <span className="text-slate-700 dark:text-slate-400 font-medium text-sm">
+                        {point}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="order-1 md:order-2">
+                <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-video md:aspect-auto md:h-64">
+                  <img 
+                    src={optimizeImage(step.image, false)} 
+                    alt={step.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    onError={(e) => {
+                      console.error('Image failed to load:', step.image);
+                      e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23ddd" width="400" height="300"/%3E%3C/svg%3E';
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-accent-900/50 to-transparent opacity-60"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  } catch (error) {
+    console.error('AccordionItem error:', error);
+    return <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 rounded">Error rendering accordion item</div>;
+  }
+};
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number, suffix?: string }) => {
   const ref = useRef(null);
@@ -331,7 +431,7 @@ const steps = [
 ];
 
 export const EmployeeBenefits = () => {
-  const [activeStep, setActiveStep] = useState<number | null>(0);
+  const [activeStep, setActiveStep] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
   const servicesRef = useRef<HTMLDivElement>(null);
@@ -497,98 +597,16 @@ export const EmployeeBenefits = () => {
               </p>
             </motion.div>
 
-            <div className="max-w-5xl mx-auto">
-              {steps.map((step, index) => {
-                const isOpen = activeStep === index;
-                return (
-                  <motion.div
-                    key={index}
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ delay: index * 0.1 }}
-                    className={`mb-6 rounded-3xl border transition-all duration-500 overflow-hidden ${
-                      isOpen 
-                        ? 'bg-slate-50 dark:bg-slate-800/50 border-accent-200 dark:border-accent-900 shadow-lg' 
-                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-accent-100'
-                    }`}
-                  >
-                    <button
-                      onClick={() => setActiveStep(isOpen ? null : index)}
-                      className="w-full text-left p-4 md:p-6 flex items-center justify-between gap-4 focus:outline-none"
-                    >
-                      <div className="flex items-center gap-4">
-                        <span className={`text-2xl md:text-3xl font-black transition-colors duration-300 ${isOpen ? 'text-accent-600' : 'text-slate-200 dark:text-slate-700'}`}>
-                          {step.number}
-                        </span>
-                        <div>
-                          <h3 className={`text-lg md:text-xl font-bold transition-colors duration-300 ${isOpen ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'}`}>
-                            {step.title}
-                          </h3>
-                          {!isOpen && <p className="text-sm text-slate-400 mt-1 hidden md:block">{step.subtitle}</p>}
-                        </div>
-                      </div>
-                      <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? 'bg-accent-600 text-white rotate-180' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
-                        <ChevronDown className="w-5 h-5" />
-                      </div>
-                    </button>
-
-                    <AnimatePresence mode="wait">
-                      {isOpen && (
-                        <motion.div
-                          key="content"
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: "easeInOut" }}
-                          className="overflow-hidden"
-                        >
-                          <div className="px-4 md:px-6 pb-6 pt-2">
-                            <div className="grid md:grid-cols-2 gap-6 items-center">
-                              <div className="space-y-3 order-2 md:order-1">
-                                <h4 className="text-base font-bold text-accent-600 dark:text-accent-400">{step.subtitle}</h4>
-                                <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm md:text-base">
-                                  {step.description}
-                                </p>
-                                <div className="pt-4 grid grid-cols-1 gap-3">
-                                  {step.points.map((point, i) => (
-                                    <motion.div 
-                                      key={i}
-                                      initial={{ opacity: 0, x: -10 }}
-                                      animate={{ opacity: 1, x: 0 }}
-                                      transition={{ delay: 0.1 + (i * 0.1) }}
-                                      className="flex items-center gap-3"
-                                    >
-                                      <CheckCircle2 className="w-5 h-5 text-accent-500 flex-shrink-0" />
-                                      <span className="text-slate-700 dark:text-slate-400 font-medium">{point}</span>
-                                    </motion.div>
-                                  ))}
-                                </div>
-                              </div>
-                              <motion.div 
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.2 }}
-                                className="order-1 md:order-2"
-                              >
-                                <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-video md:aspect-auto md:h-64 group">
-                                  <img 
-                                    src={optimizeImage(step.image, false)} 
-                                    alt={step.title}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                  />
-                                  <div className="absolute inset-0 bg-gradient-to-t from-accent-900/50 to-transparent opacity-60"></div>
-                                </div>
-                              </motion.div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                );
-              })}
+            <div className="max-w-5xl mx-auto space-y-6">
+              {steps.map((step, index) => (
+                <AccordionItem 
+                  key={index}
+                  step={step}
+                  index={index}
+                  isOpen={activeStep === index}
+                  onToggle={() => setActiveStep(activeStep === index ? null : index)}
+                />
+              ))}
             </div>
           </div>
       </section>

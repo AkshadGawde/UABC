@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ScrollProgress } from './components/layout/ScrollProgress';
 import { ScrollToTop } from './components/layout/ScrollToTop';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
+import { PageTransition } from './components/PageTransition';
+import { PageLoader, AnimatedScrollProgress } from './components/PageLoader';
 import { Home, AboutUs, AboutOverview, AboutApproach, AboutManagement, AboutSuccessStories, ServicesPage, EmployeeBenefits, Insights, Careers, ContactUs, InsuranceConsulting, RetirementConsulting, BenefitConsulting } from './pages';
 import { AuthProvider } from './admin/hooks/useAuth';
 import { AdminLogin } from './admin/pages/AdminLogin';
@@ -12,7 +14,12 @@ import { AdminDashboard } from './admin/pages/AdminDashboard';
 import { InsightEditor } from './admin/pages/InsightEditor';
 import { InsightPreview } from './admin/pages/InsightPreview';
 import { ProtectedRoute } from './admin/components/ProtectedRoute';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './global.css';
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Main App Component
@@ -40,19 +47,58 @@ const App = () => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
+  // Show loading screen only once on initial app load
   useEffect(() => {
-    const rootElement = document.getElementById('root');
-    if (!rootElement) {
-      console.error('Root element not found');
+    const hasLoaded = sessionStorage.getItem('app-loaded');
+    
+    if (!hasLoaded) {
+      // Create loading screen
+      const loader = document.createElement('div');
+      loader.id = 'app-loader';
+      loader.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.5s ease;
+      `;
+      loader.innerHTML = `
+        <div style="text-align: center;">
+          <div style="width: 60px; height: 60px; border: 4px solid rgba(255, 255, 255, 0.1); border-top-color: #2563EB; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+          <div style="color: white; margin-top: 20px; font-size: 16px; font-weight: 600; letter-spacing: 2px;">Loading...</div>
+        </div>
+      `;
+      
+      const style = document.createElement('style');
+      style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
+      document.head.appendChild(style);
+      document.body.appendChild(loader);
+      
+      // Remove loader after a short delay
+      setTimeout(() => {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+          loader.remove();
+          style.remove();
+          sessionStorage.setItem('app-loaded', 'true');
+        }, 500);
+      }, 800);
     }
   }, []);
 
   return (
     <AuthProvider>
       <Router>
+        <PageLoader />
         <div className="antialiased min-h-screen font-sans selection:bg-accent-500/30 selection:text-accent-900 dark:selection:text-white">
           <ScrollToTop />
-          <ScrollProgress />
+          <AnimatedScrollProgress />
           
           <Routes>
             {/* Admin Routes */}
@@ -101,21 +147,23 @@ const App = () => {
                     toggleTheme={toggleTheme}
                   />
                   <main>
-                    <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/about" element={<AboutOverview />} />
-                      <Route path="/about/approach" element={<AboutApproach />} />
-                      <Route path="/about/management" element={<AboutManagement />} />
-                      <Route path="/about/success-stories" element={<AboutSuccessStories />} />
-                      <Route path="/services" element={<ServicesPage />} />
-                      <Route path="/services/employee-benefits" element={<EmployeeBenefits />} />
-                      <Route path="/services/insurance-consulting" element={<InsuranceConsulting />} />
-                      <Route path="/services/retirement-consulting" element={<RetirementConsulting />} />
-                      <Route path="/services/benefit-consulting" element={<BenefitConsulting />} />
-                      <Route path="/insights" element={<Insights />} />
-                      <Route path="/careers" element={<Careers />} />
-                      <Route path="/contact" element={<ContactUs />} />
-                    </Routes>
+                    <PageTransition transitionType="fade">
+                      <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/about" element={<AboutOverview />} />
+                        <Route path="/about/approach" element={<AboutApproach />} />
+                        <Route path="/about/management" element={<AboutManagement />} />
+                        <Route path="/about/success-stories" element={<AboutSuccessStories />} />
+                        <Route path="/services" element={<ServicesPage />} />
+                        <Route path="/services/employee-benefits" element={<EmployeeBenefits />} />
+                        <Route path="/services/insurance-consulting" element={<InsuranceConsulting />} />
+                        <Route path="/services/retirement-consulting" element={<RetirementConsulting />} />
+                        <Route path="/services/benefit-consulting" element={<BenefitConsulting />} />
+                        <Route path="/insights" element={<Insights />} />
+                        <Route path="/careers" element={<Careers />} />
+                        <Route path="/contact" element={<ContactUs />} />
+                      </Routes>
+                    </PageTransition>
                   </main>
                   <Footer />
                 </>

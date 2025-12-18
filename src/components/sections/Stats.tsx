@@ -26,7 +26,7 @@ const cardsData = [
 
 // --- Sub-Components ---
 
-const InfoCard = ({ card, xMotion }: { card: typeof cardsData[0], xMotion: any }) => {
+const InfoCard = ({ card, xMotion, index }: { card: typeof cardsData[0], xMotion: any, index: number }) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -38,6 +38,10 @@ const InfoCard = ({ card, xMotion }: { card: typeof cardsData[0], xMotion: any }
 
   return (
     <motion.div
+      initial={{ opacity: 0, x: index === 0 ? -100 : 100 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: false, margin: "-100px" }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
       style={{ x: xMotion }}
       onMouseMove={handleMouseMove}
       className={`group relative overflow-hidden rounded-2xl sm:rounded-3xl border bg-white dark:bg-slate-800 backdrop-blur-md p-4 sm:p-6 md:p-12 transition-colors duration-500 border-slate-300 dark:border-slate-700 ${card.border}`}
@@ -60,13 +64,15 @@ const InfoCard = ({ card, xMotion }: { card: typeof cardsData[0], xMotion: any }
       <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700 mix-blend-overlay`} />
 
       <div className="relative z-10">
-        <div className="mb-6 inline-flex items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-700 p-3 md:p-4 border border-slate-200 dark:border-slate-600 shadow-inner">
-          <card.icon className={`h-7 w-7 md:h-8 md:w-8 text-slate-700 dark:text-slate-300`} />
+        <div className="mb-4 flex items-center gap-3">
+          <div className="inline-flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700 p-2 md:p-3 border border-slate-200 dark:border-slate-600 shadow-inner">
+            <card.icon className={`h-5 w-5 md:h-6 md:w-6 text-slate-700 dark:text-slate-300`} />
+          </div>
+          <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+            {card.title}
+          </h3>
         </div>
-        <h3 className="mb-4 text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
-          {card.title}
-        </h3>
-        <p className="text-lg leading-relaxed text-slate-700 dark:text-slate-300/90">
+        <p className="text-base md:text-lg leading-relaxed text-slate-700 dark:text-slate-300/90">
           {card.content}
         </p>
       </div>
@@ -135,8 +141,8 @@ export const Stats = () => {
 
         {/* Mission & Vision Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-10">
-          <InfoCard card={cardsData[0]} xMotion={xLeft} />
-          <InfoCard card={cardsData[1]} xMotion={xRight} />
+          <InfoCard card={cardsData[0]} xMotion={xLeft} index={0} />
+          <InfoCard card={cardsData[1]} xMotion={xRight} index={1} />
         </div>
 
       </div>

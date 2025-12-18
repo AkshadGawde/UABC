@@ -154,7 +154,7 @@ export const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-screen snap-start flex items-center pt-20 overflow-hidden bg-light-bg dark:bg-dark-bg transition-colors duration-300">
+    <section id="home" className="relative min-h-[100dvh] sm:min-h-screen snap-start flex items-center pt-12 sm:pt-20 pb-8 sm:pb-0 overflow-hidden bg-light-bg dark:bg-dark-bg transition-colors duration-300">
       {/* Background Effects - Multi-directional Parallax */}
       <motion.div style={{ y: yBg, x: xBg }} className="absolute inset-0 z-0 pointer-events-none">
           {!disableParallax ? (
@@ -192,8 +192,8 @@ export const Hero = () => {
         />
       </motion.div>
 
-      <div className="container mx-auto px-4 sm:px-6 relative z-10 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center py-6 sm:py-8 lg:py-10">
-        <motion.div className="space-y-4 sm:space-y-5 md:space-y-6" style={{ opacity, scale }}>
+      <div className="container mx-auto px-4 sm:px-6 relative z-10 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 lg:gap-8 items-center py-2 sm:py-8 lg:py-10">
+        <motion.div className="space-y-2.5 sm:space-y-5 md:space-y-6" style={{ opacity, scale }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -225,7 +225,7 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="max-w-2xl space-y-3 sm:space-y-4"
+            className="max-w-2xl space-y-1.5 sm:space-y-4"
           >
             <p className="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-400 leading-relaxed border-l-2 border-accent-500/30 pl-3 sm:pl-4">
               Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001-2013 certified actuarial and Benefits consulting firm serving multiple clients in India and across the world. We have 80+ years of total experience delivering quality service with a singular objective to enhance client value and experience.
@@ -255,9 +255,9 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3"
+            className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 pt-1"
           >
-            <a href="#services" className="group px-4 sm:px-5 py-2 sm:py-2.5 bg-slate-900 dark:bg-white text-white dark:text-dark-bg font-bold rounded-md flex items-center justify-center sm:justify-start gap-2 hover:bg-accent-600 dark:hover:bg-slate-200 transition-colors shadow-lg hover:shadow-accent-500/25 text-xs sm:text-sm">
+            <a href="/services" className="group px-4 sm:px-5 py-2 sm:py-2.5 bg-slate-900 dark:bg-white text-white dark:text-dark-bg font-bold rounded-md flex items-center justify-center sm:justify-start gap-2 hover:bg-accent-600 dark:hover:bg-slate-200 transition-colors shadow-lg hover:shadow-accent-500/25 text-xs sm:text-sm">
               Explore Services
               <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-white dark:text-accent-600 group-hover:translate-x-1 transition-transform" />
             </a>

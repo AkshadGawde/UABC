@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { optimizeImage, getInsightImageUrl } from '../utils/imageUtils';
 import { insightsService } from '../admin/services/insightsService';
+import { ScrollReveal, StaggerReveal } from '../components/PageTransition';
 
 // CSS for smooth scrolling optimization
 const scrollOptimizationStyles = {
@@ -382,14 +383,12 @@ export const Insights = () => {
 
           {/* Insights Grid */}
           {filteredInsights.length > 0 ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 auto-rows-fr"
-              style={{ containIntrinsicSize: 'auto 600px', contentVisibility: 'auto' }}
-            >
-              {filteredInsights.map((insight, index) => {
+            <StaggerReveal staggerDelay={0.03} duration={0.3}>
+              <div
+                className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 auto-rows-fr"
+                style={{ containIntrinsicSize: 'auto 600px', contentVisibility: 'auto' }}
+              >
+                {filteredInsights.map((insight, index) => {
                 const isFeatured = insight.featured;
                 const isPDF = !!insight.pdfFilename;
                 return (
@@ -569,8 +568,9 @@ export const Insights = () => {
                     </div>
                   </motion.article>
                 );
-              })}
-            </motion.div>
+                })}
+              </div>
+            </StaggerReveal>
           ) : (
             <motion.div
               initial={{ opacity: 0, y: 20 }}

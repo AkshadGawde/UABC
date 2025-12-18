@@ -5,19 +5,35 @@ import { Services } from '../components/sections/Services';
 import { Stats } from '../components/sections/Stats';
 import { Partners } from '../components/sections/Partners';
 import { Contact } from '../components/sections/Contact';
+import { ScrollReveal } from '../components/PageTransition';
 
 /**
- * Home Page Component
+ * Home Page Component with scroll animations
  */
 export const Home = () => {
   return (
     <>
       <Hero />
-      <About />
-      <Services />
-      <Stats />
-      <Partners />
-      <Contact />
+      
+      <ScrollReveal direction="fade">
+        <About />
+      </ScrollReveal>
+      
+      <ScrollReveal direction="fade">
+        <Services />
+      </ScrollReveal>
+      
+      <ScrollReveal direction="fade">
+        <Stats />
+      </ScrollReveal>
+      
+      <ScrollReveal direction="fade">
+        <Partners />
+      </ScrollReveal>
+      
+      <ScrollReveal direction="fade">
+        <Contact />
+      </ScrollReveal>
     </>
   );
 };

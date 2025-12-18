@@ -2,6 +2,8 @@ import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { optimizeImage } from '../utils/imageUtils';
+import { useIsMobile } from '../utils/useDevice';
+import { ScrollReveal, StaggerReveal, MagneticButton } from '../components/PageTransition';
 import { 
   Calculator, 
   Shield, 
@@ -21,6 +23,8 @@ import {
  * Services Page Component
  */
 export const ServicesPage = () => {
+  const isMobile = useIsMobile();
+  
   // Refs for parallax sections
   const mainServicesRef = useRef<HTMLDivElement>(null);
   const specializedRef = useRef<HTMLDivElement>(null);
@@ -45,12 +49,12 @@ export const ServicesPage = () => {
     offset: ["start end", "end start"]
   });
 
-  // Parallax transforms - subtle and smooth
-  const mainServicesX = useTransform(mainServicesScroll, [0, 1], [-25, 25]);
-  const specializedX = useTransform(specializedScroll, [0, 1], [25, -25]);
-  const processX = useTransform(processScroll, [0, 1], [-20, 20]);
-  const featuresLeftX = useTransform(featuresScroll, [0, 1], [-30, 30]);
-  const featuresRightX = useTransform(featuresScroll, [0, 1], [30, -30]);
+  // Parallax transforms - subtle and smooth, disabled on mobile
+  const mainServicesX = useTransform(mainServicesScroll, [0, 1], isMobile ? [0, 0] : [-25, 25]);
+  const specializedX = useTransform(specializedScroll, [0, 1], isMobile ? [0, 0] : [25, -25]);
+  const processX = useTransform(processScroll, [0, 1], isMobile ? [0, 0] : [-20, 20]);
+  const featuresLeftX = useTransform(featuresScroll, [0, 1], isMobile ? [0, 0] : [-30, 30]);
+  const featuresRightX = useTransform(featuresScroll, [0, 1], isMobile ? [0, 0] : [30, -30]);
 
   const mainServices = [
     {
@@ -198,18 +202,16 @@ export const ServicesPage = () => {
               </h2>
             </motion.div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12">
-            {mainServices.map((service, index) => {
-              const IconComponent = service.icon;
-              return (
-                <motion.div
-                  key={service.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-white dark:bg-dark-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
-                >
+            <StaggerReveal staggerDelay={0.05} duration={0.4}>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12">
+              {mainServices.map((service, index) => {
+                const IconComponent = service.icon;
+                return (
+                  <motion.div
+                    key={service.title}
+                    whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                    className="bg-white dark:bg-dark-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow"
+                  >
                   <div className="md:flex">
                     <div className="md:w-1/3">
                       <img 
@@ -240,9 +242,10 @@ export const ServicesPage = () => {
                     </div>
                   </div>
                 </motion.div>
-              );
-            })}
-            </div>
+                );
+              })}
+              </div>
+            </StaggerReveal>
           </div>
         </motion.div>
       </section>
@@ -266,27 +269,29 @@ export const ServicesPage = () => {
               </h2>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {specializedServices.map((service, index) => {
-                const IconComponent = service.icon;
-                return (
-                  <motion.div
-                    key={service.title}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className="bg-white dark:bg-dark-bg p-8 rounded-2xl text-center group hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 dark:border-slate-700"
-                  >
-                    <div className="w-16 h-16 bg-accent-100 dark:bg-accent-900/30 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                      <IconComponent className="w-8 h-8 text-accent-600 dark:text-accent-500" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug">{service.title}</h3>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{service.description}</p>
-                  </motion.div>
-                );
-              })}
-            </div>
+            <StaggerReveal staggerDelay={0.04} duration={0.4}>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {specializedServices.map((service, index) => {
+                  const IconComponent = service.icon;
+                  return (
+                    <motion.div
+                      key={service.title}
+                      whileHover={{ y: -8, scale: 1.02, transition: { duration: 0.3 } }}
+                      className="bg-white dark:bg-dark-bg p-8 rounded-2xl text-center group hover:shadow-lg transition-all border border-slate-100 dark:border-slate-700"
+                    >
+                      <motion.div 
+                        className="w-16 h-16 bg-accent-100 dark:bg-accent-900/30 rounded-xl flex items-center justify-center mx-auto mb-4"
+                        whileHover={{ rotate: 360, scale: 1.1, transition: { duration: 0.5 } }}
+                      >
+                        <IconComponent className="w-8 h-8 text-accent-600 dark:text-accent-500" />
+                      </motion.div>
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug">{service.title}</h3>
+                      <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{service.description}</p>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </StaggerReveal>
           </div>
         </motion.div>
       </section>
@@ -342,10 +347,9 @@ export const ServicesPage = () => {
       </section>
 
       {/* Features Section */}
-      <section ref={featuresRef} className="py-24 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
-        <motion.div style={{ x: featuresLeftX }}>
-          <div className="container mx-auto px-6">
-            <div className="grid md:grid-cols-2 gap-16 items-center">
+      <section ref={featuresRef} className="py-12 md:py-16 lg:py-24 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -397,7 +401,6 @@ export const ServicesPage = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              style={{ x: featuresRightX }}
             >
               <img 
                 src={optimizeImage("https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=800", false)}
@@ -405,9 +408,8 @@ export const ServicesPage = () => {
                 className="rounded-2xl shadow-2xl"
               />
             </motion.div>
-            </div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* CTA Section */}
