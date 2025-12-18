@@ -14,26 +14,11 @@ export const Home = () => {
   return (
     <>
       <Hero />
-      
-      <ScrollReveal direction="fade">
-        <About />
-      </ScrollReveal>
-      
-      <ScrollReveal direction="fade">
-        <Services />
-      </ScrollReveal>
-      
-      <ScrollReveal direction="fade">
-        <Stats />
-      </ScrollReveal>
-      
-      <ScrollReveal direction="fade">
-        <Partners />
-      </ScrollReveal>
-      
-      <ScrollReveal direction="fade">
-        <Contact />
-      </ScrollReveal>
+      <About />
+      <Services />
+      <Stats />
+      <Partners />
+      <Contact />
     </>
   );
 };

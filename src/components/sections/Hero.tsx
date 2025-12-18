@@ -39,12 +39,6 @@ export const Hero = () => {
   const opacity = useTransform(scrollY, [0, 300], [1, disableParallax ? 1 : 0]);
   const scale = useTransform(scrollY, [0, 300], [1, disableParallax ? 1 : 0.95]);
   
-  // Carousel State with dynamic insights
-  const [currentInsight, setCurrentInsight] = useState(0);
-  const [insights, setInsights] = useState<InsightCard[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   // Fallback insights in case API fails or no data available
   const fallbackInsights: InsightCard[] = [
     {
@@ -70,7 +64,13 @@ export const Hero = () => {
     }
   ];
 
-  // Fetch latest insights on component mount
+  // Carousel State with dynamic insights - Initialize with fallback data for iOS Safari compatibility
+  const [currentInsight, setCurrentInsight] = useState(0);
+  const [insights, setInsights] = useState<InsightCard[]>(fallbackInsights.slice(0, 3));
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch latest insights on component mount - non-blocking for iOS Safari compatibility
   useEffect(() => {
     const loadInsights = async () => {
       try {
@@ -84,27 +84,24 @@ export const Hero = () => {
         });
         
         const publishedInsights = response.insights
-          .filter(insight => insight.published)
+          .filter((insight: any) => insight.published)
           .slice(0, 4); // Ensure max 4 insights
         
         if (publishedInsights.length > 0) {
           setInsights(publishedInsights);
-        } else {
-          // Use fallback if no published insights available
-          setInsights(fallbackInsights.slice(0, 3));
         }
         
       } catch (error) {
         console.error('Failed to load hero insights:', error);
         setError('Failed to load insights');
-        // Use fallback insights on error
-        setInsights(fallbackInsights.slice(0, 3));
+        // Keep fallback insights that were initialized
       } finally {
         setLoading(false);
       }
     };
     
-    loadInsights();
+    // Non-blocking call - component will render with fallback data immediately
+    loadInsights().catch(err => console.error('Insights load error:', err));
   }, []);
 
   // Carousel timer with insights length check
@@ -154,7 +151,7 @@ export const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-[100dvh] sm:min-h-screen snap-start flex items-center pt-12 sm:pt-20 pb-8 sm:pb-0 overflow-hidden bg-light-bg dark:bg-dark-bg transition-colors duration-300">
+    <section id="home" className="relative min-h-screen snap-start flex items-center pt-16 sm:pt-20 pb-6 sm:pb-0 overflow-hidden bg-light-bg dark:bg-dark-bg transition-colors duration-300">
       {/* Background Effects - Multi-directional Parallax */}
       <motion.div style={{ y: yBg, x: xBg }} className="absolute inset-0 z-0 pointer-events-none">
           {!disableParallax ? (
@@ -192,8 +189,8 @@ export const Hero = () => {
         />
       </motion.div>
 
-      <div className="container mx-auto px-4 sm:px-6 relative z-10 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 lg:gap-8 items-center py-2 sm:py-8 lg:py-10">
-        <motion.div className="space-y-2.5 sm:space-y-5 md:space-y-6" style={{ opacity, scale }}>
+      <div className="container mx-auto px-4 sm:px-6 relative z-10 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center py-4 sm:py-8 lg:py-10">
+        <motion.div className="space-y-3 sm:space-y-5 md:space-y-6" style={{ opacity, scale }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -225,7 +222,7 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="max-w-2xl space-y-1.5 sm:space-y-4"
+            className="max-w-2xl space-y-2 sm:space-y-4"
           >
             <p className="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-400 leading-relaxed border-l-2 border-accent-500/30 pl-3 sm:pl-4">
               Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001-2013 certified actuarial and Benefits consulting firm serving multiple clients in India and across the world. We have 80+ years of total experience delivering quality service with a singular objective to enhance client value and experience.

@@ -80,6 +80,9 @@ const App = () => {
       document.head.appendChild(style);
       document.body.appendChild(loader);
       
+      // Scroll to top immediately
+      window.scrollTo(0, 0);
+      
       // Remove loader after a short delay
       setTimeout(() => {
         loader.style.opacity = '0';
@@ -89,6 +92,9 @@ const App = () => {
           sessionStorage.setItem('app-loaded', 'true');
         }, 500);
       }, 800);
+    } else {
+      // Ensure scroll to top even if loader is skipped
+      window.scrollTo(0, 0);
     }
   }, []);
 
