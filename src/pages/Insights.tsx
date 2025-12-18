@@ -52,7 +52,8 @@ import {
   Eye,
   Download,
   Share2,
-  Loader2
+  Loader2,
+  X
 } from 'lucide-react';
 
 /**
@@ -61,6 +62,7 @@ import {
 export const Insights = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [searchQuery, setSearchQuery] = useState('');
   const [insights, setInsights] = useState<Insight[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -126,6 +128,13 @@ export const Insights = () => {
   const filteredInsights = insights.filter(insight => {
     const matchesCategory = !selectedCategory || insight.category === selectedCategory;
     
+    // Search filtering
+    const matchesSearch = !searchQuery || 
+      insight.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      insight.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (insight.author && insight.author.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (insight.tags && insight.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())));
+    
     // Date filtering
     let matchesDate = true;
     if (dateRange.start || dateRange.end) {
@@ -141,7 +150,7 @@ export const Insights = () => {
       }
     }
     
-    return matchesCategory && matchesDate;
+    return matchesCategory && matchesSearch && matchesDate;
   });
 
   const featuredInsights = insights.filter(insight => insight.featured);
@@ -178,6 +187,12 @@ export const Insights = () => {
     }
   };
 
+  const clearAllFilters = () => {
+    setSearchQuery('');
+    setDateRange({ start: '', end: '' });
+    setSelectedCategory(categories[0] || '');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24 flex items-center justify-center">
@@ -211,7 +226,7 @@ export const Insights = () => {
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24" style={{ scrollBehavior: 'smooth' }}>
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg relative will-change-transform">
+      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg relative will-change-transform">
         {/* Subtle Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
           <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent-200/10 rounded-full" />
@@ -225,25 +240,17 @@ export const Insights = () => {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-center max-w-4xl mx-auto will-change-transform"
           >
-            {/* <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
-              Insights & Research
-            </div>
-             */}
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-slate-900 dark:text-white">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
               Expert Analysis & <br />
               <span className="text-accent-600 dark:text-accent-500 hover:scale-105 inline-block transition-transform duration-300 cursor-default">
                 Market Intelligence
               </span>
             </h1>
             
-            <p className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
               Stay ahead with our latest research, market analysis, and thought leadership 
               in actuarial science and risk management.
             </p>
-            
-            <div className="mt-6 text-accent-600 dark:text-accent-500">
-              <span className="text-lg font-medium">{insights.length} insights published</span>
-            </div>
           </motion.div>
         </div>
       </section>
@@ -251,24 +258,91 @@ export const Insights = () => {
       {/* Main Insights Section */}
       <section className="py-12 will-change-transform">
         <div className="container mx-auto px-6">
-          {/* Minimal Filter Controls */}
+          {/* Filter Controls */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-12 will-change-transform"
+            className="mb-12 will-change-transform"
           >
-            {/* Category Filter */}
-            {categories.length > 1 && (
+            {/* Search Bar and Date Filter Row */}
+            <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between mb-6">
+              {/* Search Bar */}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
+                className="flex-1 max-w-2xl"
+              >
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search insights by title, content, author, or tags..."
+                    className="w-full pl-12 pr-12 py-3.5 text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-dark-bg text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all duration-200 hover:border-accent-300 dark:hover:border-accent-600 shadow-sm"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+              
+              {/* Date Range Filter */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
                 className="flex items-center gap-3"
               >
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Category:</span>
-                <div className="flex gap-2">
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-400 whitespace-nowrap">Date:</span>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="date"
+                    value={dateRange.start}
+                    onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+                    className="px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-dark-bg text-slate-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all duration-200 hover:border-accent-300 dark:hover:border-accent-600"
+                    placeholder="From"
+                  />
+                  <span className="text-slate-400">—</span>
+                  <input
+                    type="date"
+                    value={dateRange.end}
+                    onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+                    className="px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-dark-bg text-slate-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all duration-200 hover:border-accent-300 dark:hover:border-accent-600"
+                    placeholder="To"
+                  />
+                  {(dateRange.start || dateRange.end) && (
+                    <button
+                      onClick={() => setDateRange({ start: '', end: '' })}
+                      className="ml-2 px-3 py-2 text-xs text-slate-500 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 transition-colors duration-200 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/10"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Category Filter */}
+            {categories.length > 1 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="flex flex-wrap items-center gap-3"
+              >
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Categories:</span>
+                <div className="flex flex-wrap gap-2">
                   {categories.map((category) => (
                     <button
                       key={category}
@@ -276,7 +350,7 @@ export const Insights = () => {
                       className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg group ${
                         selectedCategory === category
                           ? 'bg-accent-600 text-white shadow-md'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-accent-600 dark:hover:text-accent-400 hover:bg-accent-50 dark:hover:bg-accent-900/10'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-accent-600 dark:hover:text-accent-400 hover:bg-accent-50 dark:hover:bg-accent-900/10 border border-slate-200 dark:border-slate-700'
                       }`}
                     >
                       <span className="group-hover:scale-105 inline-block transition-transform duration-200">
@@ -287,42 +361,23 @@ export const Insights = () => {
                 </div>
               </motion.div>
             )}
-            
-            {/* Date Range Filter */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex items-center gap-3"
-            >
-              <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Date Range:</span>
-              <div className="flex items-center gap-2">
-                <input
-                  type="date"
-                  value={dateRange.start}
-                  onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                  className="px-3 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-dark-bg text-slate-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all duration-200 hover:border-accent-300 dark:hover:border-accent-600"
-                  placeholder="From"
-                />
-                <span className="text-slate-400">—</span>
-                <input
-                  type="date"
-                  value={dateRange.end}
-                  onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                  className="px-3 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-dark-bg text-slate-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all duration-200 hover:border-accent-300 dark:hover:border-accent-600"
-                  placeholder="To"
-                />
-                {(dateRange.start || dateRange.end) && (
-                  <button
-                    onClick={() => setDateRange({ start: '', end: '' })}
-                    className="ml-2 px-3 py-2 text-xs text-slate-500 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 transition-colors duration-200 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/10"
-                  >
-                    Clear
-                  </button>
-                )}
+
+            {/* Active Filters Indicator */}
+            {(searchQuery || dateRange.start || dateRange.end) && (
+              <div className="mt-4 flex items-center gap-3 text-sm">
+                <span className="text-slate-600 dark:text-slate-400">
+                  Active filters: 
+                  {searchQuery && <span className="ml-2 px-2 py-1 bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-300 rounded">Search</span>}
+                  {(dateRange.start || dateRange.end) && <span className="ml-2 px-2 py-1 bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-300 rounded">Date Range</span>}
+                </span>
+                <button
+                  onClick={clearAllFilters}
+                  className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium hover:underline"
+                >
+                  Clear all filters
+                </button>
               </div>
-            </motion.div>
+            )}
           </motion.div>
 
           {/* Insights Grid */}

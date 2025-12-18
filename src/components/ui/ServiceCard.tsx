@@ -8,13 +8,14 @@ interface ServiceCardProps {
   title: string;
   description: string;
   delay: number;
+  link?: string;
   key?: React.Key | null;
 }
 
 /**
  * Service Card Component
  */
-export const ServiceCard = ({ icon: Icon, title, description, delay }: ServiceCardProps) => {
+export const ServiceCard = ({ icon: Icon, title, description, delay, link }: ServiceCardProps) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseX = useSpring(x, { stiffness: 500, damping: 100 });
@@ -55,9 +56,15 @@ export const ServiceCard = ({ icon: Icon, title, description, delay }: ServiceCa
         <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">
           {description}
         </p>
-        <a href="#contact" className="inline-flex items-center text-xs sm:text-sm font-bold uppercase tracking-wider text-accent-600 dark:text-accent-500 hover:text-accent-500 dark:hover:text-accent-400 transition-colors">
-          Learn More <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-        </a>
+        {link ? (
+          <a href={link} className="inline-flex items-center text-xs sm:text-sm font-bold uppercase tracking-wider text-accent-600 dark:text-accent-500 hover:text-accent-500 dark:hover:text-accent-400 transition-colors">
+            Learn More <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+          </a>
+        ) : (
+          <a href="#contact" className="inline-flex items-center text-xs sm:text-sm font-bold uppercase tracking-wider text-accent-600 dark:text-accent-500 hover:text-accent-500 dark:hover:text-accent-400 transition-colors">
+            Learn More <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+          </a>
+        )}
       </div>
     </motion.div>
   );

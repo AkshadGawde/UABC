@@ -27,22 +27,17 @@ export const Hero = () => {
   const isMobile = useIsMobile();
   const shouldReduce = useShouldReduceMotion();
   const disableParallax = isMobile || shouldReduce;
-  const { scrollY } = disableParallax ? { scrollY: null } as any : useScroll();
-  // Enhanced Parallax Effects
-  let y1: any = 0;
-  let y2: any = 0;
-  let yBg: any = 0;
-  let xBg: any = 0;
-  let opacity: any = 1;
-  let scale: any = 1;
-  if (!disableParallax) {
-    y1 = useTransform(scrollY, [0, 500], [0, 200]);
-    y2 = useTransform(scrollY, [0, 500], [0, -150]);
-    yBg = useTransform(scrollY, [0, 1000], [0, 300]);
-    xBg = useTransform(scrollY, [0, 1000], [0, -100]);
-    opacity = useTransform(scrollY, [0, 300], [1, 0]);
-    scale = useTransform(scrollY, [0, 300], [1, 0.95]);
-  }
+  
+  // Always call useScroll to comply with Rules of Hooks
+  const { scrollY } = useScroll();
+
+  // Enhanced Parallax Effects - Always call hooks, but use them conditionally
+  const y1 = useTransform(scrollY, [0, 500], [0, disableParallax ? 0 : 200]);
+  const y2 = useTransform(scrollY, [0, 500], [0, disableParallax ? 0 : -150]);
+  const yBg = useTransform(scrollY, [0, 1000], [0, disableParallax ? 0 : 300]);
+  const xBg = useTransform(scrollY, [0, 1000], [0, disableParallax ? 0 : -100]);
+  const opacity = useTransform(scrollY, [0, 300], [1, disableParallax ? 1 : 0]);
+  const scale = useTransform(scrollY, [0, 300], [1, disableParallax ? 1 : 0.95]);
   
   // Carousel State with dynamic insights
   const [currentInsight, setCurrentInsight] = useState(0);

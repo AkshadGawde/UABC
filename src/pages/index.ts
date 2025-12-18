@@ -11,3 +11,4 @@ export { Careers } from './Careers';
 export { ContactUs } from './ContactUs';
 export { default as InsuranceConsulting } from './Services/InsuranceConsulting';
 export { RetirementConsulting } from './Services/RetirementConsulting';
+export { default as BenefitConsulting } from './BenefitConsulting';

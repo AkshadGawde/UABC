@@ -43,7 +43,7 @@ const RetirementConsulting = () => {
 	return (
 		<div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24">
 			{/* Hero Section */}
-			<section className="py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
+			<section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
 				<div className="container mx-auto px-4 sm:px-6 lg:px-8">
 					<motion.div
 						initial={{ opacity: 0, y: 30 }}
@@ -51,13 +51,13 @@ const RetirementConsulting = () => {
 						transition={{ duration: 0.8 }}
 						className="text-center max-w-4xl mx-auto"
 					>
-						<h1 className="text-3xl md:text-5xl font-bold mb-6 text-slate-900 dark:text-white">
+						<h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 text-slate-900 dark:text-white">
 							Retirement{' '}
 							<span className="text-accent-600 dark:text-accent-500">
 								Consulting
 							</span>
 						</h1>
-						<p className="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+						<p className="text-sm md:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
 							Delivering innovative solutions for retirement governance and income
 							adequacy.
 						</p>

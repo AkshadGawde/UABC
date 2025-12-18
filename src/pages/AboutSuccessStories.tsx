@@ -61,7 +61,7 @@ export const AboutSuccessStories = () => {
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
+      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -69,11 +69,11 @@ export const AboutSuccessStories = () => {
             transition={{ duration: 0.8 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-slate-900 dark:text-white">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
               Success 
               <span className="text-accent-600 dark:text-accent-500"> Stories</span>
             </h1>
-            <p className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
               Discover how UABC has delivered exceptional value to clients across diverse industries and geographies.
             </p>
           </motion.div>

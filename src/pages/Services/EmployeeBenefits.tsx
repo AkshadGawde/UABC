@@ -58,64 +58,114 @@ const ServiceCard = ({ service, index }: { service: any, index: number }) => {
     offset: ["start end", "end start"]
   });
 
-  const offsetY = useTransform(scrollYProgress, [0, 1], [50, -50]);
+  const offsetY = useTransform(scrollYProgress, [0, 1], [30, -30]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [-2, 2]);
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 50, rotateX: -15 }}
+      whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      style={{ y: offsetY }}
-      className="h-80 cursor-pointer"
+      transition={{ duration: 0.6, delay: index * 0.08, type: "spring", stiffness: 100 }}
+      style={{ y: offsetY, rotate }}
+      className="h-80 cursor-pointer perspective-1000"
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
     >
       <motion.div
         initial={false}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.6, type: "spring", stiffness: 200, damping: 30 }}
+        transition={{ duration: 0.7, type: "spring", stiffness: 150, damping: 25 }}
         className="relative w-full h-full"
         style={{ transformStyle: "preserve-3d" }}
+        whileHover={{ scale: 1.02, translateY: -8 }}
       >
         {/* Front Side */}
         <motion.div
-          className="absolute w-full h-full bg-white dark:bg-dark-card rounded-3xl p-6 shadow-lg border border-slate-200 dark:border-slate-700 flex flex-col justify-between"
+          className="absolute w-full h-full bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 rounded-2xl p-6 shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between overflow-hidden backdrop-blur-sm"
           style={{ backfaceVisibility: "hidden" }}
         >
-          <div>
-            <div className={`w-16 h-16 rounded-2xl ${service.bg} flex items-center justify-center mb-6 transition-transform duration-500`}>
-              <service.icon className={`w-8 h-8 ${service.text}`} />
-            </div>
+          {/* Animated background gradient */}
+          <motion.div
+            animate={{ 
+              background: [
+                `radial-gradient(circle at 0% 0%, ${service.bgColor}15 0%, transparent 50%)`,
+                `radial-gradient(circle at 100% 100%, ${service.bgColor}15 0%, transparent 50%)`,
+                `radial-gradient(circle at 0% 0%, ${service.bgColor}15 0%, transparent 50%)`
+              ]
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-0 opacity-50"
+          />
+          
+          <div className="relative z-10">
+            <motion.div 
+              className={`w-14 h-14 rounded-xl ${service.bg} flex items-center justify-center mb-4 shadow-lg`}
+              whileHover={{ rotate: 360, scale: 1.1 }}
+              transition={{ duration: 0.6 }}
+            >
+              <service.icon className={`w-7 h-7 ${service.text}`} />
+            </motion.div>
 
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 leading-tight">
               {service.title}
             </h3>
 
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
               {service.description}
             </p>
+          </div>
+
+          <div className="relative z-10 flex items-center gap-2 text-xs font-semibold text-accent-600 dark:text-accent-400">
+            <span>Hover to explore</span>
+            <ArrowRight className="w-4 h-4" />
           </div>
         </motion.div>
 
         {/* Back Side */}
         <motion.div
-          className="absolute w-full h-full bg-gradient-to-br rounded-3xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 flex flex-col justify-between"
+          className="absolute w-full h-full rounded-2xl p-6 shadow-2xl flex flex-col justify-center overflow-hidden"
           style={{
             backfaceVisibility: "hidden",
             rotateY: 180,
-            backgroundImage: `linear-gradient(135deg, ${service.bgColor || '#f0f9ff'}, ${service.bgColorDark || '#0f172a'})`
+            background: `linear-gradient(135deg, ${service.bgColor} 0%, ${service.bgColorDark} 100%)`
           }}
         >
-          <div className="text-white">
-            <h3 className="text-xl font-bold mb-4">{service.title}</h3>
-            <ul className="space-y-3 text-sm">
+          {/* Floating circles background */}
+          <motion.div
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"
+          />
+          <motion.div
+            animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-10 left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"
+          />
+          
+          <div className="relative z-10 text-white">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <h3 className="text-lg font-bold">{service.title}</h3>
+            </div>
+            
+            <ul className="space-y-3">
               {service.benefits?.map((benefit: string, i: number) => (
-                <li key={i} className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                  <span>{benefit}</span>
-                </li>
+                <motion.li 
+                  key={i}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 + 0.3 }}
+                  className="flex items-start gap-2"
+                >
+                  <div className="w-5 h-5 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <CheckCircle2 className="w-3 h-3" />
+                  </div>
+                  <span className="text-sm text-white/90 leading-relaxed">{benefit}</span>
+                </motion.li>
               ))}
             </ul>
           </div>
@@ -299,7 +349,7 @@ export const EmployeeBenefits = () => {
     <div ref={containerRef} className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 font-sans text-slate-900 dark:text-slate-100">
       
       {/* Hero Section */}
-      <section className="relative py-24 md:py-32 overflow-hidden">
+      <section className="relative py-12 md:py-20 lg:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-accent-50 via-white to-blue-50 dark:from-dark-bg dark:via-slate-950 dark:to-dark-bg"></div>
         <motion.div 
           animate={{ rotate: 360 }}
@@ -312,11 +362,9 @@ export const EmployeeBenefits = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-center max-w-4xl mx-auto"
+            className="text-center max-w-4xl mx-auto px-4"
           >
-            
-            
-            <h1 className="text-5xl md:text-7xl font-extrabold mb-8 text-slate-900 dark:text-white tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-6 text-slate-900 dark:text-white tracking-tight leading-tight">
               Employee Benefits <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-600 via-brand-600 to-accent-600">
                 Valuation & Strategy
@@ -327,7 +375,7 @@ export const EmployeeBenefits = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto mb-10"
+              className="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto mb-8"
             >
               Empowering organizations with precise actuarial solutions. We turn complex data into sustainable growth strategies and compliant reporting.
             </motion.p>
@@ -338,9 +386,9 @@ export const EmployeeBenefits = () => {
       </section>
 
       {/* Stats Section (Scroll Triggered) */}
-      <section ref={statsRef} className="py-12 bg-light-bg dark:bg-dark-bg border-y border-slate-100 dark:border-slate-800">
+      <section ref={statsRef} className="py-8 md:py-10 lg:py-12 bg-light-bg dark:bg-dark-bg border-y border-slate-100 dark:border-slate-800">
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {stats.map((stat, index) => {
               const IconComponent = stat.icon;
               const { scrollYProgress } = useScroll({
@@ -364,10 +412,10 @@ export const EmployeeBenefits = () => {
                         <IconComponent className="w-6 h-6 text-accent-600 dark:text-accent-400" />
                       </div>
                     </div>
-                    <div className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">
+                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-1 tracking-tight">
                       <AnimatedCounter target={stat.value} suffix={index === 3 ? "+" : ""} />
                     </div>
-                    <div className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    <div className="text-xs md:text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       {stat.label}
                     </div>
                   </motion.div>
@@ -378,21 +426,50 @@ export const EmployeeBenefits = () => {
       </section>
 
       {/* Services Grid (Lively) */}
-      <section ref={servicesRef} className="py-24 bg-slate-50 dark:bg-slate-950">
-        <div className="container mx-auto px-6">
+      <section ref={servicesRef} className="py-12 md:py-16 lg:py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+        {/* Floating Background Elements */}
+        <motion.div
+          animate={{ 
+            y: [0, -30, 0],
+            x: [0, 20, 0],
+            rotate: [0, 5, 0]
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-20 left-10 w-72 h-72 bg-accent-400/10 dark:bg-accent-600/10 rounded-full blur-3xl"
+        />
+        <motion.div
+          animate={{ 
+            y: [0, 40, 0],
+            x: [0, -30, 0],
+            rotate: [0, -8, 0]
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-40 right-20 w-96 h-96 bg-brand-400/10 dark:bg-brand-600/10 rounded-full blur-3xl"
+        />
+        <motion.div
+          animate={{ 
+            y: [0, -50, 0],
+            x: [0, 25, 0],
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-20 left-1/3 w-80 h-80 bg-purple-400/10 dark:bg-purple-600/10 rounded-full blur-3xl"
+        />
+        
+        <div className="container mx-auto px-6 relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-8 md:mb-12 lg:mb-16"
           >
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4">
                 Comprehensive Services
               </h2>
               <div className="w-20 h-1.5 bg-gradient-to-r from-accent-600 to-brand-500 rounded-full mx-auto"></div>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               {servicesOffered.map((service, index) => (
                 <ServiceCard key={index} service={service} index={index} />
               ))}
@@ -401,7 +478,7 @@ export const EmployeeBenefits = () => {
       </section>
 
       {/* Step-by-Step Accordion Section */}
-      <section ref={stepsRef} className="py-24 bg-light-bg dark:bg-dark-bg overflow-hidden">
+      <section ref={stepsRef} className="py-12 md:py-16 lg:py-24 bg-light-bg dark:bg-dark-bg overflow-hidden">
         <div className="container mx-auto px-6">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -412,10 +489,10 @@ export const EmployeeBenefits = () => {
                <div className="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-widest text-accent-600 uppercase bg-accent-50 dark:bg-accent-900/20 dark:text-accent-400 rounded-full">
                  Our Process
                </div>
-              <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-4">
                 Step-by-Step Approach
               </h2>
-              <p className="max-w-2xl mx-auto text-slate-600 dark:text-slate-400 text-lg">
+              <p className="max-w-2xl mx-auto text-slate-600 dark:text-slate-400 text-base">
                 A systematic and transparent methodology ensuring accuracy, compliance, and strategic value at every stage.
               </p>
             </motion.div>
@@ -439,14 +516,14 @@ export const EmployeeBenefits = () => {
                   >
                     <button
                       onClick={() => setActiveStep(isOpen ? null : index)}
-                      className="w-full text-left p-6 md:p-8 flex items-center justify-between gap-6 focus:outline-none"
+                      className="w-full text-left p-4 md:p-6 flex items-center justify-between gap-4 focus:outline-none"
                     >
-                      <div className="flex items-center gap-6">
-                        <span className={`text-4xl font-black transition-colors duration-300 ${isOpen ? 'text-accent-600' : 'text-slate-200 dark:text-slate-700'}`}>
+                      <div className="flex items-center gap-4">
+                        <span className={`text-2xl md:text-3xl font-black transition-colors duration-300 ${isOpen ? 'text-accent-600' : 'text-slate-200 dark:text-slate-700'}`}>
                           {step.number}
                         </span>
                         <div>
-                          <h3 className={`text-xl md:text-2xl font-bold transition-colors duration-300 ${isOpen ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'}`}>
+                          <h3 className={`text-lg md:text-xl font-bold transition-colors duration-300 ${isOpen ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'}`}>
                             {step.title}
                           </h3>
                           {!isOpen && <p className="text-sm text-slate-400 mt-1 hidden md:block">{step.subtitle}</p>}
@@ -457,19 +534,21 @@ export const EmployeeBenefits = () => {
                       </div>
                     </button>
 
-                    <AnimatePresence initial={false}>
+                    <AnimatePresence mode="wait">
                       {isOpen && (
                         <motion.div
+                          key="content"
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.3, ease: "easeInOut" }}
+                          className="overflow-hidden"
                         >
-                          <div className="px-6 md:px-8 pb-8 pt-2">
-                            <div className="grid md:grid-cols-2 gap-8 items-center">
-                              <div className="space-y-4 order-2 md:order-1">
-                                <h4 className="text-lg font-bold text-accent-600 dark:text-accent-400">{step.subtitle}</h4>
-                                <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-lg">
+                          <div className="px-4 md:px-6 pb-6 pt-2">
+                            <div className="grid md:grid-cols-2 gap-6 items-center">
+                              <div className="space-y-3 order-2 md:order-1">
+                                <h4 className="text-base font-bold text-accent-600 dark:text-accent-400">{step.subtitle}</h4>
+                                <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm md:text-base">
                                   {step.description}
                                 </p>
                                 <div className="pt-4 grid grid-cols-1 gap-3">
@@ -515,7 +594,7 @@ export const EmployeeBenefits = () => {
       </section>
 
       {/* Ticker Section */}
-      <section className="py-16 bg-slate-900 overflow-hidden border-t border-slate-800">
+      <section className="py-8 md:py-12 lg:py-16 bg-slate-900 overflow-hidden border-t border-slate-800">
         <div className="container mx-auto px-6 mb-8 text-center">
            <h3 className="text-xl font-bold text-white mb-2">Expertise in Global Accounting Standards</h3>
         </div>
@@ -536,7 +615,7 @@ export const EmployeeBenefits = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-gradient-to-r from-accent-600 to-brand-600 text-center relative overflow-hidden">
+      <section className="py-12 md:py-16 lg:py-24 bg-gradient-to-r from-accent-600 to-brand-600 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
@@ -545,13 +624,13 @@ export const EmployeeBenefits = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-8">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6">
               Ready to Transform Your Benefits Strategy?
             </h2>
             <motion.button 
               whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(0,0,0,0.2)" }}
               whileTap={{ scale: 0.95 }}
-              className="px-12 py-5 bg-white text-accent-600 font-bold rounded-full text-lg shadow-xl transition-all hover:shadow-2xl dark:text-accent-600"
+              className="px-8 py-3 bg-white text-accent-600 font-bold rounded-full text-base shadow-xl transition-all hover:shadow-2xl dark:text-accent-600"
             >
               Schedule a Consultation
             </motion.button>

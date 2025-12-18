@@ -8,7 +8,11 @@ export const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Scroll to top immediately and forcefully
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    // Also try using document scroll as fallback
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, [pathname]);
 
   return null;

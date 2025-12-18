@@ -58,28 +58,32 @@ export const ServicesPage = () => {
       title: "Employee Benefits",
       description: "Employee Stock Options (ESOP), Design and valuation services under IND AS 102 including Share Appreciation Rights (SAR)",
       features: ["Risk Assessment", "Pricing Models", "Reserving Analysis", "Capital Adequacy"],
-      image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=600"
+      image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=600",
+      link: "/services/employee-benefits"
     },
     {
       icon: Shield,
       title: "Insurance Consulting",
       description: "Insurance Consulting (Life ,General and Health) including Risk management, Planning & Strategic consulting, Financial & statutory reporting etc",
       features: ["Enterprise Risk", "Operational Risk", "Market Risk", "Credit Risk"],
-      image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&q=80&w=600"
+      image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&q=80&w=600",
+      link: "/services/insurance-consulting"
     },
     {
       icon: TrendingUp,
       title: "Retirement Consulting",
       description: "Retirement Consulting including retirement plans set up, Retirement income adequacy check Governance of retirement trusts, Compliance study of Regulatory benefits etc",
       features: ["Cash Flow Models", "Stochastic Models", "Monte Carlo", "Stress Testing"],
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600"
+      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600",
+      link: "/services/retirement-consulting"
     },
     {
       icon: FileText,
       title: "Benefit Consulting",
       description: "Benefits Consulting including benefits design, Redesign, Merger & Acquisitions in benefits, Flexible Benefits design, Benefits utilization, Benefit cost impact analysis and Benefits Audits",
       features: ["Solvency II", "IFRS 17", "Basel III", "Risk Reporting"],
-      image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=600"
+      image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=600",
+      link: "/services/benefit-consulting"
     }
   ];
 
@@ -152,7 +156,7 @@ export const ServicesPage = () => {
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
+      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -163,11 +167,11 @@ export const ServicesPage = () => {
             <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
               Our Services
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-slate-900 dark:text-white">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
               Comprehensive <br />
               <span className="text-accent-600 dark:text-accent-500">Actuarial Solutions</span>
             </h1>
-            <p className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
               From risk assessment to regulatory compliance, we provide end-to-end actuarial services 
               that drive informed decision-making and sustainable growth.
             </p>
@@ -176,7 +180,7 @@ export const ServicesPage = () => {
       </section>
 
       {/* Main Services Section */}
-      <section ref={mainServicesRef} className="py-24 bg-light-bg dark:bg-dark-bg">
+      <section ref={mainServicesRef} className="py-12 md:py-16 lg:py-24 bg-light-bg dark:bg-dark-bg">
         <motion.div style={{ x: mainServicesX }}>
           <div className="container mx-auto px-6">
             <motion.div
@@ -184,17 +188,17 @@ export const ServicesPage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-center mb-16"
+              className="text-center mb-8 md:mb-12 lg:mb-16"
             >
               <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
                 Core Services
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900 dark:text-white">
+              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
                 Expert Solutions for Every Challenge
               </h2>
             </motion.div>
 
-            <div className="grid lg:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12">
             {mainServices.map((service, index) => {
               const IconComponent = service.icon;
               return (
@@ -219,7 +223,7 @@ export const ServicesPage = () => {
                         <div className="w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center">
                           <IconComponent className="w-6 h-6 text-accent-600 dark:text-accent-500" />
                         </div>
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-white">{service.title}</h3>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">{service.title}</h3>
                       </div>
                       <p className="text-slate-600 dark:text-slate-400 mb-6">{service.description}</p>
                       <div className="grid grid-cols-2 gap-2 mb-6">
@@ -230,9 +234,9 @@ export const ServicesPage = () => {
                           </div>
                         ))}
                       </div>
-                      <button className="flex items-center gap-2 text-accent-600 dark:text-accent-500 font-medium hover:gap-3 transition-all">
+                      <Link to={service.link} className="flex items-center gap-2 text-accent-600 dark:text-accent-500 font-medium hover:gap-3 transition-all">
                         Learn More <ArrowRight className="w-4 h-4" />
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </motion.div>
@@ -244,7 +248,7 @@ export const ServicesPage = () => {
       </section>
 
       {/* Specialized Services Section */}
-      <section ref={specializedRef} className="py-24 bg-slate-50 dark:bg-dark-card">
+      <section ref={specializedRef} className="py-12 md:py-16 lg:py-24 bg-slate-50 dark:bg-dark-card">
         <motion.div style={{ x: specializedX }}>
           <div className="container mx-auto px-6">
             <motion.div
@@ -257,7 +261,7 @@ export const ServicesPage = () => {
               <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
                 Specialized Services
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900 dark:text-white">
+              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
                 Tailored Expertise
               </h2>
             </motion.div>
@@ -288,7 +292,7 @@ export const ServicesPage = () => {
       </section>
 
       {/* Process Section */}
-      <section ref={processRef} className="py-24 bg-light-bg dark:bg-dark-bg">
+      <section ref={processRef} className="py-12 md:py-16 lg:py-24 bg-light-bg dark:bg-dark-bg">
         <motion.div style={{ x: processX }}>
           <div className="container mx-auto px-6">
             <motion.div
@@ -301,7 +305,7 @@ export const ServicesPage = () => {
               <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
                 Our Process
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900 dark:text-white">
+              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
                 How We Work With You
               </h2>
             </motion.div>
@@ -351,7 +355,7 @@ export const ServicesPage = () => {
               <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
                 Why Choose Us
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900 dark:text-white">
+              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
                 Unmatched Expertise, <br />
                 <span className="text-slate-500 dark:text-slate-400">Proven Results</span>
               </h2>
@@ -415,7 +419,7 @@ export const ServicesPage = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
               Ready to Get Started?
             </h2>
             <p className="text-xl text-accent-100 mb-8 max-w-2xl mx-auto">

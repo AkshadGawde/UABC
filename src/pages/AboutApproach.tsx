@@ -59,7 +59,7 @@ export const AboutApproach = () => {
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
+      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -70,11 +70,11 @@ export const AboutApproach = () => {
             {/* <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
               About Universal Actuaries and Benefit Consultants
             </div> */}
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-slate-900 dark:text-white">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
               Our 
               <span className="text-accent-600 dark:text-accent-500"> Approach</span>
             </h1>
-            <p className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
               What makes us different in delivering innovative solutions and client-focused strategies.
             </p>
           </motion.div>

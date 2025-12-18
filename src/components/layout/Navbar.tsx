@@ -170,17 +170,29 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
                 <div key={link.name} className="flex flex-col gap-1">
                   {link.dropdown ? (
                     <>
-                      <button
-                        onClick={() => setMobileDropdown(mobileDropdown === link.name ? null : link.name)}
-                        className={`text-left font-medium uppercase tracking-wide transition-colors flex items-center justify-between text-sm sm:text-base ${
-                          location.pathname === link.path || (link.dropdown && link.dropdown.some(item => location.pathname === item.path))
-                            ? 'text-accent-600 dark:text-accent-500' 
-                            : 'text-slate-700 dark:text-slate-300 hover:text-accent-600 dark:hover:text-accent-500'
-                        }`}
-                      >
-                        {link.name}
-                        <ChevronDown className={`w-4 h-4 transition-transform ${mobileDropdown === link.name ? 'rotate-180' : ''}`} />
-                      </button>
+                      <div className="flex items-center justify-between gap-2">
+                        <Link
+                          to={link.path}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={`text-left font-medium uppercase tracking-wide transition-colors flex-1 text-sm sm:text-base ${
+                            location.pathname === link.path || (link.dropdown && link.dropdown.some(item => location.pathname === item.path))
+                              ? 'text-accent-600 dark:text-accent-500' 
+                              : 'text-slate-700 dark:text-slate-300 hover:text-accent-600 dark:hover:text-accent-500'
+                          }`}
+                        >
+                          {link.name}
+                        </Link>
+                        <button
+                          onClick={() => setMobileDropdown(mobileDropdown === link.name ? null : link.name)}
+                          className={`p-1 transition-colors ${
+                            location.pathname === link.path || (link.dropdown && link.dropdown.some(item => location.pathname === item.path))
+                              ? 'text-accent-600 dark:text-accent-500' 
+                              : 'text-slate-700 dark:text-slate-300 hover:text-accent-600 dark:hover:text-accent-500'
+                          }`}
+                        >
+                          <ChevronDown className={`w-4 h-4 transition-transform ${mobileDropdown === link.name ? 'rotate-180' : ''}`} />
+                        </button>
+                      </div>
                       <AnimatePresence>
                         {mobileDropdown === link.name && (
                           <motion.div

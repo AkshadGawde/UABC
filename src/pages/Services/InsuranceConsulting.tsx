@@ -68,7 +68,7 @@ const InsuranceConsulting = () => {
       className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 font-sans text-slate-900 dark:text-slate-100"
     >
       {/* Hero Section */}
-      <section className="relative py-24 md:py-32 overflow-hidden">
+      <section className="relative py-12 md:py-20 lg:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-accent-50 via-white to-blue-50 dark:from-dark-bg dark:via-slate-950 dark:to-dark-bg"></div>
         <motion.div
           animate={{ rotate: 360 }}
@@ -84,7 +84,7 @@ const InsuranceConsulting = () => {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-center max-w-4xl mx-auto"
           >
-            <h1 className="text-5xl md:text-7xl font-extrabold mb-8 text-slate-900 dark:text-white tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-6 text-slate-900 dark:text-white tracking-tight leading-tight">
               Insurance Consulting <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-600 via-brand-600 to-accent-600">
                 Expertise & Innovation
@@ -95,7 +95,7 @@ const InsuranceConsulting = () => {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto mb-10"
+              className="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto mb-8"
             >
               Delivering tailored solutions for the insurance industry with a focus on strategy, product development, and financial reporting.
             </motion.p>
@@ -104,7 +104,7 @@ const InsuranceConsulting = () => {
       </section>
 
       {/* Sections */}
-      <section className="py-24">
+      <section className="py-12 md:py-16 lg:py-24">
         <div className="container mx-auto px-6">
           <div className="grid gap-16">
             {sections.map((section, index) => (
@@ -167,7 +167,7 @@ const InsuranceConsulting = () => {
             viewport={{ once: false, margin: "-50px" }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-8">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6">
               Ready to Elevate Your Insurance Strategy?
             </h2>
             <motion.button
