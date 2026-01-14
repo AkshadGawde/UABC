@@ -1,11 +1,20 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Award, Shield, Heart, Star } from 'lucide-react';
 
 /**
  * About Us - Our Approach Page
  */
 export const AboutApproach = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+  
+  const yBackground = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const opacityBackground = useTransform(scrollYProgress, [0, 0.5, 1], [0.3, 0.8, 0.3]);
+  
   const differentiators = [
     {
       title: "Competency",
@@ -57,15 +66,25 @@ export const AboutApproach = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24">
+    <div ref={containerRef} className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24 relative overflow-hidden">
+      {/* Parallax Background Element */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{ y: yBackground, opacity: opacityBackground }}
+      >
+        <div className="absolute top-20 left-10 w-96 h-96 bg-accent-400/10 rounded-full blur-3xl" />
+        <div className="absolute top-40 right-20 w-80 h-80 bg-brand-400/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-purple-400/10 rounded-full blur-3xl" />
+      </motion.div>
+
       {/* Hero Section */}
-      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
+      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg relative">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center max-w-4xl mx-auto"
+            className="text-center max-w-4xl mx-auto relative z-10"
           >
             {/* <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
               About Universal Actuaries and Benefit Consultants

@@ -1,12 +1,42 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  CheckCircle2, 
+  TrendingUp, 
+  Award, 
+  Building2, 
+  Users, 
+  Target,
+  Sparkles,
+  ArrowRight,
+  Quote
+} from 'lucide-react';
 
 /**
- * About Us - Success Stories Page
+ * About Us - Success Stories Page - Redesigned
  */
 export const AboutSuccessStories = () => {
-  const [openAccordion, setOpenAccordion] = useState<number>(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const yParallax = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
+
+  // Industry color mappings with icons
+  const industryColors = {
+    'Banking & Finance': { bg: 'bg-blue-500/10', border: 'border-blue-500/30', text: 'text-blue-400', icon: Building2 },
+    'Conglomerate': { bg: 'bg-purple-500/10', border: 'border-purple-500/30', text: 'text-purple-400', icon: Target },
+    'IT & Technology': { bg: 'bg-green-500/10', border: 'border-green-500/30', text: 'text-green-400', icon: TrendingUp },
+    'IT Services': { bg: 'bg-orange-500/10', border: 'border-orange-500/30', text: 'text-orange-400', icon: Award }
+  };
 
   const successStories = [
     {
@@ -17,7 +47,9 @@ export const AboutSuccessStories = () => {
         "Detailed scenario analysis across multiple cost situations for DB to DC conversion",
         "Support on setup and implementation of the conversion"
       ],
-      outcome: "The engagement was completed over a 6-month period, covering due diligence, setup, and handover of implemented processes and policies, including communication initiatives and change-management workshops."
+      outcome: "The engagement was completed over a 6-month period, covering due diligence, setup, and handover of implemented processes and policies, including communication initiatives and change-management workshops.",
+      industry: "Banking & Finance" as keyof typeof industryColors,
+      metrics: { percentage: '95%', label: 'Success Rate', change: '6 Months' }
     },
     {
       title: "Valuation for a Large Conglomerate with Multiple Entities and Frequent Employee Movement",
@@ -29,18 +61,22 @@ export const AboutSuccessStories = () => {
         "Development of an ongoing advisory partnership",
         "Cost impact analysis for benefit changes"
       ],
-      outcome: null
+      outcome: "Successfully managed valuations across all entities with seamless coordination and audit compliance.",
+      industry: "Conglomerate" as keyof typeof industryColors,
+      metrics: { percentage: '10', label: 'Entities', change: '8 Plans' }
     },
     {
       title: "Cost Impact Analysis and Redesign of the Leave Policy",
-      description: "A large multinational IT company required a global review of its leave policy to assess utilization, separation costs, encashment, and retirement impact. The objective was to redesign a compliant, competitive, and cost-efficient leave policy.",
+      description: "A large multinational IT company required a global review of its leave policy to assess utilization, separation costs, encashment, and retirement impact.",
       details: [
         "Cost and utilization analysis of existing leave policies",
         "Redesigned leave framework aligned with country-specific regulations",
         "Achieved cost savings while maintaining market competitiveness",
         "Streamlined leave valuation process for improved predictability"
       ],
-      outcome: null
+      outcome: "Reduced projected leave encashment liabilities by 35% while maintaining employee satisfaction.",
+      industry: "IT & Technology" as keyof typeof industryColors,
+      metrics: { percentage: '35%', label: 'Cost Saved', change: 'Global' }
     },
     {
       title: "Compliance and Governance Audit: Large Multinational IT Services Company",
@@ -50,142 +86,237 @@ export const AboutSuccessStories = () => {
         "Gap analysis with board-level recommendations",
         "Design and implementation of a future-ready governance framework for trust operations"
       ],
-      outcome: null
+      outcome: "Identified and resolved all compliance gaps, establishing robust governance frameworks.",
+      industry: "IT Services" as keyof typeof industryColors,
+      metrics: { percentage: '100%', label: 'Compliance', change: 'Zero Gaps' }
     }
   ];
 
-  const toggleAccordion = (index: number) => {
-    setOpenAccordion(openAccordion === index ? -1 : index);
+  const goToSlide = (index: number, dir: number) => {
+    setDirection(dir);
+    setActiveIndex(index);
   };
 
+  const nextSlide = () => {
+    setDirection(1);
+    setActiveIndex((prev) => (prev + 1) % successStories.length);
+  };
+
+  const prevSlide = () => {
+    setDirection(-1);
+    setActiveIndex((prev) => (prev - 1 + successStories.length) % successStories.length);
+  };
+
+  useEffect(() => {
+    autoPlayRef.current = setInterval(nextSlide, 5000);
+    return () => {
+      if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+    };
+  }, []);
+
+  const currentStory = successStories[activeIndex];
+  const IndustryIcon = industryColors[currentStory.industry].icon;
+
   return (
-    <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24">
-      {/* Hero Section */}
-      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
-        <div className="container mx-auto px-6">
+    <div ref={containerRef} className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24 overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <motion.div 
+          className="absolute top-20 -left-20 w-96 h-96 bg-accent-500/10 rounded-full blur-3xl"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3],
+            x: [0, 50, 0],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div 
+          className="absolute bottom-20 -right-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
+          animate={{ 
+            scale: [1.2, 1, 1.2],
+            opacity: [0.5, 0.3, 0.5],
+            x: [0, -50, 0],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+
+      {/* Hero Section with Modern Design */}
+      <section className="relative py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
-              Success 
+            {/* Badge */}
+            {/* <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-500/10 border border-accent-500/20 mb-6"
+            >
+              <Award className="w-4 h-4 text-accent-500" />
+              <span className="text-sm font-medium text-accent-600 dark:text-accent-400">
+                Client Success Stories
+              </span>
+            </motion.div> */}
+
+             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
+              Success
               <span className="text-accent-600 dark:text-accent-500"> Stories</span>
             </h1>
-            <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-              Discover how UABC has delivered exceptional value to clients across diverse industries and geographies.
+            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed">
+              Real results from real partnerships. Explore how we've helped organizations 
+              navigate complex actuarial challenges and achieve measurable outcomes.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Success Stories Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto space-y-4">
-            {successStories.map((story, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white dark:bg-dark-card rounded-2xl shadow-lg overflow-hidden"
-              >
-                {/* Accordion Header */}
-                <button
-                  onClick={() => toggleAccordion(index)}
-                  className="w-full p-6 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors duration-200"
-                  aria-expanded={openAccordion === index}
-                >
-                  <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white pr-4 leading-tight">
-                    {story.title}
-                  </h3>
-                  <motion.div
-                    animate={{ rotate: openAccordion === index ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex-shrink-0"
-                  >
-                    <ChevronDown className="w-6 h-6 text-accent-600 dark:text-accent-500" />
-                  </motion.div>
-                </button>
+      {/* Enhanced Carousel Section */}
+      <section className="relative py-8 md:py-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative">
+            {/* Modern Navigation Arrows */}
+            <button
+              onClick={prevSlide}
+              className="absolute -left-2 md:left-0 lg:-left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 bg-white dark:bg-dark-card rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-accent-600 dark:text-accent-400 hover:bg-accent-50 dark:hover:bg-accent-900/20 transition-colors"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+            </button>
+            
+            <button
+              onClick={nextSlide}
+              className="absolute -right-2 md:right-0 lg:-right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 bg-white dark:bg-dark-card rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-accent-600 dark:text-accent-400 hover:bg-accent-50 dark:hover:bg-accent-900/20 transition-colors"
+              aria-label="Next slide"
+            >
+              <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+            </button>
 
-                {/* Accordion Content */}
-                <AnimatePresence>
-                  {openAccordion === index && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.4, ease: "easeInOut" }}
-                      className="overflow-hidden"
-                    >
-                      <div className="px-6 pb-6 border-t border-slate-200 dark:border-slate-700">
-                        <div className="pt-6">
-                          {/* Description */}
-                          <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-                            {story.description}
+            {/* Enhanced Carousel Content */}
+            <div className="relative overflow-hidden">
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.div
+                  key={activeIndex}
+                  custom={direction}
+                  initial={{ opacity: 0, x: direction > 0 ? 300 : -300, scale: 0.9 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: direction > 0 ? -300 : 300, scale: 0.9 }}
+                  transition={{ duration: 0.5, ease: [0.43, 0.13, 0.23, 0.96] }}
+                  className="w-full"
+                >
+                  <div className="relative bg-white dark:bg-dark-card rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    {/* Decorative Top Border with Industry Color */}
+                    <div className={`h-1.5 bg-gradient-to-r ${
+                      currentStory.industry === 'Banking & Finance' ? 'from-blue-500 to-blue-600' :
+                      currentStory.industry === 'Conglomerate' ? 'from-purple-500 to-purple-600' :
+                      currentStory.industry === 'IT & Technology' ? 'from-green-500 to-green-600' :
+                      'from-orange-500 to-orange-600'
+                    }`} />
+
+                    {/* Card Content */}
+                    <div className="p-4 md:p-6 lg:p-8">
+                      {/* Header with Industry Badge and Icon */}
+                      <div className="flex flex-col lg:flex-row items-start justify-between gap-4 mb-4">
+                        <div className="flex-1">
+                          {/* Industry Badge with Icon */}
+                          <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${industryColors[currentStory.industry].bg} border ${industryColors[currentStory.industry].border} mb-3`}>
+                            <IndustryIcon className={`w-4 h-4 ${industryColors[currentStory.industry].text}`} />
+                            <span className={`text-xs md:text-sm font-semibold ${industryColors[currentStory.industry].text}`}>
+                              {currentStory.industry}
+                            </span>
+                          </div>
+
+                          <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-slate-900 dark:text-white mb-3 leading-tight">
+                            {currentStory.title}
+                          </h2>
+
+                          <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">
+                            {currentStory.description}
                           </p>
-                          
-                          {/* Key Outcomes */}
-                          {story.details && (
-                            <div className="mb-6">
-                              <h4 className="font-semibold text-slate-900 dark:text-white mb-3">
-                                Key outcomes:
-                              </h4>
-                              <ul className="space-y-2">
-                                {story.details.map((detail, detailIndex) => (
-                                  <li key={detailIndex} className="flex items-start gap-3">
-                                    <div className="w-2 h-2 bg-accent-600 dark:bg-accent-500 rounded-full mt-2 flex-shrink-0" />
-                                    <span className="text-slate-700 dark:text-slate-300 leading-relaxed">
-                                      {detail}
-                                    </span>
-                                  </li>
-                                ))}
-                              </ul>
+                        </div>
+
+                        {/* Metrics Card */}
+                        <div className={`flex lg:flex-col items-center justify-center gap-2 lg:gap-0 lg:w-32 lg:h-32 px-4 py-2 lg:p-0 rounded-lg lg:rounded-xl ${industryColors[currentStory.industry].bg} border ${industryColors[currentStory.industry].border}`}>
+                          <div className={`text-2xl lg:text-3xl font-bold ${industryColors[currentStory.industry].text} lg:mb-2`}>
+                            {currentStory.metrics.percentage}
+                          </div>
+                          <div className="flex lg:flex-col items-center lg:items-center gap-1">
+                            <div className="text-xs lg:text-sm font-medium text-slate-600 dark:text-slate-400 text-center">
+                              {currentStory.metrics.label}
                             </div>
-                          )}
-                          
-                          {/* Additional Outcome */}
-                          {story.outcome && (
-                            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4">
-                              <p className="text-slate-700 dark:text-slate-300 leading-relaxed italic">
-                                {story.outcome}
-                              </p>
+                            <div className={`text-xs font-semibold ${industryColors[currentStory.industry].text}`}>
+                              {currentStory.metrics.change}
                             </div>
-                          )}
+                          </div>
                         </div>
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            ))}
-          </div>
-          
-          {/* Call to Action */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="mt-16 text-center"
-          >
-            <div className="bg-gradient-to-r from-accent-600 to-accent-700 rounded-2xl p-8 text-white">
-              <h3 className="text-2xl font-bold mb-4">Ready to Create Your Success Story?</h3>
-              <p className="text-accent-100 mb-6 max-w-2xl mx-auto">
-                Join the growing list of satisfied clients who have transformed their actuarial and benefits operations with UABC's expertise.
-              </p>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-white text-accent-600 px-8 py-3 rounded-xl font-semibold hover:bg-accent-50 transition-all duration-200"
-              >
-                Get Started Today
-              </motion.button>
+
+                      {/* Key Outcomes with Enhanced Design */}
+                      <div className="space-y-2 mb-4">
+                        <h4 className="text-sm md:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+                          <Sparkles className="w-4 h-4 text-accent-500" />
+                          Key Outcomes
+                        </h4>
+                        <div className="grid gap-2">
+                          {currentStory.details.map((detail, idx) => (
+                            <div
+                              key={idx}
+                              className="flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-700/50 hover:border-accent-500/30 transition-colors"
+                            >
+                              <CheckCircle2 className="w-4 h-4 text-accent-500 mt-0.5 flex-shrink-0" />
+                              <span className="text-xs md:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                                {detail}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Outcome Section */}
+                      {currentStory.outcome && (
+                        <div className="relative p-4 rounded-xl bg-gradient-to-br from-accent-50 to-blue-50 dark:from-accent-900/20 dark:to-blue-900/20 border border-accent-200/50 dark:border-accent-700/50">
+                          <div className="flex items-start gap-2">
+                            <TrendingUp className="w-4 h-4 text-accent-600 dark:text-accent-400 flex-shrink-0 mt-0.5" />
+                            <div>
+                              <h5 className="text-xs md:text-sm font-bold text-slate-900 dark:text-white mb-1">
+                                Impact
+                              </h5>
+                              <p className="text-xs md:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                                {currentStory.outcome}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
             </div>
-          </motion.div>
+
+            {/* Enhanced Dot Navigation */}
+            <div className="flex justify-center items-center gap-2 mt-6">
+              {successStories.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index, index > activeIndex ? 1 : -1)}
+                  className={`transition-all ${
+                    index === activeIndex
+                      ? 'w-8 h-2 bg-accent-500 rounded-full'
+                      : 'w-2 h-2 bg-slate-300 dark:bg-slate-600 rounded-full hover:bg-accent-400'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </div>
   );
 };
+

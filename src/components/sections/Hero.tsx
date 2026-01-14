@@ -208,13 +208,13 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-slate-900 dark:text-white"
+            className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-slate-900 dark:text-white"
           >
             Offering a wide range of <br />
             
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-600 to-brand-600 dark:from-accent-500 dark:to-brand-400">Actuarial services</span> <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-600 to-brand-600 dark:from-accent-500 dark:to-brand-400">Actuarial &amp; Benefit </span>
             <span className="text-brand-950 dark:text-slate-200">
-              &amp; Benefit Services
+               Services
             </span>
           </motion.h1>
           
@@ -257,9 +257,6 @@ export const Hero = () => {
             <a href="/services" className="group px-4 sm:px-5 py-2 sm:py-2.5 bg-slate-900 dark:bg-white text-white dark:text-dark-bg font-bold rounded-md flex items-center justify-center sm:justify-start gap-2 hover:bg-accent-600 dark:hover:bg-slate-200 transition-colors shadow-lg hover:shadow-accent-500/25 text-xs sm:text-sm">
               Explore Services
               <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-white dark:text-accent-600 group-hover:translate-x-1 transition-transform" />
-            </a>
-            <a href="#about" className="px-4 sm:px-5 py-2 sm:py-2.5 border border-slate-300 dark:border-white/20 text-slate-900 dark:text-white font-medium rounded-md hover:bg-slate-100 dark:hover:bg-white/5 hover:border-accent-500/50 transition-colors text-center sm:text-left text-xs sm:text-sm">
-              Our Methodology
             </a>
           </motion.div>
         </motion.div>

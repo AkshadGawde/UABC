@@ -99,35 +99,83 @@ export const Insights = () => {
       setLoading(true);
       setError(null);
       
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      console.log('🔍 API Configuration:', {
+        apiUrl,
+        endpoint: `${apiUrl}/insights`,
+        env: import.meta.env.MODE
+      });
+      
+      console.log('📡 Fetching insights from API...');
+      
       // Fetch published insights
       const response = await insightsService.getPublicInsights({
         limit: 50,
         sort: 'newest'
       });
       
+      console.log('✅ API Response received:', {
+        hasData: !!response,
+        hasInsights: !!response?.insights,
+        insightCount: response?.insights?.length || 0
+      });
+      
+      if (!response || !response.insights) {
+        console.error('❌ Invalid response format:', response);
+        setError('Backend returned invalid data format. Please check server logs.');
+        setInsights([]);
+        setCategories(['All']);
+        setSelectedCategory('All');
+        setLoading(false);
+        return;
+      }
+      
       const publishedInsights = response.insights.filter(insight => insight.published);
+      console.log(`📊 Published insights: ${publishedInsights.length} of ${response.insights.length} total`);
+      
+      if (publishedInsights.length === 0) {
+        console.warn('⚠️ No published insights found');
+        setError('No published insights available. Add some insights in the admin panel.');
+      }
+      
       setInsights(publishedInsights);
       
       // Extract unique categories from insights
-      const uniqueCategories = [...new Set(publishedInsights.map(insight => insight.category))];
+      const uniqueCategories = ['All', ...new Set(publishedInsights.map(insight => insight.category))];
       setCategories(uniqueCategories);
       
-      // Set first category as default if no category selected
+      // Set 'All' as default category
       if (!selectedCategory || selectedCategory === 'All') {
-        setSelectedCategory(uniqueCategories[0] || '');
+        setSelectedCategory('All');
       }
       
-    } catch (error) {
-      console.error('Failed to load insights:', error);
-      setError('Failed to load insights. Please try again later.');
+    } catch (error: any) {
+      console.error('❌ Failed to load insights:', error);
+      
+      // Provide specific error messages
+      let errorMessage = 'Failed to load insights. ';
+      
+      if (error.name === 'AbortError') {
+        errorMessage += 'Request timeout - Backend took too long to respond. It may be waking up (Render cold start).';
+      } else if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError')) {
+        errorMessage += 'Cannot connect to backend. Check if backend is running and CORS is configured.';
+      } else if (error.message) {
+        errorMessage += error.message;
+      } else {
+        errorMessage += 'Unknown error occurred. Check browser console for details.';
+      }
+      
+      setError(errorMessage);
       setInsights([]);
+      setCategories(['All']);
+      setSelectedCategory('All');
     } finally {
       setLoading(false);
     }
   };
 
   const filteredInsights = insights.filter(insight => {
-    const matchesCategory = !selectedCategory || insight.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'All' || insight.category === selectedCategory;
     
     // Search filtering
     const matchesSearch = !searchQuery || 
@@ -180,8 +228,15 @@ export const Insights = () => {
   const handleInsightClick = (insight: Insight) => {
     // For PDF insights, open the PDF directly
     if (insight.pdfFilename) {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-      window.open(`${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`, '_blank');
+      // Use development URL in dev mode
+      const isDev = import.meta.env.DEV;
+      const apiUrl = isDev 
+        ? (import.meta.env.VITE_API_URL_DEV || 'http://localhost:5000/api')
+        : import.meta.env.VITE_API_URL;
+      
+      const pdfUrl = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
+      console.log('Opening PDF:', pdfUrl);
+      window.open(pdfUrl, '_blank');
     } else {
       // For regular insights, navigate to detail page (implement later)
       console.log('Navigate to insight detail:', insight.id);
@@ -191,7 +246,7 @@ export const Insights = () => {
   const clearAllFilters = () => {
     setSearchQuery('');
     setDateRange({ start: '', end: '' });
-    setSelectedCategory(categories[0] || '');
+    setSelectedCategory('All');
   };
 
   if (loading) {
@@ -206,18 +261,41 @@ export const Insights = () => {
   }
 
   if (error) {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
     return (
       <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto px-6">
-          <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-6 border border-red-200 dark:border-red-800">
-            <h2 className="text-xl font-bold text-red-800 dark:text-red-200 mb-2">Error Loading Insights</h2>
-            <p className="text-red-600 dark:text-red-300 mb-4">{error}</p>
-            <button 
-              onClick={loadInsights}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
-              Try Again
-            </button>
+        <div className="text-center max-w-2xl mx-auto px-6">
+          <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-8 border border-red-200 dark:border-red-800">
+            <h2 className="text-xl font-bold text-red-800 dark:text-red-200 mb-3">Error Loading Insights</h2>
+            <p className="text-red-600 dark:text-red-300 mb-4 text-sm">{error}</p>
+            
+            <div className="mb-4 p-4 bg-white dark:bg-slate-800 rounded border border-red-300 dark:border-red-700">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mb-2 font-mono">
+                <strong>API URL:</strong> {apiUrl}
+              </p>
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-mono">
+                <strong>Endpoint:</strong> {apiUrl}/insights
+              </p>
+            </div>
+            
+            <div className="flex gap-3 justify-center">
+              <button 
+                onClick={loadInsights}
+                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Try Again
+              </button>
+              <button 
+                onClick={() => window.open(`${apiUrl}/health`, '_blank')}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Test Backend
+              </button>
+            </div>
+            
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-4">
+              Check browser console (F12) for detailed error logs
+            </p>
           </div>
         </div>
       </div>

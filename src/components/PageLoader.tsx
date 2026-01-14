@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import gsap from 'gsap';
 
 /**
- * Page Loader Component
- * Shows a creative loading animation on initial page load
+ * Enhanced Page Loader Component
+ * Simple circular loading spinner with logo in center
  */
 export const PageLoader = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading time
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, []);
@@ -25,86 +23,49 @@ export const PageLoader = () => {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
-          className="fixed inset-0 z-[99999] flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900"
+          className="fixed inset-0 z-[99999] flex items-center justify-center bg-white dark:bg-slate-900"
         >
-          <div className="relative">
-            {/* Animated logo or company name */}
+          <div className="relative flex items-center justify-center">
+            {/* Rotating outer circle */}
             <motion.div
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
-              className="text-center"
-            >
-              <motion.h1
-                className="text-4xl md:text-6xl font-bold text-white mb-8"
-                initial={{ y: 20 }}
-                animate={{ y: 0 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-              >
-                UABC
-              </motion.h1>
-              
-              {/* Loading spinner */}
-              <div className="flex justify-center items-center gap-2">
-                <motion.div
-                  className="w-3 h-3 bg-blue-400 rounded-full"
-                  animate={{
-                    scale: [1, 1.5, 1],
-                    opacity: [1, 0.5, 1]
-                  }}
-                  transition={{
-                    duration: 1,
-                    repeat: Infinity,
-                    delay: 0
-                  }}
-                />
-                <motion.div
-                  className="w-3 h-3 bg-purple-400 rounded-full"
-                  animate={{
-                    scale: [1, 1.5, 1],
-                    opacity: [1, 0.5, 1]
-                  }}
-                  transition={{
-                    duration: 1,
-                    repeat: Infinity,
-                    delay: 0.2
-                  }}
-                />
-                <motion.div
-                  className="w-3 h-3 bg-pink-400 rounded-full"
-                  animate={{
-                    scale: [1, 1.5, 1],
-                    opacity: [1, 0.5, 1]
-                  }}
-                  transition={{
-                    duration: 1,
-                    repeat: Infinity,
-                    delay: 0.4
-                  }}
-                />
-              </div>
-            </motion.div>
+              className="absolute w-32 h-32 rounded-full border-4 border-transparent border-t-accent-600 border-r-accent-500"
+              animate={{ rotate: 360 }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+            />
 
-            {/* Floating particles */}
-            {[...Array(20)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-2 h-2 bg-white/20 rounded-full"
-                style={{
-                  left: `${Math.random() * 400 - 200}px`,
-                  top: `${Math.random() * 400 - 200}px`,
-                }}
-                animate={{
-                  y: [0, -30, 0],
-                  opacity: [0, 1, 0],
-                }}
-                transition={{
-                  duration: 2 + Math.random() * 2,
-                  repeat: Infinity,
-                  delay: Math.random() * 2,
-                }}
+            {/* Rotating inner circle - opposite direction */}
+            <motion.div
+              className="absolute w-24 h-24 rounded-full border-4 border-transparent border-b-blue-500 border-l-purple-500"
+              animate={{ rotate: -360 }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+            />
+
+            {/* Logo in center */}
+            <motion.div
+              className="relative z-10"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{
+                duration: 0.4,
+                delay: 0.1,
+                type: "spring",
+                stiffness: 200
+              }}
+            >
+              <img
+                src="/UABC Logo.png"
+                alt="UABC"
+                className="w-20 h-20 object-contain"
               />
-            ))}
+            </motion.div>
           </div>
         </motion.div>
       )}

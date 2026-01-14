@@ -14,19 +14,42 @@ const insightSchema = new mongoose.Schema(
       trim: true,
       maxlength: [500, "Excerpt cannot exceed 500 characters"],
     },
-    // PDF storage - using base64 for simplicity
+    // PDF storage - using base64 for simplicity (optional - only for PDF insights)
     pdfData: {
       type: String, // Base64 encoded PDF
-      required: [true, "PDF data is required"],
+      required: false,
     },
     pdfFilename: {
       type: String,
-      required: [true, "PDF filename is required"],
+      required: false,
       trim: true,
     },
     pdfSize: {
       type: Number, // File size in bytes
-      required: true,
+      required: false,
+    },
+    // Regular insight fields (optional - only for text insights)
+    content: {
+      type: String,
+      trim: true,
+    },
+    author: {
+      type: String,
+      default: "UABC Team",
+      trim: true,
+    },
+    category: {
+      type: String,
+      default: "General",
+      trim: true,
+    },
+    tags: {
+      type: [String],
+      default: [],
+    },
+    readTime: {
+      type: Number, // in minutes
+      default: 5,
     },
     // Admin sets publication date
     publishDate: {

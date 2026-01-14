@@ -11,12 +11,12 @@ export const Footer = () => {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12 mb-8 sm:mb-12">
            <div className="col-span-1">
-             <div className="flex items-center gap-3 mb-4 sm:mb-6 select-none grayscale opacity-80 hover:opacity-100 hover:grayscale-0 transition-all">
-                {/* Logo for Footer */}
+             <div className="flex items-center gap-3 mb-4 sm:mb-6 select-none">
+                {/* Logo for Footer - Enlarged without effects */}
                 <img 
                   src="/UABC Logo.png"
                   alt="UABC Logo"
-                  className="h-6 sm:h-8 object-contain"
+                  className="h-12 sm:h-16 object-contain"
                 />
              </div>
              <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">

@@ -351,6 +351,17 @@ html {
   }
 }
 
+/* Powder Blue Color Utilities */
+.bg-powder-50 { background-color: #f0f9ff; }
+.bg-powder-100 { background-color: #e0f2fe; }
+.bg-powder-200 { background-color: #bae6fd; }
+.bg-powder-300 { background-color: #7dd3fc; }
+.bg-powder-400 { background-color: #38bdf8; }
+.bg-powder-500 { background-color: #0ea5e9; }
+.text-powder-500 { color: #0ea5e9; }
+.text-powder-600 { color: #0284c7; }
+.border-powder-300 { border-color: #7dd3fc; }
+
 /* Motion Preferences */
 @media (prefers-reduced-motion: reduce) {
   * {

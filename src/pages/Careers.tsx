@@ -28,8 +28,8 @@ export const Careers = () => {
   const [selectedLocation, setSelectedLocation] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const departments = ['All', 'Actuarial', 'Data Science', 'Consulting', 'Risk Management', 'Technology'];
-  const locations = ['All', 'New York', 'London', 'Singapore', 'Toronto', 'Remote'];
+  const departments = ['All', 'Actuarial', 'Data Science', 'Consulting', 'Risk Management', 'Technology', 'Pharma', 'IT', 'Finance'];
+  const locations = ['All', 'New York', 'London', 'Singapore', 'Toronto', 'Remote', 'Mumbai', 'Bangalore'];
 
   const jobOpenings = [
     {
@@ -82,6 +82,42 @@ export const Careers = () => {
     },
     {
       id: 5,
+      title: "Pharma Actuarial Analyst",
+      department: "Pharma",
+      location: "Mumbai",
+      type: "Full-time",
+      experience: "2-4 years",
+      salary: "₹12L - ₹18L",
+      description: "Support actuarial analysis for pharmaceutical employee benefits and insurance programs.",
+      requirements: ["Actuarial exam progress", "Healthcare experience", "Strong analytical skills"],
+      featured: false
+    },
+    {
+      id: 6,
+      title: "IT Risk Analyst",
+      department: "IT",
+      location: "Bangalore",
+      type: "Full-time",
+      experience: "3-5 years",
+      salary: "₹15L - ₹22L",
+      description: "Analyze and mitigate technology-related risks for enterprise clients.",
+      requirements: ["CISA/CISM preferred", "IT audit experience", "Cybersecurity knowledge"],
+      featured: false
+    },
+    {
+      id: 7,
+      title: "Finance Actuary",
+      department: "Finance",
+      location: "London",
+      type: "Full-time",
+      experience: "4-7 years",
+      salary: "£70k - £95k",
+      description: "Provide actuarial expertise for financial reporting and capital management.",
+      requirements: ["FSA/FFA qualified", "IFRS 17 experience", "Financial modeling"],
+      featured: true
+    },
+    {
+      id: 8,
       title: "Junior Actuarial Analyst",
       department: "Actuarial",
       location: "Remote",
@@ -90,18 +126,6 @@ export const Careers = () => {
       salary: "$65k - $80k",
       description: "Entry-level position supporting actuarial analysis and reporting functions.",
       requirements: ["Actuarial degree", "Exam progress", "Strong analytical skills"],
-      featured: false
-    },
-    {
-      id: 6,
-      title: "Technology Product Manager",
-      department: "Technology",
-      location: "New York",
-      type: "Full-time",
-      experience: "4-7 years",
-      salary: "$110k - $150k",
-      description: "Lead product development for our actuarial technology platform.",
-      requirements: ["Product management experience", "Technical background", "Agile methodology"],
       featured: false
     }
   ];
@@ -329,23 +353,23 @@ export const Careers = () => {
       {/* Job Openings */}
       <section className="py-24">
         <div className="container mx-auto px-6">
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
             <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
               Open Positions
             </div>
             <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
-              Current Opportunities
+              Join Our Team
             </h2>
-          </motion.div>
+          </motion.div> */}
 
           {/* Filters */}
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between mb-12">
+          {/* <div className="flex flex-col lg:flex-row gap-6 items-center justify-between mb-12">
             <div className="relative flex-grow max-w-md">
               <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
               <input
@@ -376,10 +400,10 @@ export const Careers = () => {
                 ))}
               </select>
             </div>
-          </div>
+          </div> */}
 
           {/* Job Listings */}
-          <div className="space-y-6">
+          {/* <div className="space-y-6">
             {filteredJobs.map((job, index) => (
               <motion.div
                 key={job.id}
@@ -421,14 +445,18 @@ export const Careers = () => {
                     </div>
                   </div>
                   <div className="lg:text-right">
-                    <button className="px-6 py-3 bg-accent-600 text-white rounded-lg font-bold hover:bg-accent-700 transition-colors flex items-center gap-2">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-6 py-3 bg-accent-600 text-white rounded-lg font-bold hover:bg-accent-700 transition-colors flex items-center gap-2"
+                    >
                       Apply Now <ArrowRight className="w-4 h-4" />
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
               </motion.div>
             ))}
-          </div>
+          </div> */}
 
           {filteredJobs.length === 0 && (
             <div className="text-center py-12">
@@ -449,19 +477,19 @@ export const Careers = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
-              Don't See the Right Role?
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+              Interested to join us ?
             </h2>
             <p className="text-xl text-accent-100 mb-8 max-w-2xl mx-auto">
               We're always looking for exceptional talent. Send us your resume and let's explore opportunities together.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/contact" className="inline-block px-8 py-4 bg-white text-accent-600 rounded-md font-bold text-lg hover:bg-accent-50 transition-colors shadow-lg text-center">
+              <Link to="/contact" className="inline-block px-8 py-4 bg-white text-accent-600 rounded-lg font-bold text-lg hover:bg-accent-50 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-1 text-center">
                 Submit Your Resume
               </Link>
-              <Link to="/contact" className="inline-block px-8 py-4 border-2 border-white text-white rounded-md font-bold text-lg hover:bg-white hover:text-accent-600 transition-colors text-center">
-                Contact HR Team
-              </Link>
+              <a href="mailto:careers@uabc.com" className="inline-block px-8 py-4 border-2 border-white text-white rounded-lg font-bold text-lg hover:bg-white hover:text-accent-600 transition-colors text-center">
+                Email HR Team
+              </a>
             </div>
           </motion.div>
         </div>

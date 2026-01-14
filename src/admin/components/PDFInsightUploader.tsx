@@ -107,12 +107,24 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
         formData.append('featuredImage', featuredImage.trim());
       }
 
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      // Use development URL in dev mode, production in production
+      const isDev = import.meta.env.DEV;
+      const apiUrl = isDev 
+        ? (import.meta.env.VITE_API_URL_DEV || 'http://localhost:5000/api')
+        : import.meta.env.VITE_API_URL;
+      
+      console.log('Uploading to:', `${apiUrl}/pdf-insights/upload`);
+      
       const token = authService.getToken();
 
       if (!token) {
         throw new Error('No authentication token found. Please log in again.');
       }
+      
+      console.log('Starting PDF upload...');
+      console.log('- File:', pdfFile.name, `(${formatFileSize(pdfFile.size)})`);
+      console.log('- Has image:', imageFile ? imageFile.name : featuredImage || 'default');
+      console.log('- Auth token:', token.substring(0, 20) + '...');
       
       const response = await fetch(`${apiUrl}/pdf-insights/upload`, {
         method: 'POST',
@@ -123,9 +135,12 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
         body: formData,
       });
 
+      console.log('Upload response status:', response.status, response.statusText);
+
       let result;
       try {
         result = await response.json();
+        console.log('Upload result:', result);
       } catch (jsonError) {
         // If JSON parsing fails, get the raw text to see what the server returned
         const textResponse = await response.text();
@@ -137,6 +152,8 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
         throw new Error(result.message || `Upload failed with status ${response.status}`);
       }
 
+      console.log('✅ PDF uploaded successfully:', result.data?.title);
+
       // Reset form
       setPdfFile(null);
       setFeaturedImage('');
@@ -147,7 +164,7 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
 
       onUploadSuccess?.(result.data);
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error('❌ Upload error:', error);
       onUploadError?.(error instanceof Error ? error.message : 'Upload failed');
     } finally {
       setLoading(false);

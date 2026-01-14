@@ -10,7 +10,15 @@ import {
   Star,
   Trophy,
   Target,
-  Zap
+  Zap,
+  Activity,
+  Landmark,
+  Factory,
+  Stethoscope,
+  GraduationCap,
+  Plane,
+  ShoppingBag,
+  Cpu
 } from 'lucide-react';
 
 /**
@@ -18,20 +26,29 @@ import {
  */
 export const Partners = () => {
   const partners = [
-    { name: "Global Trust Corp", icon: Building2 },
-    { name: "Venture Partners", icon: Briefcase },
-    { name: "International Group", icon: Globe2 },
-    { name: "Growth Capital", icon: TrendingUp },
-    { name: "Security Alliance", icon: Shield },
-    { name: "Prime Investments", icon: Target },
+    { name: "Pharmaceuticals", icon: Stethoscope },
+    { name: "Information Technology", icon: Cpu },
+    { name: "Financial Services", icon: Landmark },
+    { name: "Manufacturing", icon: Factory },
+    { name: "Healthcare", icon: Activity },
+    { name: "Education", icon: GraduationCap },
+    { name: "Retail", icon: ShoppingBag },
+    { name: "Aviation & Aerospace", icon: Plane },
+    { name: "Insurance", icon: Shield },
+    { name: "Investment Banking", icon: TrendingUp },
+    { name: "Corporate Services", icon: Building2 },
+    { name: "Professional Services", icon: Briefcase },
   ];
 
   const awards = [
-    { name: "Best Consulting Firm 2024", icon: Award, color: "text-yellow-500" },
-    { name: "Industry Excellence Award", icon: Trophy, color: "text-blue-500" },
-    { name: "Top Rated Service", icon: Star, color: "text-purple-500" },
-    { name: "Innovation Leader", icon: Zap, color: "text-orange-500" },
-    { name: "Client Choice Award", icon: Target, color: "text-green-500" },
+    { name: "Top Actuarial Firm 2024", icon: Award, color: "text-yellow-500" },
+    { name: "Employee Benefits Excellence", icon: Trophy, color: "text-blue-500" },
+    { name: "Retirement Planning Leader", icon: Star, color: "text-purple-500" },
+    { name: "Risk Management Innovation", icon: Zap, color: "text-orange-500" },
+    { name: "Client Trust Award", icon: Target, color: "text-green-500" },
+    { name: "Pension Consulting Expert", icon: Shield, color: "text-indigo-500" },
+    { name: "Insurance Advisory Excellence", icon: Building2, color: "text-cyan-500" },
+    { name: "Healthcare Benefits Specialist", icon: Activity, color: "text-red-500" },
   ];
 
   return (
@@ -66,12 +83,11 @@ export const Partners = () => {
          
          <div className="flex overflow-hidden">
             <motion.div 
-              initial={{ x: 0 }}
-              animate={{ x: "-50%" }}
-              transition={{ duration: 40, ease: "linear", repeat: Infinity }}
+              animate={{ x: ["0%", "-50%"] }}
+              transition={{ duration: 60, ease: "linear", repeat: Infinity, repeatType: "loop" }}
               className="flex flex-shrink-0 gap-4 sm:gap-8 lg:gap-12 items-center px-4 sm:px-8"
             >
-              {[...partners, ...partners, ...partners].map((partner, i) => (
+              {[...partners, ...partners].map((partner, i) => (
                 <div key={i} className="flex items-center gap-2 sm:gap-3 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0 cursor-pointer group/item shrink-0">
                    <div className="p-2 sm:p-3 bg-white dark:bg-white/5 rounded-lg sm:rounded-xl border border-slate-200 dark:border-white/10 shadow-sm group-hover/item:scale-110 transition-transform">
                       <partner.icon className="w-4 h-4 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-brand-600 dark:text-brand-400 group-hover/item:text-accent-500 transition-colors" />
@@ -90,12 +106,11 @@ export const Partners = () => {
 
          <div className="flex overflow-hidden">
             <motion.div 
-              initial={{ x: "-50%" }}
-              animate={{ x: 0 }}
-              transition={{ duration: 35, ease: "linear", repeat: Infinity }}
+              animate={{ x: ["-50%", "0%"] }}
+              transition={{ duration: 50, ease: "linear", repeat: Infinity, repeatType: "loop" }}
               className="flex flex-shrink-0 gap-4 sm:gap-8 lg:gap-12 items-center px-4 sm:px-8"
             >
-              {[...awards, ...awards, ...awards].map((award, i) => (
+              {[...awards, ...awards].map((award, i) => (
                 <div key={i} className="flex items-center gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-white dark:bg-white/5 rounded-full border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-md hover:border-accent-500/30 transition-all cursor-default text-xs sm:text-xs shrink-0">
                    <award.icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${award.color}`} />
                    <span className="text-xs sm:text-xs font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap">{award.name}</span>

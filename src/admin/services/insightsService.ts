@@ -1,6 +1,15 @@
 import { authService } from './authService';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Use dev URL in development, production URL in production
+const API_URL = import.meta.env.MODE === 'development' 
+  ? (import.meta.env.VITE_API_URL_DEV || 'http://localhost:5000/api')
+  : (import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api');
+
+console.log('🔧 Insights Service Config:', {
+  mode: import.meta.env.MODE,
+  apiUrl: API_URL,
+  isDev: import.meta.env.MODE === 'development'
+});
 
 export interface Insight {
   _id?: string;
@@ -74,7 +83,26 @@ class InsightsService {
       if (filters.search) params.append('search', filters.search);
       if (filters.sort) params.append('sort', filters.sort);
       
-      const response = await fetch(`${API_URL}/insights?${params}`);
+      const url = `${API_URL}/insights?${params}`;
+      console.log('Fetching from:', url);
+      
+      // Add timeout to fetch request
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+      
+      const response = await fetch(url, { 
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
       
       if (!data.success) {
@@ -82,8 +110,14 @@ class InsightsService {
       }
       
       return data.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching public insights:', error);
+      
+      // Check if error is due to abort (timeout)
+      if (error.name === 'AbortError') {
+        console.error('Request timeout - API took too long to respond');
+      }
+      
       return {
         insights: [],
         pagination: {

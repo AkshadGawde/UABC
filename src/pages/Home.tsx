@@ -5,6 +5,7 @@ import { Services } from '../components/sections/Services';
 import { Stats } from '../components/sections/Stats';
 import { Partners } from '../components/sections/Partners';
 import { Contact } from '../components/sections/Contact';
+import { TrustedLeaderCarousel } from '../components/sections/TrustedLeaderCarousel';
 import { ScrollReveal } from '../components/PageTransition';
 
 /**
@@ -15,6 +16,7 @@ export const Home = () => {
     <>
       <Hero />
       <About />
+      <TrustedLeaderCarousel />
       <Services />
       <Stats />
       <Partners />

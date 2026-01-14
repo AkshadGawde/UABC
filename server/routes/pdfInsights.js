@@ -164,16 +164,28 @@ router.post(
   insightUploadValidation,
   async (req, res) => {
     try {
+      console.log("📄 PDF Upload Request Started");
+      console.log("- User:", req.user?.username, "Role:", req.user?.role);
       console.log(
-        "PDF Upload Request - User:",
-        req.user?.username,
-        "Role:",
-        req.user?.role
+        "- Files received:",
+        req.files ? Object.keys(req.files) : "none"
       );
+
+      if (req.files) {
+        if (req.files.pdf)
+          console.log(
+            "  - PDF:",
+            req.files.pdf[0].originalname,
+            `(${req.files.pdf[0].size} bytes)`
+          );
+        if (req.files.image)
+          console.log("  - Image:", req.files.image[0].originalname);
+      }
 
       // Check validation errors
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
+        console.log("❌ Validation errors:", errors.array());
         return res.status(400).json({
           success: false,
           message: "Validation error",
@@ -182,6 +194,7 @@ router.post(
       }
 
       if (!req.files || !req.files.pdf || !req.files.pdf[0]) {
+        console.log("❌ No PDF file provided");
         return res.status(400).json({
           success: false,
           message: "PDF file is required",
@@ -192,13 +205,20 @@ router.post(
       const pdfFile = req.files.pdf[0];
       const imageFile = req.files.image ? req.files.image[0] : null;
 
+      console.log("📖 Parsing PDF content...");
+
       // Parse PDF to extract text
       let pdfText = "";
       try {
         const pdfData = await pdfParse(pdfFile.buffer);
         pdfText = pdfData.text;
+        console.log(
+          "✅ PDF parsed successfully:",
+          pdfText.length,
+          "characters"
+        );
       } catch (pdfError) {
-        console.error("PDF parsing error:", pdfError);
+        console.error("❌ PDF parsing error:", pdfError);
         return res.status(400).json({
           success: false,
           message: "Invalid PDF file or corrupted content",
@@ -206,6 +226,7 @@ router.post(
       }
 
       if (!pdfText.trim()) {
+        console.log("❌ PDF appears empty");
         return res.status(400).json({
           success: false,
           message: "PDF appears to be empty or contains no readable text",
@@ -217,6 +238,11 @@ router.post(
       const excerpt = generateExcerpt(pdfText);
       const author = extractAuthorFromPdf(pdfText);
 
+      console.log("📝 Extracted metadata:");
+      console.log("  - Title:", title);
+      console.log("  - Author:", author || "Unknown");
+      console.log("  - Excerpt length:", excerpt.length);
+
       // Convert PDF to base64 for storage
       const pdfBase64 = pdfFile.buffer.toString("base64");
 
@@ -226,11 +252,14 @@ router.post(
         // Convert uploaded image to base64 data URL
         const imageBase64 = imageFile.buffer.toString("base64");
         finalImageUrl = `data:${imageFile.mimetype};base64,${imageBase64}`;
+        console.log("🖼️  Using uploaded image");
       } else if (featuredImage) {
         finalImageUrl = featuredImage;
+        console.log("🖼️  Using image URL:", featuredImage);
       } else {
         finalImageUrl =
           "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&q=80";
+        console.log("🖼️  Using default image");
       }
 
       // Create insight document
@@ -247,8 +276,10 @@ router.post(
         published: true, // Auto-publish PDF insights
       };
 
+      console.log("💾 Saving to database...");
       const insight = new Insight(insightData);
       await insight.save();
+      console.log("✅ Insight saved successfully:", insight._id);
 
       // Return without PDF data to avoid large response
       const responseData = { ...insight.toObject() };
@@ -260,7 +291,7 @@ router.post(
         data: responseData,
       });
     } catch (error) {
-      console.error("Upload insight error:", error);
+      console.error("❌ Upload insight error:", error);
 
       if (error.code === 11000) {
         return res.status(400).json({

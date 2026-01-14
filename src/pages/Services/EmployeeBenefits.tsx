@@ -153,37 +153,29 @@ const AnimatedCounter = ({ target, suffix = "" }: { target: number, suffix?: str
 const ServiceCard = ({ service, index }: { service: any, index: number }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  });
-
-  const offsetY = useTransform(scrollYProgress, [0, 1], [30, -30]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [-2, 2]);
-
+  
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 50, rotateX: -15 }}
-      whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6, delay: index * 0.08, type: "spring", stiffness: 100 }}
-      style={{ y: offsetY, rotate }}
-      className="h-80 cursor-pointer perspective-1000"
+      transition={{ duration: 0.6, delay: index * 0.08 }}
+      className="h-72 cursor-pointer"
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
     >
       <motion.div
         initial={false}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.7, type: "spring", stiffness: 150, damping: 25 }}
+        transition={{ duration: 0.4, type: "spring", stiffness: 150, damping: 25 }}
         className="relative w-full h-full"
         style={{ transformStyle: "preserve-3d" }}
         whileHover={{ scale: 1.02, translateY: -8 }}
       >
         {/* Front Side */}
         <motion.div
-          className="absolute w-full h-full bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 rounded-2xl p-6 shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between overflow-hidden backdrop-blur-sm"
+          className="absolute w-full h-full bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 rounded-2xl p-5 shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between overflow-hidden backdrop-blur-sm"
           style={{ backfaceVisibility: "hidden" }}
         >
           {/* Animated background gradient */}
@@ -200,19 +192,22 @@ const ServiceCard = ({ service, index }: { service: any, index: number }) => {
           />
           
           <div className="relative z-10">
-            <motion.div 
-              className={`w-14 h-14 rounded-xl ${service.bg} flex items-center justify-center mb-4 shadow-lg`}
-              whileHover={{ rotate: 360, scale: 1.1 }}
-              transition={{ duration: 0.6 }}
-            >
-              <service.icon className={`w-7 h-7 ${service.text}`} />
-            </motion.div>
+            {/* Icon and Title aligned in same line */}
+            <div className="flex items-center gap-3 mb-2.5">
+              <motion.div 
+                className={`w-12 h-12 rounded-xl ${service.bg} flex items-center justify-center shadow-lg`}
+                whileHover={{ rotate: 360, scale: 1.1 }}
+                transition={{ duration: 0.6 }}
+              >
+                <service.icon className={`w-6 h-6 ${service.text}`} />
+              </motion.div>
 
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 leading-tight">
-              {service.title}
-            </h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight m-0">
+                {service.title}
+              </h3>
+            </div>
 
-            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400 mt-10">
               {service.description}
             </p>
           </div>
@@ -223,13 +218,13 @@ const ServiceCard = ({ service, index }: { service: any, index: number }) => {
           </div>
         </motion.div>
 
-        {/* Back Side */}
+        {/* Back Side - Power Blue Color */}
         <motion.div
           className="absolute w-full h-full rounded-2xl p-6 shadow-2xl flex flex-col justify-center overflow-hidden"
           style={{
             backfaceVisibility: "hidden",
             rotateY: 180,
-            background: `linear-gradient(135deg, ${service.bgColor} 0%, ${service.bgColorDark} 100%)`
+            background: "linear-gradient(135deg, #0066CC 0%, #004499 100%)"
           }}
         >
           {/* Floating circles background */}
@@ -292,7 +287,7 @@ const accountingStandards = [
 const servicesOffered = [
   {
     title: "Actuarial Valuation",
-    description: "Comprehensive retirement and long-term benefit plan valuations in accordance with accounting standards.",
+    description: "Expert valuation of retirement benefits, gratuity, leave encashment, and post-retirement medical benefits under AS 15R, IND AS 19, IAS 19, and US GAAP standards with detailed liability projections.",
     icon: BarChart3,
     color: "accent",
     gradient: "from-accent-500 to-accent-400",
@@ -308,7 +303,7 @@ const servicesOffered = [
   },
   {
     title: "Funding Strategy",
-    description: "Develop and implement sustainable funding strategies with thorough valuation assessments.",
+    description: "Strategic funding recommendations for defined benefit plans including contribution planning, cash flow optimization, and long-term sustainability analysis to minimize volatility and ensure compliance.",
     icon: TrendingUp,
     color: "emerald",
     gradient: "from-emerald-500 to-teal-500",
@@ -324,7 +319,7 @@ const servicesOffered = [
   },
   {
     title: "Benefit Plan Design",
-    description: "Expert advice in designing and optimizing defined benefit plans for maximum value.",
+    description: "Custom design of competitive benefit structures including DB/DC plans, hybrid schemes, and flexible benefits. We balance cost efficiency with employee attraction and retention goals.",
     icon: Target,
     color: "blue",
     gradient: "from-blue-500 to-cyan-500",
@@ -340,7 +335,7 @@ const servicesOffered = [
   },
   {
     title: "De-risking Strategies",
-    description: "Comprehensive guidance on de-risking strategies, plan modifications, and transition support.",
+    description: "Pension risk transfer solutions, liability-driven investment strategies, and DB to DC conversions. Expert support in buyouts, buy-ins, and plan freezes with seamless implementation.",
     icon: Shield,
     color: "orange",
     gradient: "from-orange-500 to-amber-500",
@@ -356,7 +351,7 @@ const servicesOffered = [
   },
   {
     title: "ESOP & Incentives",
-    description: "Black-Scholes methodology valuations for ESOPs and long-term incentive plans.",
+    description: "Fair value measurement of stock options, SARs, and RSUs using Black-Scholes and binomial models. Full compliance with IND AS 102/IFRS 2 including expense recognition and disclosure support.",
     icon: Award,
     color: "purple",
     gradient: "from-purple-500 to-pink-500",
@@ -372,7 +367,7 @@ const servicesOffered = [
   },
   {
     title: "Loyalty Programs",
-    description: "Actuarial valuations for customer loyalty programs, warranties, and special schemes.",
+    description: "Actuarial modeling for customer loyalty rewards, extended warranties, gift cards, and promotional schemes. Liability estimation with redemption pattern analysis and breakage rate calculations.",
     icon: Heart,
     color: "rose",
     gradient: "from-rose-500 to-pink-500",
@@ -386,13 +381,6 @@ const servicesOffered = [
       "Special Schemes"
     ]
   }
-];
-
-const stats = [
-  { value: 30, label: "Years of Experience", icon: Clock },
-  { value: 86, label: "Consultants", icon: Users },
-  { value: 17, label: "Branches", icon: Globe },
-  { value: 1000, label: "Clients", icon: Heart }
 ];
 
 const steps = [
@@ -433,7 +421,6 @@ const steps = [
 export const EmployeeBenefits = () => {
   const [activeStep, setActiveStep] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
   const servicesRef = useRef<HTMLDivElement>(null);
   const stepsRef = useRef<HTMLDivElement>(null);
 
@@ -446,16 +433,12 @@ export const EmployeeBenefits = () => {
   const stepsX = useMemo(() => useTransform(scrollYProgress, [0, 1], [-50, 50]), [scrollYProgress]);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 font-sans text-slate-900 dark:text-slate-100">
+    <div ref={containerRef} className="min-h-screen bg-powder-50 dark:bg-slate-950 pt-20 font-slate-900 dark:text-slate-100">
       
-      {/* Hero Section */}
+      {/* Hero Section with Powder Blue */}
       <section className="relative py-12 md:py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-accent-50 via-white to-blue-50 dark:from-dark-bg dark:via-slate-950 dark:to-dark-bg"></div>
-        <motion.div 
-          animate={{ rotate: 360 }}
-          transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -right-1/2 w-[1000px] h-[1000px] opacity-20 dark:opacity-5 bg-gradient-to-br from-accent-300 to-brand-300 rounded-full blur-3xl pointer-events-none"
-        />
+        <div className="absolute inset-0 bg-gradient-to-br from-powder-100 via-powder-50 to-white dark:from-dark-bg dark:via-slate-950 dark:to-dark-bg"></div>
+        
         
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
@@ -483,46 +466,6 @@ export const EmployeeBenefits = () => {
 
           </motion.div>
         </div>
-      </section>
-
-      {/* Stats Section (Scroll Triggered) */}
-      <section ref={statsRef} className="py-8 md:py-10 lg:py-12 bg-light-bg dark:bg-dark-bg border-y border-slate-100 dark:border-slate-800">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-            {stats.map((stat, index) => {
-              const IconComponent = stat.icon;
-              const { scrollYProgress } = useScroll({
-                target: statsRef,
-                offset: ["start end", "end start"]
-              });
-              const offsetX = useTransform(scrollYProgress, [0, 1], [index % 2 === 0 ? -30 : 30, index % 2 === 0 ? 30 : -30]);
-              
-              return (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.5, delay: index * 0.1, type: "spring", stiffness: 100 }}
-                  style={{ x: offsetX }}
-                  className="text-center group"
-                >
-                    <div className="flex justify-center mb-4">
-                      <div className="p-4 bg-accent-50 dark:bg-accent-900/20 rounded-2xl group-hover:rotate-6 transition-transform duration-300">
-                        <IconComponent className="w-6 h-6 text-accent-600 dark:text-accent-400" />
-                      </div>
-                    </div>
-                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-1 tracking-tight">
-                      <AnimatedCounter target={stat.value} suffix={index === 3 ? "+" : ""} />
-                    </div>
-                    <div className="text-xs md:text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                      {stat.label}
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
       </section>
 
       {/* Services Grid (Lively) */}
@@ -572,40 +515,6 @@ export const EmployeeBenefits = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               {servicesOffered.map((service, index) => (
                 <ServiceCard key={index} service={service} index={index} />
-              ))}
-            </div>
-          </div>
-      </section>
-
-      {/* Step-by-Step Accordion Section */}
-      <section ref={stepsRef} className="py-12 md:py-16 lg:py-24 bg-light-bg dark:bg-dark-bg overflow-hidden">
-        <div className="container mx-auto px-6">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
-               <div className="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-widest text-accent-600 uppercase bg-accent-50 dark:bg-accent-900/20 dark:text-accent-400 rounded-full">
-                 Our Process
-               </div>
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-                Step-by-Step Approach
-              </h2>
-              <p className="max-w-2xl mx-auto text-slate-600 dark:text-slate-400 text-base">
-                A systematic and transparent methodology ensuring accuracy, compliance, and strategic value at every stage.
-              </p>
-            </motion.div>
-
-            <div className="max-w-5xl mx-auto space-y-6">
-              {steps.map((step, index) => (
-                <AccordionItem 
-                  key={index}
-                  step={step}
-                  index={index}
-                  isOpen={activeStep === index}
-                  onToggle={() => setActiveStep(activeStep === index ? null : index)}
-                />
               ))}
             </div>
           </div>

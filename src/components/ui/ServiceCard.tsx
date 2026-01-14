@@ -9,13 +9,14 @@ interface ServiceCardProps {
   description: string;
   delay: number;
   link?: string;
+  className?: string;
   key?: React.Key | null;
 }
 
 /**
  * Service Card Component
  */
-export const ServiceCard = ({ icon: Icon, title, description, delay, link }: ServiceCardProps) => {
+export const ServiceCard = ({ icon: Icon, title, description, delay, link, className }: ServiceCardProps) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseX = useSpring(x, { stiffness: 500, damping: 100 });
@@ -37,7 +38,7 @@ export const ServiceCard = ({ icon: Icon, title, description, delay, link }: Ser
       transition={{ delay, duration: 0.5 }}
       whileHover={isMobile ? undefined : { y: -8 }}
       onMouseMove={isMobile ? undefined : handleMouseMove}
-      className="group p-4 sm:p-6 lg:p-8 bg-white/50 dark:bg-brand-900/5 border border-slate-200/50 dark:border-white/5 hover:bg-white/60 dark:hover:bg-brand-900/20 hover:border-accent-300/70 dark:hover:border-accent-500/30 transition-all duration-300 relative overflow-hidden shadow-sm hover:shadow-xl rounded-lg sm:rounded-xl backdrop-blur-sm"
+      className={`group p-4 sm:p-6 lg:p-8 bg-white/50 dark:bg-brand-900/5 border border-slate-200/50 dark:border-white/5 hover:bg-white/60 dark:hover:bg-brand-900/20 hover:border-accent-300/70 dark:hover:border-accent-500/30 transition-all duration-300 relative overflow-hidden shadow-sm hover:shadow-xl rounded-lg sm:rounded-xl backdrop-blur-sm ${className || ''}`}
       style={isMobile ? undefined : { willChange: 'transform, opacity' }}
     >
       {/* Dynamic Hover Gradient/Spotlight Effect */}
@@ -49,10 +50,12 @@ export const ServiceCard = ({ icon: Icon, title, description, delay, link }: Ser
       />
       
       <div className="relative z-10">
-        <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-brand-50/80 dark:bg-white/5 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 group-hover:scale-110 transition-transform duration-300 border border-brand-100/80 dark:border-white/10 group-hover:border-accent-200 dark:group-hover:border-accent-500/50">
-          <Icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-brand-600 dark:text-brand-400 group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors" />
+        <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-brand-50/80 dark:bg-white/5 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-brand-100/80 dark:border-white/10 group-hover:border-accent-200 dark:group-hover:border-accent-500/50 flex-shrink-0">
+            <Icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-brand-600 dark:text-brand-400 group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors" />
+          </div>
+          <h3 className="text-base sm:text-lg lg:text-xl font-bold text-slate-900 dark:text-white group-hover:text-accent-600 dark:group-hover:text-accent-100 transition-colors">{title}</h3>
         </div>
-        <h3 className="text-base sm:text-lg lg:text-xl font-bold mb-2 sm:mb-3 text-slate-900 dark:text-white group-hover:text-accent-600 dark:group-hover:text-accent-100 transition-colors">{title}</h3>
         <p className="text-slate-700 dark:text-slate-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">
           {description}
         </p>

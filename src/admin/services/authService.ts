@@ -1,5 +1,13 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
-const API_URL_FALLBACK = 'http://localhost:5000/api';
+// Use dev URL in development, production URL in production
+const API_URL = import.meta.env.MODE === 'development' 
+  ? (import.meta.env.VITE_API_URL_DEV || 'http://localhost:5000/api')
+  : (import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api');
+
+console.log('🔧 Auth Service Config:', {
+  mode: import.meta.env.MODE,
+  apiUrl: API_URL,
+  isDev: import.meta.env.MODE === 'development'
+});
 
 export interface User {
   id: string;
@@ -52,19 +60,31 @@ class AuthService {
   // Login with username and password
   async login(username: string, password: string): Promise<{ success: boolean; message: string; user?: User }> {
     try {
+      console.log('🔐 Attempting login to:', `${API_URL}/auth/login`);
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }),
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
+      
+      console.log('📡 Response status:', response.status);
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
+      console.log('✅ Login response:', data.success ? 'Success' : 'Failed');
 
       if (data.success) {
         const authState = {
@@ -86,13 +106,28 @@ class AuthService {
         success: false,
         message: data.message || 'Login failed'
       };
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch (error: any) {
+      console.error('❌ Login error:', error);
+      console.error('🌐 API URL attempted:', API_URL);
+      
+      if (error.name === 'AbortError') {
+        return {
+          success: false,
+          message: 'Connection timeout. Backend server may be offline or not responding. Please check if the server is running on port 5000.'
+        };
+      }
+      
+      if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        return {
+          success: false,
+          message: 'Cannot connect to backend server. Please ensure the server is running on http://localhost:5000'
+        };
+      }
+      
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-      console.error('API URL attempted:', API_URL);
       return {
         success: false,
-        message: `Connection failed: ${errorMsg}. Backend may be offline. Please ensure the server is running.`
+        message: `Login failed: ${errorMsg}`
       };
     }
   }
