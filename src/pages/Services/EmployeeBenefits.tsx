@@ -542,25 +542,39 @@ export const EmployeeBenefits = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-12 md:py-16 lg:py-24 bg-gradient-to-r from-accent-600 to-brand-600 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-        <div className="container mx-auto px-6 relative z-10">
+      <section className="py-24 bg-gradient-to-br from-accent-600 via-accent-500 to-blue-600 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white rounded-full blur-3xl" />
+        </div>
+        <div className="container mx-auto px-6 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
           >
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
               Ready to Transform Your Benefits Strategy?
             </h2>
-            <motion.button 
-              whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(0,0,0,0.2)" }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-3 bg-white text-accent-600 font-bold rounded-full text-base shadow-xl transition-all hover:shadow-2xl dark:text-accent-600"
-            >
-              Schedule a Consultation
-            </motion.button>
+            <p className="text-xl text-accent-100 mb-10 max-w-2xl mx-auto">
+              Let's discuss how our expertise can help achieve your employee benefits goals.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-8 py-4 bg-white text-accent-600 rounded-xl font-bold text-lg hover:bg-accent-50 transition-all shadow-2xl"
+              >
+                Schedule Consultation
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-8 py-4 border-2 border-white text-white rounded-xl font-bold text-lg hover:bg-white hover:text-accent-600 transition-all"
+              >
+                View Our Services
+              </motion.button>
+            </div>
           </motion.div>
         </div>
       </section>

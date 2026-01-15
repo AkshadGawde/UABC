@@ -20,7 +20,34 @@ export const InsightPreview = () => {
     
     try {
       setLoading(true);
-      const data = await insightsService.getInsightById(id);
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc-backend.onrender.com/api';
+      const token = localStorage.getItem('token');
+      
+      // First try to fetch as a PDF insight
+      try {
+        const pdfResponse = await fetch(`${apiUrl}/pdf-insights/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (pdfResponse.ok) {
+          const pdfData = await pdfResponse.json();
+          if (pdfData.success && pdfData.data) {
+            // This is a PDF insight - open it directly
+            window.open(`${apiUrl}/pdf-insights/${id}/pdf`, '_blank');
+            navigate('/admin');
+            return;
+          }
+        }
+      } catch (pdfError) {
+        // Not a PDF insight, try regular insight
+        console.log('Not a PDF insight, trying regular insight...');
+      }
+      
+      // Try to fetch as regular insight
+      const data = await insightsService.getInsight(id, true);
       setInsight(data);
     } catch (error) {
       console.error('Failed to load insight:', error);

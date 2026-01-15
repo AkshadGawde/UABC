@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Eye, ArrowLeft, Upload, X } from 'lucide-react';
+import { Save, Eye, ArrowLeft, Upload, X, FileText, Calendar, Tag, Globe } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { insightsService, CreateInsightData, Insight } from '../services/insightsService';
 
@@ -32,6 +32,12 @@ export const InsightEditor = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [pdfInsight, setPdfInsight] = useState<any>(null);
+  const [pdfEditData, setPdfEditData] = useState({
+    image: '',
+    category: '',
+    publishDate: ''
+  });
 
   useEffect(() => {
     if (isEdit) {
@@ -44,7 +50,41 @@ export const InsightEditor = () => {
     
     try {
       setLoading(true);
-      const insight = await insightsService.getInsightById(id);
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc-backend.onrender.com/api';
+      const token = localStorage.getItem('token');
+      
+      // First try to fetch as a PDF insight
+      try {
+        const pdfResponse = await fetch(`${apiUrl}/pdf-insights/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (pdfResponse.ok) {
+          const pdfData = await pdfResponse.json();
+          if (pdfData.success && pdfData.data) {
+            // This is a PDF insight - show PDF details UI
+            setPdfInsight(pdfData.data);
+            setPdfEditData({
+              image: pdfData.data.image || '',
+              category: pdfData.data.category || 'Technology',
+              publishDate: pdfData.data.publishDate 
+                ? new Date(pdfData.data.publishDate).toISOString().split('T')[0]
+                : new Date().toISOString().split('T')[0]
+            });
+            return;
+          }
+        }
+      } catch (pdfError) {
+        // Not a PDF insight, try regular insight
+        console.log('Not a PDF insight, trying regular insight...');
+      }
+      
+      // Try to fetch as regular insight
+      const insight = await insightsService.getInsight(id, true);
+      
       if (insight) {
         setFormData({
           category: insight.category,
@@ -98,6 +138,47 @@ export const InsightEditor = () => {
     }));
   };
 
+  const handlePdfEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setPdfEditData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSavePdfEdit = async () => {
+    if (!id || !pdfInsight) return;
+    
+    try {
+      setSaving(true);
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc-backend.onrender.com/api';
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${apiUrl}/pdf-insights/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(pdfEditData)
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        alert('PDF insight updated successfully!');
+        navigate('/admin');
+      } else {
+        alert(data.message || 'Failed to update PDF insight');
+      }
+    } catch (error) {
+      console.error('Failed to save PDF insight:', error);
+      alert('Failed to save changes. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -116,6 +197,213 @@ export const InsightEditor = () => {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-600"></div>
+      </div>
+    );
+  }
+
+  // If this is a PDF insight, show PDF details UI
+  if (pdfInsight) {
+    const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc-backend.onrender.com/api';
+    const formatDate = (date: string) => new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+        <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
+          <div className="max-w-4xl mx-auto px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => navigate('/admin')}
+                  className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+                <div>
+                  <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+                    Edit PDF Insight
+                  </h1>
+                </div>
+              </div>
+              <button
+                onClick={handleSavePdfEdit}
+                disabled={saving}
+                className="px-6 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Save className="w-4 h-4" />
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                <FileText className="w-8 h-8 text-red-600 dark:text-red-400" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                  {pdfInsight.title}
+                </h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  PDF Document
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              {/* Editable Fields */}
+              <div className="space-y-6 p-6 bg-slate-50 dark:bg-slate-900/50 rounded-lg border-2 border-accent-200 dark:border-accent-900">
+                <div className="mb-4">
+                  <p className="text-sm font-medium text-accent-600 dark:text-accent-400 mb-3">
+                    ✏️ Editable Fields
+                  </p>
+                </div>
+
+                {/* Category */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    <Tag className="w-4 h-4 inline mr-2" />
+                    Category
+                  </label>
+                  <select
+                    name="category"
+                    value={pdfEditData.category}
+                    onChange={handlePdfEditChange}
+                    className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-transparent"
+                  >
+                    {categories.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Publish Date */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    <Calendar className="w-4 h-4 inline mr-2" />
+                    Publish Date
+                  </label>
+                  <input
+                    type="date"
+                    name="publishDate"
+                    value={pdfEditData.publishDate}
+                    onChange={handlePdfEditChange}
+                    className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-transparent"
+                  />
+                </div>
+
+                {/* Image Link */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    <Upload className="w-4 h-4 inline mr-2" />
+                    Image URL (for preview card)
+                  </label>
+                  <input
+                    type="url"
+                    name="image"
+                    value={pdfEditData.image}
+                    onChange={handlePdfEditChange}
+                    placeholder="https://example.com/image.jpg"
+                    className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-transparent"
+                  />
+                  {pdfEditData.image && (
+                    <div className="mt-3">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Preview:</p>
+                      <img 
+                        src={pdfEditData.image} 
+                        alt="Preview" 
+                        className="w-full h-48 object-cover rounded-lg border border-slate-200 dark:border-slate-700"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Invalid+Image';
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Read-only Fields */}
+              <div className="space-y-4 pt-6 border-t border-slate-200 dark:border-slate-700">
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-3">
+                  📄 Document Information (Read-only)
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      <Globe className="w-4 h-4 inline mr-2" />
+                      Status
+                    </div>
+                    <p className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${
+                      pdfInsight.published 
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                    }`}>
+                      {pdfInsight.published ? 'Published' : 'Draft'}
+                    </p>
+                  </div>
+
+                  <div>
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      File Name
+                    </div>
+                    <p className="text-slate-900 dark:text-white font-mono text-sm bg-slate-100 dark:bg-slate-700 px-3 py-2 rounded">
+                      {pdfInsight.pdfFilename || 'N/A'}
+                    </p>
+                  </div>
+
+                  <div>
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      File Size
+                    </div>
+                    <p className="text-slate-900 dark:text-white">
+                      {pdfInsight.pdfSize ? (pdfInsight.pdfSize / 1024).toFixed(2) + ' KB' : 'N/A'}
+                    </p>
+                  </div>
+
+                  <div>
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      Document ID
+                    </div>
+                    <p className="text-slate-900 dark:text-white font-mono text-xs bg-slate-100 dark:bg-slate-700 px-3 py-2 rounded truncate">
+                      {pdfInsight._id || pdfInsight.id}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-6 border-t border-slate-200 dark:border-slate-700">
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+                  <p className="text-sm text-blue-800 dark:text-blue-300">
+                    <strong>Note:</strong> You can only edit the category, publish date, and preview image. To update the PDF content itself, delete this insight and re-upload a new PDF file.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => window.open(`${apiUrl}/pdf-insights/${pdfInsight._id || pdfInsight.id}/pdf`, '_blank')}
+                    className="flex-1 px-6 py-3 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Eye className="w-5 h-5" />
+                    View PDF
+                  </button>
+                  <button
+                    onClick={() => navigate('/admin')}
+                    className="px-6 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
     );
   }

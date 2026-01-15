@@ -64,13 +64,37 @@ export const AdminDashboard = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, isPDF: boolean = false) => {
     if (window.confirm('Are you sure you want to delete this insight?')) {
       try {
-        await insightsService.deleteInsight(id);
+        if (isPDF) {
+          // Delete PDF insight
+          const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc-backend.onrender.com/api';
+          const token = localStorage.getItem('token');
+          
+          const response = await fetch(`${apiUrl}/pdf-insights/${id}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to delete PDF insight');
+          }
+        } else {
+          // Delete regular insight
+          await insightsService.deleteInsight(id);
+        }
+        
+        setSuccessMessage('Insight deleted successfully!');
+        setTimeout(() => setSuccessMessage(null), 3000);
         loadInsights();
       } catch (error) {
         console.error('Failed to delete insight:', error);
+        setErrorMessage('Failed to delete insight. Please try again.');
+        setTimeout(() => setErrorMessage(null), 5000);
       }
     }
   };
@@ -87,6 +111,18 @@ export const AdminDashboard = () => {
     setErrorMessage(error);
     // Clear error message after 5 seconds
     setTimeout(() => setErrorMessage(null), 5000);
+  };
+
+  const handleViewPDF = (id: string) => {
+    const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc-backend.onrender.com/api';
+    const pdfUrl = `${apiUrl}/pdf-insights/${id}/pdf`;
+    window.open(pdfUrl, '_blank');
+  };
+
+  const handleEditPDF = (insight: any) => {
+    // Navigate to edit page which will show proper PDF editing interface
+    const id = insight._id || insight.id;
+    window.location.href = `/admin/insights/${id}/edit`;
   };
 
   const filteredInsights = insights.filter(insight => {
@@ -298,6 +334,11 @@ export const AdminDashboard = () => {
                       <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                         {insight.title}
                       </h3>
+                      {insight.pdfFilename && (
+                        <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                          PDF
+                        </span>
+                      )}
                       <span className={`px-2 py-1 text-xs rounded-full ${
                         insight.category === 'Market Analysis' ? 'bg-blue-100 text-blue-800' :
                         insight.category === 'Technology' ? 'bg-green-100 text-green-800' :
@@ -333,49 +374,90 @@ export const AdminDashboard = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 ml-4">
-                    <a
-                      href={`/admin/insights/${insight.id}/preview`}
-                      className="p-2 text-slate-400 hover:text-accent-600 transition-colors"
-                      title="Preview"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </a>
-                    <a
-                      href={`/admin/insights/${insight.id}/edit`}
-                      className="p-2 text-slate-400 hover:text-blue-600 transition-colors"
-                      title="Edit"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </a>
-                    <button
-                      onClick={() => handleToggleFeatured(insight.id)}
-                      className={`p-2 transition-colors ${
-                        insight.featured 
-                          ? 'text-yellow-500 hover:text-yellow-600' 
-                          : 'text-slate-400 hover:text-yellow-500'
-                      }`}
-                      title="Toggle Featured"
-                    >
-                      <Star className={`w-4 h-4 ${insight.featured ? 'fill-current' : ''}`} />
-                    </button>
-                    <button
-                      onClick={() => handleTogglePublished(insight.id)}
-                      className={`p-2 transition-colors ${
-                        insight.published 
-                          ? 'text-green-600 hover:text-green-700' 
-                          : 'text-slate-400 hover:text-green-600'
-                      }`}
-                      title={insight.published ? 'Unpublish' : 'Publish'}
-                    >
-                      <Globe className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(insight.id)}
-                      className="p-2 text-slate-400 hover:text-red-600 transition-colors"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    {insight.pdfFilename ? (
+                      // PDF insight actions
+                      <>
+                        <button
+                          onClick={() => handleViewPDF(insight._id || insight.id)}
+                          className="p-2 text-slate-400 hover:text-accent-600 transition-colors"
+                          title="View PDF"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        {/* <button
+                          onClick={() => handleEditPDF(insight)}
+                          className="p-2 text-slate-400 hover:text-blue-600 transition-colors"
+                          title="Edit Info"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button> */}
+                        <button
+                          onClick={() => handleTogglePublished(insight._id || insight.id)}
+                          className={`p-2 transition-colors ${
+                            insight.published 
+                              ? 'text-green-600 hover:text-green-700' 
+                              : 'text-slate-400 hover:text-green-600'
+                          }`}
+                          title={insight.published ? 'Unpublish' : 'Publish'}
+                        >
+                          <Globe className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(insight._id || insight.id, true)}
+                          className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </>
+                    ) : (
+                      // Regular insight actions
+                      <>
+                        <a
+                          href={`/admin/insights/${insight.id}/preview`}
+                          className="p-2 text-slate-400 hover:text-accent-600 transition-colors"
+                          title="Preview"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </a>
+                        <a
+                          href={`/admin/insights/${insight.id}/edit`}
+                          className="p-2 text-slate-400 hover:text-blue-600 transition-colors"
+                          title="Edit"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </a>
+                        <button
+                          onClick={() => handleToggleFeatured(insight.id)}
+                          className={`p-2 transition-colors ${
+                            insight.featured 
+                              ? 'text-yellow-500 hover:text-yellow-600' 
+                              : 'text-slate-400 hover:text-yellow-500'
+                          }`}
+                          title="Toggle Featured"
+                        >
+                          <Star className={`w-4 h-4 ${insight.featured ? 'fill-current' : ''}`} />
+                        </button>
+                        <button
+                          onClick={() => handleTogglePublished(insight.id)}
+                          className={`p-2 transition-colors ${
+                            insight.published 
+                              ? 'text-green-600 hover:text-green-700' 
+                              : 'text-slate-400 hover:text-green-600'
+                          }`}
+                          title={insight.published ? 'Unpublish' : 'Publish'}
+                        >
+                          <Globe className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(insight.id, false)}
+                          className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               </motion.div>

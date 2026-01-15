@@ -12,7 +12,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
-  ArrowLeft
+  ArrowLeft,
+  Link as LinkIcon
 } from 'lucide-react';
 
 interface Insight {
@@ -51,6 +52,7 @@ export const InsightsCategory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 15;
+  const [showToast, setShowToast] = useState(false);
 
   // Convert URL slug to display category name
   const getCategoryName = (slug: string | undefined) => {
@@ -114,6 +116,20 @@ export const InsightsCategory = () => {
       // For regular insights, navigate to detail page
       navigate(`/insights/${insight.slug || insight._id}`);
     }
+  };
+
+  const copyPdfLink = (e: React.MouseEvent, insight: Insight) => {
+    e.stopPropagation();
+    // Use deployed backend API URL directly for sharing
+    const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc-backend.onrender.com/api';
+    const shareableUrl = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
+    
+    navigator.clipboard.writeText(shareableUrl).then(() => {
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2000);
+    }).catch(err => {
+      console.error('Failed to copy link:', err);
+    });
   };
 
   const goToPage = (page: number) => {
@@ -293,9 +309,28 @@ export const InsightsCategory = () => {
                       </p>
 
                       {/* Read More */}
-                      <div className="flex items-center gap-2 text-accent-600 dark:text-accent-400 font-medium group-hover:gap-3 transition-all">
-                        <span>{insight.pdfData ? 'Open PDF' : 'Read More'}</span>
-                        <ArrowRight className="w-4 h-4" />
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-accent-600 dark:text-accent-400 font-medium group-hover:gap-3 transition-all">
+                          <span>{insight.pdfData ? 'Open PDF' : 'Read More'}</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </div>
+                        {insight.pdfData && (
+                          <button
+                            onClick={(e) => copyPdfLink(e, insight)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                copyPdfLink(e as any, insight);
+                              }
+                            }}
+                            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors group/btn focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2"
+                            aria-label="Copy shareable PDF link to clipboard"
+                            title="Copy shareable link"
+                            tabIndex={0}
+                          >
+                            <LinkIcon className="w-4 h-4 text-slate-500 dark:text-slate-400 group-hover/btn:text-accent-600 dark:group-hover/btn:text-accent-400 transition-colors" />
+                          </button>
+                        )}
                       </div>
                     </div>
                   </motion.article>
@@ -369,6 +404,27 @@ export const InsightsCategory = () => {
           )}
         </div>
       </section>
+
+      {/* Toast Notification */}
+      {showToast && (
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 20, scale: 0.9 }}
+          transition={{ 
+            duration: 0.2,
+            ease: [0.4, 0, 0.2, 1]
+          }}
+          className="fixed bottom-6 right-6 bg-green-600 text-white px-5 py-3 rounded-lg shadow-xl z-50 flex items-center gap-3 max-w-xs will-change-transform"
+          role="alert"
+          aria-live="polite"
+        >
+          <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+            <LinkIcon className="w-4 h-4" />
+          </div>
+          <p className="font-medium text-sm">Link Copied!</p>
+        </motion.div>
+      )}
     </div>
   );
 };
