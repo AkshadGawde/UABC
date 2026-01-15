@@ -99,24 +99,28 @@ router.get("/", async (req, res) => {
     let sortOption = {};
     switch (sort) {
       case "oldest":
-        sortOption = { publishedAt: 1 };
+        sortOption = { createdAt: 1 };
         break;
       case "popular":
         sortOption = { views: -1, likes: -1 };
         break;
       case "newest":
       default:
-        sortOption = { publishedAt: -1 };
+        sortOption = { createdAt: -1 };
         break;
     }
+
+    console.log('📊 Fetching insights:', { query, sortOption, page: pageNumber, limit: limitNumber });
 
     const insights = await Insight.find(query)
       .sort(sortOption)
       .skip(skip)
       .limit(limitNumber)
-      .select("-content"); // Exclude full content for list view
+      .select("-content -pdfData"); // Exclude full content and PDF data for list view
 
     const total = await Insight.countDocuments(query);
+    
+    console.log('✅ Found insights:', insights.length, '/', total);
 
     res.json({
       success: true,
@@ -132,10 +136,12 @@ router.get("/", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Get insights error:", error);
+    console.error("❌ Get insights error:", error.message);
+    console.error("Stack:", error.stack);
     res.status(500).json({
       success: false,
       message: "Server error while fetching insights",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });

@@ -84,6 +84,10 @@ const insightSchema = new mongoose.Schema(
       unique: true,
       sparse: true,
     },
+    publishedAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
@@ -113,7 +117,7 @@ insightSchema.pre("save", function (next) {
 
   // Set publishedAt when published status changes to true
   if (this.isModified("published") && this.published && !this.publishedAt) {
-    this.publishedAt = new Date();
+    this.publishedAt = this.publishDate || new Date();
   }
 
   next();
