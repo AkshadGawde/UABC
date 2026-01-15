@@ -391,7 +391,7 @@ export const ContactUs = () => {
                 <h4 className="font-bold text-slate-900 dark:text-white mb-4">Follow Us</h4>
                 <div className="flex gap-4">
                   {[
-                    { icon: Linkedin, href: "#", label: "LinkedIn" },
+                    { icon: Linkedin, href: "https://www.linkedin.com/company/universal-actuaries-and-benefit-consultants/", label: "LinkedIn" },
                     { icon: Twitter, href: "#", label: "Twitter" },
                     { icon: Facebook, href: "#", label: "Facebook" }
                   ].map((social) => {
@@ -400,7 +400,9 @@ export const ContactUs = () => {
                       <a
                         key={social.label}
                         href={social.href}
-                        className="w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center hover:bg-accent-600 hover:text-white transition-colors"
+                        target={social.href !== "#" ? "_blank" : undefined}
+                        rel={social.href !== "#" ? "noopener noreferrer" : undefined}
+                        className="w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center text-accent-600 dark:text-accent-400 hover:bg-accent-600 hover:text-white transition-colors"
                         aria-label={social.label}
                       >
                         <IconComponent className="w-5 h-5" />
@@ -432,7 +434,7 @@ export const ContactUs = () => {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="flex justify-center">
             {offices.map((office, index) => (
               <motion.div
                 key={office.city}
@@ -440,12 +442,12 @@ export const ContactUs = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white dark:bg-dark-bg rounded-xl overflow-hidden shadow-lg"
+                className="bg-white dark:bg-dark-bg rounded-xl overflow-hidden shadow-lg w-full max-w-md"
               >
                 <img 
                   src={optimizeImage(office.image, 400)}
                   alt={office.city}
-                  className="w-full h-40 object-cover"
+                  className="w-full h-48 object-cover"
                 />
                 <div className="p-6">
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3">{office.city}</h3>

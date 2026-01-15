@@ -7,7 +7,7 @@ import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { PageTransition } from './components/PageTransition';
 import { PageLoader, AnimatedScrollProgress } from './components/PageLoader';
-import { Home, AboutUs, AboutOverview, AboutApproach, AboutManagement, AboutSuccessStories, ServicesPage, EmployeeBenefits, Insights, Careers, ContactUs, InsuranceConsulting, RetirementConsulting, BenefitConsulting } from './pages';
+import { Home, AboutUs, AboutOverview, AboutApproach, AboutManagement, AboutSuccessStories, ServicesPage, EmployeeBenefits, Insights, InsightsCategory, Careers, ContactUs, InsuranceConsulting, RetirementConsulting, BenefitConsulting } from './pages';
 import { AuthProvider } from './admin/hooks/useAuth';
 import { AdminLogin } from './admin/pages/AdminLogin';
 import { AdminDashboard } from './admin/pages/AdminDashboard';
@@ -166,6 +166,7 @@ const App = () => {
                         <Route path="/services/retirement-consulting" element={<RetirementConsulting />} />
                         <Route path="/services/benefit-consulting" element={<BenefitConsulting />} />
                         <Route path="/insights" element={<Insights />} />
+                        <Route path="/insights/:category" element={<InsightsCategory />} />
                         <Route path="/careers" element={<Careers />} />
                         <Route path="/contact" element={<ContactUs />} />
                       </Routes>

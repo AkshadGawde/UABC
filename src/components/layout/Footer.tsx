@@ -20,7 +20,7 @@ export const Footer = () => {
                 />
              </div>
              <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
-               Universal Acutrials is a premier consulting firm dedicated to providing top-tier actuarial and strategic solutions globally.
+               Universal Actuaries is a premier consulting firm dedicated to providing top-tier actuarial and strategic solutions globally.
              </p>
            </div>
            
@@ -58,7 +58,7 @@ export const Footer = () => {
         
         <div className="border-t border-white/10 pt-6 sm:pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 text-xs text-slate-600">
           <div className="text-center sm:text-left">
-            © {new Date().getFullYear()} Universal Acutrials. All rights reserved.
+            © {new Date().getFullYear()} Universal Actuaries. All rights reserved.
           </div>
           <div className="flex gap-4 sm:gap-6 text-center sm:text-right">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>

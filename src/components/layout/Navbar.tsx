@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 import { ThemeToggle } from '../ui/ThemeToggle';
+import { insightsService } from '../../admin/services/insightsService';
 
 interface NavbarProps {
   isDark: boolean;
@@ -18,6 +19,7 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null);
+  const [insightCategories, setInsightCategories] = useState<string[]>([]);
   const location = useLocation();
 
   useEffect(() => {
@@ -25,6 +27,32 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Fetch insight categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await insightsService.getPublicInsights({
+          limit: 1000,
+          sort: 'newest'
+        });
+        
+        if (response && response.insights) {
+          const uniqueCategories = [...new Set(response.insights.map((insight: any) => insight.category))];
+          setInsightCategories(uniqueCategories);
+        }
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+      }
+    };
+    
+    fetchCategories();
+  }, []);
+
+  // Helper function to convert category name to URL slug
+  const categoryToSlug = (category: string) => {
+    return category.toLowerCase().replace(/\s+/g, '-');
+  };
 
   const navLinks = [
     { 
@@ -54,11 +82,12 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
     { 
       name: 'Insights', 
       path: '/insights',
-      dropdown: [
-        { name: 'Research Papers', path: '/insights/research-papers' },
-        { name: 'Interest Rates', path: '/insights/interest-rates' },
-        { name: 'Regulatory Reports', path: '/insights/regulatory-reports' }
-      ]
+      dropdown: insightCategories.length > 0 
+        ? insightCategories.map(category => ({
+            name: category,
+            path: `/insights/${categoryToSlug(category)}`
+          }))
+        : []
     },
     { name: 'Careers', path: '/careers' },
     { name: 'Contact Us', path: '/contact' },

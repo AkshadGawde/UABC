@@ -17,6 +17,9 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageMode, setImageMode] = useState<'url' | 'upload'>('url');
   const [publishDate, setPublishDate] = useState(new Date().toISOString().split('T')[0]);
+  const [category, setCategory] = useState('Research Papers');
+  const [customCategory, setCustomCategory] = useState('');
+  const [showCustomCategory, setShowCustomCategory] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState<{
@@ -98,6 +101,7 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
     try {
       const formData = new FormData();
       formData.append('pdf', pdfFile);
+      formData.append('category', showCustomCategory && customCategory ? customCategory : category);
       formData.append('publishDate', publishDate);
       
       // Handle image - either file upload or URL
@@ -382,9 +386,65 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
                 value={publishDate}
                 onChange={(e) => setPublishDate(e.target.value)}
                 required
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700"
               />
             </div>
+          </div>
+
+          {/* Category Selection */}
+          <div className="space-y-2">
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+              Category *
+            </label>
+            <div className="flex gap-2">
+              <select
+                id="category"
+                value={showCustomCategory ? '' : category}
+                onChange={(e) => setCategory(e.target.value)}
+                disabled={showCustomCategory}
+                required={!showCustomCategory}
+                className="block flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 text-gray-500"
+              >
+                <option value="Research Papers">Research Papers</option>
+                <option value="Interests">Interests</option>
+                <option value="Regulatory Reports">Regulatory Reports</option>
+              </select>
+              
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCustomCategory(!showCustomCategory);
+                  if (showCustomCategory) {
+                    setCustomCategory('');
+                    setCategory('Research Papers');
+                  }
+                }}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  showCustomCategory
+                    ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
+              >
+                {showCustomCategory ? 'Cancel' : '+ New'}
+              </button>
+            </div>
+            
+            {showCustomCategory && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="mt-2"
+              >
+                <input
+                  type="text"
+                  value={customCategory}
+                  onChange={(e) => setCustomCategory(e.target.value)}
+                  placeholder="Enter new category name"
+                  required
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </motion.div>
+            )}
           </div>
 
           {/* Info Box */}

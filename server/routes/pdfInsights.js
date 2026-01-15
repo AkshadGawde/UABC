@@ -201,7 +201,7 @@ router.post(
         });
       }
 
-      const { featuredImage, publishDate } = req.body;
+      const { featuredImage, publishDate, category } = req.body;
       const pdfFile = req.files.pdf[0];
       const imageFile = req.files.image ? req.files.image[0] : null;
 
@@ -267,7 +267,7 @@ router.post(
         title,
         excerpt,
         author: author || "Unknown Author",
-        category: "Research", // Default category for PDF uploads
+        category: category || "General", // Use category from form or default to General
         pdfData: pdfBase64,
         pdfFilename: pdfFile.originalname,
         pdfSize: pdfFile.size,

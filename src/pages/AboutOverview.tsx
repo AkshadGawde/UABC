@@ -43,12 +43,12 @@ export const AboutOverview = () => {
       description: "Employee Stock Options (ESOP) Design and valuation services under IND AS 102 including Share Appreciation Rights (SAR)",
       color: "purple"
     },
-    {
-      icon: Shield,
-      title: "Insurance Consulting",
-      description: "Life, General and Health Insurance including Risk management, Planning & Strategic consulting, Financial & statutory reporting",
-      color: "green"
-    },
+    // {
+    //   icon: Shield,
+    //   title: "Insurance Consulting",
+    //   description: "Life, General and Health Insurance including Risk management, Planning & Strategic consulting, Financial & statutory reporting",
+    //   color: "green"
+    // },
     {
       icon: Users,
       title: "Retirement Consulting",

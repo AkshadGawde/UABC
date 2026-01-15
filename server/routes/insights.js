@@ -110,7 +110,12 @@ router.get("/", async (req, res) => {
         break;
     }
 
-    console.log('📊 Fetching insights:', { query, sortOption, page: pageNumber, limit: limitNumber });
+    console.log("📊 Fetching insights:", {
+      query,
+      sortOption,
+      page: pageNumber,
+      limit: limitNumber,
+    });
 
     const insights = await Insight.find(query)
       .sort(sortOption)
@@ -119,8 +124,8 @@ router.get("/", async (req, res) => {
       .select("-content -pdfData"); // Exclude full content and PDF data for list view
 
     const total = await Insight.countDocuments(query);
-    
-    console.log('✅ Found insights:', insights.length, '/', total);
+
+    console.log("✅ Found insights:", insights.length, "/", total);
 
     res.json({
       success: true,
@@ -141,7 +146,7 @@ router.get("/", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error while fetching insights",
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });

@@ -54,7 +54,9 @@ import {
   Download,
   Share2,
   Loader2,
-  X
+  X,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 /**
@@ -67,6 +69,9 @@ export const Insights = () => {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 10;
 
   // Dynamic categories based on actual data
   const [categories, setCategories] = useState<string[]>([]);
@@ -92,61 +97,47 @@ export const Insights = () => {
 
   useEffect(() => {
     loadInsights();
-  }, []);
+  }, [currentPage, selectedCategory]);
 
   const loadInsights = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-      console.log('🔍 API Configuration:', {
-        apiUrl,
-        endpoint: `${apiUrl}/insights`,
-        env: import.meta.env.MODE
-      });
-      
-      console.log('📡 Fetching insights from API...');
-      
-      // Fetch published insights
+      // Fetch published insights with pagination and filtering
       const response = await insightsService.getPublicInsights({
-        limit: 50,
+        page: currentPage,
+        limit: itemsPerPage,
+        category: selectedCategory === 'All' ? undefined : selectedCategory,
         sort: 'newest'
       });
       
-      console.log('✅ API Response received:', {
-        hasData: !!response,
-        hasInsights: !!response?.insights,
-        insightCount: response?.insights?.length || 0
-      });
-      
       if (!response || !response.insights) {
-        console.error('❌ Invalid response format:', response);
+        console.error('Invalid response format:', response);
         setError('Backend returned invalid data format. Please check server logs.');
         setInsights([]);
         setCategories(['All']);
-        setSelectedCategory('All');
         setLoading(false);
         return;
       }
       
       const publishedInsights = response.insights.filter(insight => insight.published);
-      console.log(`📊 Published insights: ${publishedInsights.length} of ${response.insights.length} total`);
       
-      if (publishedInsights.length === 0) {
-        console.warn('⚠️ No published insights found');
+      if (publishedInsights.length === 0 && currentPage === 1 && selectedCategory === 'All') {
         setError('No published insights available. Add some insights in the admin panel.');
       }
       
       setInsights(publishedInsights);
+      setTotalPages(response.pagination?.pages || 1);
       
-      // Extract unique categories from insights
-      const uniqueCategories = ['All', ...new Set(publishedInsights.map(insight => insight.category))];
-      setCategories(uniqueCategories);
-      
-      // Set 'All' as default category
-      if (!selectedCategory || selectedCategory === 'All') {
-        setSelectedCategory('All');
+      // Extract unique categories only on first load
+      if (currentPage === 1 && selectedCategory === 'All') {
+        const allInsights = await insightsService.getPublicInsights({
+          limit: 1000,
+          sort: 'newest'
+        });
+        const uniqueCategories = ['All', ...new Set(allInsights.insights.map((insight: Insight) => insight.category))];
+        setCategories(uniqueCategories);
       }
       
     } catch (error: any) {
@@ -425,7 +416,10 @@ export const Insights = () => {
                   {categories.map((category) => (
                     <button
                       key={category}
-                      onClick={() => setSelectedCategory(category)}
+                      onClick={() => {
+                        setSelectedCategory(category);
+                        setCurrentPage(1); // Reset to first page when category changes
+                      }}
                       className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg group ${
                         selectedCategory === category
                           ? 'bg-accent-600 text-white shadow-md'
@@ -682,6 +676,79 @@ export const Insights = () => {
                   </button>
                 )}
               </div>
+            </motion.div>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && insights.length > 0 && (
+            <motion.div
+              className="mt-12 flex flex-wrap items-center justify-center gap-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <button
+                onClick={() => {
+                  setCurrentPage(prev => Math.max(1, prev - 1));
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                disabled={currentPage === 1}
+                className="p-2 rounded-lg border border-slate-300 dark:border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                aria-label="Previous page"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+
+              {[...Array(totalPages)].map((_, i) => {
+                const pageNum = i + 1;
+                // Show first page, last page, current page and adjacent pages
+                if (
+                  pageNum === 1 ||
+                  pageNum === totalPages ||
+                  (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                ) {
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => {
+                        setCurrentPage(pageNum);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className={`px-4 py-2 rounded-lg transition-all ${
+                        currentPage === pageNum
+                          ? 'bg-accent-600 text-white shadow-md'
+                          : 'border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+                      }`}
+                      aria-label={`Go to page ${pageNum}`}
+                      aria-current={currentPage === pageNum ? 'page' : undefined}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                } else if (
+                  (pageNum === currentPage - 2 && currentPage > 3) ||
+                  (pageNum === currentPage + 2 && currentPage < totalPages - 2)
+                ) {
+                  return (
+                    <span key={pageNum} className="px-2 text-slate-400 dark:text-slate-500">
+                      ...
+                    </span>
+                  );
+                }
+                return null;
+              })}
+
+              <button
+                onClick={() => {
+                  setCurrentPage(prev => Math.min(totalPages, prev + 1));
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-lg border border-slate-300 dark:border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                aria-label="Next page"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
             </motion.div>
           )}
         </div>
