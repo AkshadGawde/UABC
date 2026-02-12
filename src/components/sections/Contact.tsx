@@ -11,7 +11,7 @@ export const Contact = () => {
   const shouldReduce = useShouldReduceMotion();
   const disableMotion = isMobile || shouldReduce;
   return (
-    <section id="contact" className="py-8 sm:py-10 lg:py-14 min-h-screen flex items-center snap-start bg-light-bg dark:bg-dark-bg relative overflow-hidden transition-colors duration-300">
+    <section id="contact" className="py-8 sm:py-10 lg:py-14 min-h-screen flex items-center bg-light-bg dark:bg-dark-bg relative overflow-hidden transition-colors duration-300">
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="bg-white dark:bg-[#050a18] border border-slate-200 dark:border-white/10 rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-10 overflow-hidden relative shadow-2xl transition-colors duration-300">
           

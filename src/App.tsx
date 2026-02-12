@@ -152,7 +152,7 @@ const App = () => {
                     isDark={theme === 'dark'} 
                     toggleTheme={toggleTheme}
                   />
-                  <main>
+                  <main className="pt-[72px]">
                     <PageTransition transitionType="fade">
                       <Routes>
                         <Route path="/" element={<Home />} />

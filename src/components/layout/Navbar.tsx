@@ -95,9 +95,8 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
 
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white dark:bg-dark-bg border-b border-slate-200 dark:border-white/5 ${
-        isScrolled 
-          ? 'md:backdrop-blur-md py-3 shadow-lg shadow-brand-900/5 dark:shadow-brand-900/10' 
+      className={`fixed top-0 left-0 right-0 z-[9999] w-full transition-all duration-300 bg-white dark:bg-dark-bg ${isScrolled 
+          ? 'py-3 shadow-md shadow-black/5' 
           : 'py-6'
       }`}
     >

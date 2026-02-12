@@ -72,7 +72,7 @@ export const Services = () => {
     <section
       ref={ref}
       id="services"
-      className="py-10 sm:py-12 lg:py-16 min-h-screen flex flex-col justify-center snap-start bg-slate-50 dark:bg-[#01040f] relative border-t border-slate-200 dark:border-white/5 overflow-hidden"
+      className="py-10 sm:py-12 lg:py-16 min-h-screen flex flex-col justify-center bg-slate-50 dark:bg-[#01040f] relative border-t border-slate-200 dark:border-white/5 overflow-hidden"
     >
       {/* BACKGROUND BRAND — CENTERED */}
       {!disableParallax && (

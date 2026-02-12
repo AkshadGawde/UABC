@@ -23,7 +23,7 @@ export const About = () => {
   const xImage = disableParallax ? 0 : useTransform(scrollYProgress, [0, 1], [20, -20]);
 
   return (
-    <section ref={ref} id="about" className="pt-0 pb-8 sm:py-10 lg:py-14 min-h-[80vh] sm:min-h-screen flex items-center snap-start bg-light-bg dark:bg-dark-bg relative transition-colors duration-300 overflow-hidden">
+    <section ref={ref} id="about" className="pt-0 pb-8 sm:py-10 lg:py-14 min-h-[80vh] sm:min-h-screen flex items-center bg-light-bg dark:bg-dark-bg relative transition-colors duration-300 overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 lg:gap-10 items-center">
           <motion.div
