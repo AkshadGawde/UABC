@@ -48,55 +48,55 @@ const App = () => {
   };
 
   // Show loading screen only once on initial app load
-  useEffect(() => {
-    const hasLoaded = sessionStorage.getItem('app-loaded');
-    
-    if (!hasLoaded) {
-      // Create loading screen
-      const loader = document.createElement('div');
-      loader.id = 'app-loader';
-      loader.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-        z-index: 99999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: opacity 0.5s ease;
-      `;
-      loader.innerHTML = `
-        <div style="text-align: center;">
-          <div style="width: 60px; height: 60px; border: 4px solid rgba(255, 255, 255, 0.1); border-top-color: #2563EB; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
-          <div style="color: white; margin-top: 20px; font-size: 16px; font-weight: 600; letter-spacing: 2px;">Loading...</div>
-        </div>
-      `;
-      
-      const style = document.createElement('style');
-      style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
-      document.head.appendChild(style);
-      document.body.appendChild(loader);
-      
-      // Scroll to top immediately
-      window.scrollTo(0, 0);
-      
-      // Remove loader after a short delay
-      setTimeout(() => {
-        loader.style.opacity = '0';
-        setTimeout(() => {
-          loader.remove();
-          style.remove();
-          sessionStorage.setItem('app-loaded', 'true');
-        }, 500);
-      }, 800);
-    } else {
-      // Ensure scroll to top even if loader is skipped
-      window.scrollTo(0, 0);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const hasLoaded = sessionStorage.getItem('app-loaded');
+  //   
+  //   if (!hasLoaded) {
+  //     // Create loading screen
+  //     const loader = document.createElement('div');
+  //     loader.id = 'app-loader';
+  //     loader.style.cssText = `
+  //       position: fixed;
+  //       top: 0;
+  //       left: 0;
+  //       width: 100%;
+  //       height: 100%;
+  //       background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  //       z-index: 99999;
+  //       display: flex;
+  //       align-items: center;
+  //       justify-content: center;
+  //       transition: opacity 0.5s ease;
+  //     `;
+  //     loader.innerHTML = `
+  //       <div style="text-align: center;">
+  //         <div style="width: 60px; height: 60px; border: 4px solid rgba(255, 255, 255, 0.1); border-top-color: #2563EB; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+  //         <div style="color: white; margin-top: 20px; font-size: 16px; font-weight: 600; letter-spacing: 2px;">Loading...</div>
+  //       </div>
+  //     `;
+  //     
+  //     const style = document.createElement('style');
+  //     style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
+  //     document.head.appendChild(style);
+  //     document.body.appendChild(loader);
+  //     
+  //     // Scroll to top immediately
+  //     window.scrollTo(0, 0);
+  //     
+  //     // Remove loader after a short delay
+  //     setTimeout(() => {
+  //       loader.style.opacity = '0';
+  //       setTimeout(() => {
+  //         loader.remove();
+  //         style.remove();
+  //         sessionStorage.setItem('app-loaded', 'true');
+  //       }, 500);
+  //     }, 800);
+  //   } else {
+  //     // Ensure scroll to top even if loader is skipped
+  //     window.scrollTo(0, 0);
+  //   }
+  // }, []);
 
   return (
     <AuthProvider>

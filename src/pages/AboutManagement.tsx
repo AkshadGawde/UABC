@@ -48,7 +48,7 @@ export const AboutManagement = () => {
               <div className="lg:col-span-1">
                 <div className="relative group">
                   {/* Gradient Border */}
-                  <div className="p-[3px] rounded-2xl bg-gradient-to-br from-accent-500 via-purple-500 to-pink-500 shadow-xl">
+                  <div className="p-[3px] rounded-2xl bg-black shadow-xl">
                     
                     {/* Inner Frame */}
                     <div className="rounded-2xl bg-white dark:bg-dark-card p-3">
