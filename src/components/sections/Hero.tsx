@@ -4,6 +4,8 @@ import { useIsMobile, useShouldReduceMotion } from '../../utils/useDevice';
 import { optimizeImage, getInsightImageUrl } from '../../utils/imageUtils';
 import { ArrowRight, TrendingUp, ShieldCheck, FileText } from 'lucide-react';
 import { insightsService } from '../../admin/services/insightsService';
+import { CheckCircle2} from 'lucide-react';
+
 
 // Interface for insight data
 interface InsightCard {
@@ -225,27 +227,32 @@ export const Hero = () => {
             className="max-w-2xl space-y-2 sm:space-y-4"
           >
             <p className="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-400 leading-relaxed border-l-2 border-accent-500/30 pl-3 sm:pl-4">
-              Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001-2013 certified actuarial and Benefits consulting firm serving multiple clients in India and across the world. We have 80+ years of total experience delivering quality service with a singular objective to enhance client value and experience.
+             Universal Actuaries and Benefit Consultant (UABC) is an ISO 27001:2022–certified Actuarial and Benefits Consulting Firm serving clients across India and globally. With over 80 years of combined relevant experience, we bring deep industry knowledge and expertise, delivering high-quality services with a singular focus on enhancing client value and experience.
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-[11px] sm:text-xs md:text-sm">
-              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                <div className="w-1.5 h-1.5 bg-accent-500 rounded-full shrink-0"></div>
-                <span>Global Expertise, Local Insight</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                <div className="w-1.5 h-1.5 bg-accent-500 rounded-full shrink-0"></div>
-                <span>Data-Driven Decision Making</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                <div className="w-1.5 h-1.5 bg-accent-500 rounded-full shrink-0"></div>
-                <span>Sustainable Growth Strategies</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                <div className="w-1.5 h-1.5 bg-accent-500 rounded-full shrink-0"></div>
-                <span>Comprehensive Risk Management</span>
-              </div>
-            </div>
+
+  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+    <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-accent-500 shrink-0" />
+    <span>Global Expertise, Local Insight</span>
+  </div>
+
+  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+    <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-accent-500 shrink-0" />
+    <span>Data-Driven Decision Making</span>
+  </div>
+
+  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+    <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-accent-500 shrink-0" />
+    <span>Long-term Financial Sustainability</span>
+  </div>
+
+  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+    <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-accent-500 shrink-0" />
+    <span>Comprehensive Risk Management</span>
+  </div>
+
+</div>
           </motion.div>
           
           <motion.div 
@@ -254,8 +261,8 @@ export const Hero = () => {
             transition={{ duration: 0.6, delay: 0.6 }}
             className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 pt-1"
           >
-            <a href="/services" className="group px-4 sm:px-5 py-2 sm:py-2.5 bg-slate-900 dark:bg-white text-white dark:text-dark-bg font-bold rounded-md flex items-center justify-center sm:justify-start gap-2 hover:bg-accent-600 dark:hover:bg-slate-200 transition-colors shadow-lg hover:shadow-accent-500/25 text-xs sm:text-sm">
-              Explore Services
+            <a href="/about" className="group px-4 sm:px-5 py-2 sm:py-2.5 bg-slate-900 dark:bg-white text-white dark:text-dark-bg font-bold rounded-md flex items-center justify-center sm:justify-start gap-2 hover:bg-accent-600 dark:hover:bg-slate-200 transition-colors shadow-lg hover:shadow-accent-500/25 text-xs sm:text-sm">
+              Explore 
               <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-white dark:text-accent-600 group-hover:translate-x-1 transition-transform" />
             </a>
           </motion.div>

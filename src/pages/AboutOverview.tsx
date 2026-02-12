@@ -14,7 +14,8 @@ import {
   BarChart3,
   Heart,
   Star,
-  Sparkles
+  Sparkles,
+  ShieldCheck
 } from 'lucide-react';
 
 /**
@@ -83,31 +84,42 @@ export const AboutOverview = () => {
   ];
 
   const coreValues = [
-    {
-      icon: Award,
-      title: "Excellence",
-      description: "Committed to delivering the highest quality of service",
-      gradient: "from-blue-500 to-cyan-500"
-    },
-    {
-      icon: Shield,
-      title: "Integrity",
-      description: "Maintaining ethical standards in everything we do",
-      gradient: "from-green-500 to-emerald-500"
-    },
-    {
-      icon: Sparkles,
-      title: "Innovation",
-      description: "Embracing new technologies and methodologies",
-      gradient: "from-purple-500 to-pink-500"
-    },
-    {
-      icon: Heart,
-      title: "Client Focus",
-      description: "Your success is our primary objective",
-      gradient: "from-red-500 to-orange-500"
-    }
-  ];
+  {
+    icon: TrendingUp,
+    title: "Current & Future-Ready",
+    description:
+      "Accurate employee benefit valuations ensuring compliance today and readiness for future regulatory changes.",
+    gradient: "from-blue-500 to-cyan-500"
+  },
+  {
+    icon: Award,
+    title: "Excellence in Service",
+    description:
+      "High industry standards, consistent quality, and reliable delivery across every engagement.",
+    gradient: "from-green-500 to-emerald-500"
+  },
+  {
+    icon: Zap,
+    title: "Efficiency at its Best",
+    description:
+      "Fast turnaround times without compromising accuracy, quality, or compliance.",
+    gradient: "from-purple-500 to-pink-500"
+  },
+  {
+    icon: ShieldCheck,
+    title: "Certified Security",
+    description:
+      "ISO 27001:2022 certified processes ensuring data security, compliance, and operational integrity.",
+    gradient: "from-red-500 to-orange-500"
+  },
+  {
+    icon: Users,
+    title: "Experienced Leadership",
+    description:
+      "80+ years of combined actuarial and industry experience guiding every engagement.",
+    gradient: "from-red-500 to-orange-500"
+  }
+];
 
   return (
     <div ref={containerRef} className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24 relative overflow-hidden">
@@ -326,51 +338,75 @@ export const AboutOverview = () => {
       </section>
 
       {/* Core Values - Bento Grid */}
-      <section className="py-20 bg-slate-50 dark:bg-dark-card">
-        <div className="container mx-auto px-6">
+<section className="py-20 bg-slate-50 dark:bg-dark-card">
+  <div className="container mx-auto px-6">
+
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="text-center mb-16"
+    >
+      <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+        Who We <span className="text-accent-600 dark:text-accent-500">Are</span>
+      </h2>
+      <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+        The principles that guide everything we do
+      </p>
+    </motion.div>
+
+    <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-6">
+      {coreValues.map((value, index) => {
+        const IconComponent = value.icon;
+
+        return (
           <motion.div
+            key={index}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            transition={{ delay: index * 0.1 }}
+            whileHover={{ y: -10, scale: 1.02 }}
+            className={`group relative 
+              lg:col-span-2 
+              ${index === 3 ? "lg:col-start-2" : ""}
+            `}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              Our Core <span className="text-accent-600 dark:text-accent-500">Values</span>
-            </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              The principles that guide everything we do
-            </p>
-          </motion.div>
+            {/* Hover Gradient Background */}
+            <div
+              className={`absolute inset-0 bg-gradient-to-br ${value.gradient} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity`}
+            />
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {coreValues.map((value, index) => {
-              const IconComponent = value.icon;
-              return (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ y: -10, scale: 1.02 }}
-                  className="group relative"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br ${value.gradient} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity" />
-                  <div className="relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg group-hover:shadow-2xl transition-all border border-slate-200 dark:border-slate-700">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className={`w-12 h-12 bg-gradient-to-br ${value.gradient} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0`}>
-                        <IconComponent className="w-6 h-6 text-white" />
-                      </div>
-                      <h3 className="text-lg font-bold text-slate-900 dark:text-white">{value.title}</h3>
-                    </div>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm">{value.description}</p>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+            {/* Card */}
+            <div className="relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg group-hover:shadow-2xl transition-all border border-slate-200 dark:border-slate-700">
+
+              <div className="flex items-center gap-4 mb-6">
+                <div
+  className={`w-12 h-12 rounded-xl flex items-center justify-center 
+  bg-slate-100 dark:bg-slate-700
+  group-hover:bg-accent-50 dark:group-hover:bg-slate-600
+  transition-all duration-300 flex-shrink-0`}
+>
+  <IconComponent className="w-6 h-6 text-accent-600 dark:text-accent-400 group-hover:scale-110 transition-transform" />
+</div>
+
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  {value.title}
+                </h3>
+              </div>
+
+              <p className="text-slate-600 dark:text-slate-400 text-sm">
+                {value.description}
+              </p>
+
+            </div>
+          </motion.div>
+        );
+      })}
+    </div>
+
+  </div>
+</section>
 
       {/* Expertise Areas - Modern Card Grid */}
       <section className="py-20">

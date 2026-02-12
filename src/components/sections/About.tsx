@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useIsMobile, useShouldReduceMotion } from '../../utils/useDevice';
 import { optimizeImage } from '../../utils/imageUtils';
 import { CheckCircle2, Building2 } from 'lucide-react';
-
+import { ArrowRight} from 'lucide-react';
 /**
  * About Section
  */
@@ -36,7 +36,7 @@ export const About = () => {
             <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-1 sm:mb-3 text-xs sm:text-sm">Who We Are</div>
             <h2 className="text-xl sm:text-2xl lg:text-4xl font-bold mb-1.5 sm:mb-4 text-slate-900 dark:text-white">
               Empowering Business <br />
-              <span className="text-slate-500">Through Actuarial Science.</span>
+              <span className="text-slate-500">Through Actuarial Services.</span>
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm lg:text-base leading-relaxed mb-2 sm:mb-6">
               Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001 -2013 certified
@@ -46,10 +46,10 @@ a singular objective to enhance client value and experience
             </p>
             <ul className="space-y-1.5 sm:space-y-4">
               {[
-                "Global Expertise, Local Insight",
-                "Data-Driven Decision Making",
-                "Sustainable Growth Strategies",
-                "Comprehensive Risk Management"
+                "Employee Benefits",
+                "Insurance Consulting",
+                "Retirement Consulting",
+                "Benefit Consulting"
               ].map((item, i) => (
                 <motion.li 
                   key={i}
@@ -64,7 +64,20 @@ a singular objective to enhance client value and experience
                 </motion.li>
               ))}
             </ul>
+
+            <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 pt-1"
+          >
+            <a href="/services" className="group px-4 sm:px-5 py-2 sm:py-2.5 bg-slate-900 dark:bg-white text-white dark:text-dark-bg font-bold rounded-md flex items-center justify-center sm:justify-start gap-2 hover:bg-accent-600 dark:hover:bg-slate-200 transition-colors shadow-lg hover:shadow-accent-500/25 text-xs sm:text-sm mt-5">
+              Explore Services 
+              <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-white dark:text-accent-600 group-hover:translate-x-1 transition-transform" />
+            </a>
           </motion.div>
+          </motion.div>
+          
           
           <motion.div
             style={{ y: yImage, x: xImage }}
@@ -103,8 +116,10 @@ a singular objective to enhance client value and experience
               </p>
             </motion.div>
           </motion.div>
+          
         </div>
       </div>
+       
     </section>
   );
 };
