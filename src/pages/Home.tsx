@@ -3,7 +3,7 @@ import { Hero } from '../components/sections/Hero';
 import { About } from '../components/sections/About';
 // import { Services } from '../components/sections/Services';
 import { Stats } from '../components/sections/Stats';
-// import { Partners } from '../components/sections/Partners';
+import { Partners } from '../components/sections/Partners';
 import { Contact } from '../components/sections/Contact';
 // import { TrustedLeaderCarousel } from '../components/sections/TrustedLeaderCarousel';
 import { ScrollReveal } from '../components/PageTransition';
@@ -19,7 +19,7 @@ export const Home = () => {
       {/* <TrustedLeaderCarousel /> */}
       {/* <Services /> */}
       <Stats />
-      {/* <Partners /> */}
+      <Partners />
       <Contact />
     </>
   );

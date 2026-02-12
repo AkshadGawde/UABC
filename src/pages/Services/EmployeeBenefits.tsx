@@ -521,7 +521,7 @@ export const EmployeeBenefits = () => {
       </section>
 
       {/* Ticker Section */}
-      <section className="py-8 md:py-12 lg:py-16 bg-slate-900 overflow-hidden border-t border-slate-800">
+      {/* <section className="py-8 md:py-12 lg:py-16 bg-slate-900 overflow-hidden border-t border-slate-800">
         <div className="container mx-auto px-6 mb-8 text-center">
            <h3 className="text-xl font-bold text-white mb-2">Expertise in Global Accounting Standards</h3>
         </div>
@@ -539,7 +539,7 @@ export const EmployeeBenefits = () => {
             ))}
           </motion.div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA */}
       <section className="py-24 bg-gradient-to-br from-accent-600 via-accent-500 to-blue-600 relative overflow-hidden">

@@ -53,7 +53,7 @@ const sections = [
       "Development of New product models",
       "Premium rating and loss ratio analysis for non-life and health products",
     ],
-    image: "https://images.unsplash.com/photo-1554224154-260327c0d14d?auto=format&fit=crop&q=80&w=800",
+    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800",
     icon: Target,
   },
 ];

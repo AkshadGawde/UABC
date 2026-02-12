@@ -131,60 +131,60 @@ export const Careers = () => {
   ];
 
   const benefits = [
-    {
-      icon: Heart,
-      title: "Health & Wellness",
-      description: "Comprehensive health insurance, mental health support, and wellness programs."
-    },
-    {
-      icon: TrendingUp,
-      title: "Professional Growth",
-      description: "Continuous learning opportunities, conference attendance, and career advancement paths."
-    },
-    {
-      icon: Coffee,
-      title: "Work-Life Balance",
-      description: "Flexible working hours, remote work options, and generous vacation time."
-    },
-    {
-      icon: Award,
-      title: "Exam Support",
-      description: "Full support for actuarial exams including study time, materials, and bonuses."
-    },
-    {
-      icon: DollarSign,
-      title: "Competitive Compensation",
-      description: "Market-leading salaries, performance bonuses, and equity participation."
-    },
-    {
-      icon: Globe,
-      title: "Global Opportunities",
-      description: "Work with international teams and opportunities for global assignments."
-    }
-  ];
+  {
+    icon: Users,
+    title: "Collaborative Culture",
+    description:
+      "We believe the best results come from diverse teams working together."
+  },
+  {
+    icon: TrendingUp,
+    title: "Professional Growth",
+    description:
+      "Continuous learning opportunities, conference attendance, and clear career advancement paths."
+  },
+  {
+    icon: Heart,
+    title: "Health & Wellness",
+    description:
+      "Comprehensive health insurance, mental health support, and wellness programs."
+  },
+  {
+    icon: Globe,
+    title: "Global Opportunities",
+    description:
+      "Work with international teams and gain exposure to global assignments."
+  },
+  {
+    icon: Coffee,
+    title: "Work-Life Balance",
+    description:
+      "Flexible working hours, remote work options, and generous vacation policies."
+  }
+];
 
-  const values = [
-    {
-      icon: Users,
-      title: "Collaborative Culture",
-      description: "We believe the best results come from diverse teams working together."
-    },
-    {
-      icon: Zap,
-      title: "Innovation First",
-      description: "We encourage creative thinking and embrace new technologies and methodologies."
-    },
-    {
-      icon: GraduationCap,
-      title: "Continuous Learning",
-      description: "We invest in our people's growth and provide resources for ongoing education."
-    },
-    {
-      icon: Globe,
-      title: "Global Impact",
-      description: "Our work helps organizations worldwide manage risk and make better decisions."
-    }
-  ];
+  // const values = [
+  //   {
+  //     icon: Users,
+  //     title: "Collaborative Culture",
+  //     description: "We believe the best results come from diverse teams working together."
+  //   },
+  //   {
+  //     icon: Zap,
+  //     title: "Innovation First",
+  //     description: "We encourage creative thinking and embrace new technologies and methodologies."
+  //   },
+  //   {
+  //     icon: GraduationCap,
+  //     title: "Continuous Learning",
+  //     description: "We invest in our people's growth and provide resources for ongoing education."
+  //   },
+  //   {
+  //     icon: Globe,
+  //     title: "Global Impact",
+  //     description: "Our work helps organizations worldwide manage risk and make better decisions."
+  //   }
+  // ];
 
   const filteredJobs = jobOpenings.filter(job => {
     const matchesDepartment = selectedDepartment === 'All' || job.department === selectedDepartment;
@@ -238,11 +238,9 @@ export const Careers = () => {
                 <span className="text-slate-500">Opportunity</span>
               </h2>
               <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed mb-8">
-                At Universal Actuarials, we don't just offer jobs – we provide careers that challenge, 
-                inspire, and reward. Our team of experts works on cutting-edge projects that make a 
-                real impact in the financial services industry.
+                At Universal Actuarials, we don't just offer jobs – we provide careers that challenge, inspire, and reward. Our team of experts works on cutting-edge projects that make a real impact in the financial services industry.
               </p>
-              <div className="grid grid-cols-2 gap-8">
+              {/* <div className="grid grid-cols-2 gap-8">
                 <div>
                   <div className="text-3xl font-bold text-accent-600 dark:text-accent-500 mb-2">150+</div>
                   <div className="text-slate-600 dark:text-slate-400">Team Members</div>
@@ -251,7 +249,7 @@ export const Careers = () => {
                   <div className="text-3xl font-bold text-accent-600 dark:text-accent-500 mb-2">25+</div>
                   <div className="text-slate-600 dark:text-slate-400">Countries</div>
                 </div>
-              </div>
+              </div> */}
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: 50 }}
@@ -269,7 +267,7 @@ export const Careers = () => {
           </div>
 
           {/* Company Values */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -282,9 +280,9 @@ export const Careers = () => {
             <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
               What Drives Our Success
             </h2>
-          </motion.div>
+          </motion.div> */}
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => {
               const IconComponent = value.icon;
               return (
@@ -304,7 +302,7 @@ export const Careers = () => {
                 </motion.div>
               );
             })}
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -319,34 +317,45 @@ export const Careers = () => {
             className="text-center mb-16"
           >
             <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
-              Employee Benefits
+              Our Values
             </div>
             <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
-              Comprehensive Benefits Package
+              What Drives Our Success
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {benefits.map((benefit, index) => {
-              const IconComponent = benefit.icon;
-              return (
-                <motion.div
-                  key={benefit.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-white dark:bg-dark-bg p-6 rounded-xl"
-                >
-                  <div className="w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center mb-4">
-                    <IconComponent className="w-6 h-6 text-accent-600 dark:text-accent-500" />
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3">{benefit.title}</h3>
-                  <p className="text-slate-600 dark:text-slate-400">{benefit.description}</p>
-                </motion.div>
-              );
-            })}
-          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-8">
+  {benefits.map((benefit, index) => {
+    const IconComponent = benefit.icon;
+
+    return (
+      <motion.div
+        key={benefit.title}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: index * 0.1 }}
+        className={`bg-white dark:bg-dark-bg p-6 rounded-xl flex gap-4 w-full
+          lg:col-span-2
+          ${index === 3 ? "lg:col-start-2" : ""}
+        `}
+      >
+        <div className="w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+          <IconComponent className="w-6 h-6 text-accent-600 dark:text-accent-500" />
+        </div>
+
+        <div>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3">
+            {benefit.title}
+          </h3>
+          <p className="text-slate-600 dark:text-slate-400">
+            {benefit.description}
+          </p>
+        </div>
+      </motion.div>
+    );
+  })}
+</div>
         </div>
       </section>
 
@@ -487,9 +496,9 @@ export const Careers = () => {
               <Link to="/contact" className="inline-block px-8 py-4 bg-white text-accent-600 rounded-lg font-bold text-lg hover:bg-accent-50 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-1 text-center">
                 Submit Your Resume
               </Link>
-              <a href="mailto:careers@uabc.com" className="inline-block px-8 py-4 border-2 border-white text-white rounded-lg font-bold text-lg hover:bg-white hover:text-accent-600 transition-colors text-center">
+              {/* <a href="gawdeakshad@gmail.com" className="inline-block px-8 py-4 border-2 border-white text-white rounded-lg font-bold text-lg hover:bg-white hover:text-accent-600 transition-colors text-center">
                 Email HR Team
-              </a>
+              </a> */}
             </div>
           </motion.div>
         </div>

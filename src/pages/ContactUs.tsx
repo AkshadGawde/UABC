@@ -61,7 +61,7 @@ export const ContactUs = () => {
       phone: "+91 22 49632112",
       email: "universalactuaries@uabc.co.in",
       timezone: "IST",
-      image: "https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?auto=format&fit=crop&q=80&w=600"
+      image: "/public/KBP.jpeg"
     }
   ];
 
@@ -71,7 +71,7 @@ export const ContactUs = () => {
       title: "Phone",
       description: "Reach our Mumbai headquarters",
       contact: "+91 22 49632112",
-      availability: "Mon-Fri 9AM-6PM IST"
+      availability: "Mon-Fri 10am-6PM IST"
     },
     {
       icon: Mail,
@@ -85,7 +85,7 @@ export const ContactUs = () => {
       title: "Email (Chitra Jayasimha)",
       description: "Direct contact",
       contact: "chitra.jayasimha@uabc.co.in",
-      availability: "Mon-Fri 9AM-6PM IST"
+      availability: "Mon-Fri 10am-6PM IST"
     }
   ];
 
@@ -377,9 +377,7 @@ export const ContactUs = () => {
                     <div>
                       <h4 className="font-bold text-slate-900 dark:text-white mb-1">Business Hours</h4>
                       <p className="text-slate-600 dark:text-slate-400">
-                        Monday - Friday: 9:00 AM - 6:00 PM IST<br />
-                        Saturday: 10:00 AM - 2:00 PM IST<br />
-                        Sunday: Closed
+                        Monday - Friday: 10:00 AM - 6:00 PM IST<br />
                       </p>
                     </div>
                   </div>
@@ -392,8 +390,8 @@ export const ContactUs = () => {
                 <div className="flex gap-4">
                   {[
                     { icon: Linkedin, href: "https://www.linkedin.com/company/universal-actuaries-and-benefit-consultants/", label: "LinkedIn" },
-                    { icon: Twitter, href: "#", label: "Twitter" },
-                    { icon: Facebook, href: "#", label: "Facebook" }
+                    // { icon: Twitter, href: "#", label: "Twitter" },
+                    // { icon: Facebook, href: "#", label: "Facebook" }
                   ].map((social) => {
                     const IconComponent = social.icon;
                     return (
@@ -426,11 +424,11 @@ export const ContactUs = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
+            {/* <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
               Global Presence
-            </div>
+            </div> */}
             <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
-              Our Office Locations
+              Our Office Location
             </h2>
           </motion.div>
 

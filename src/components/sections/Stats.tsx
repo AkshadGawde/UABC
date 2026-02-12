@@ -2,41 +2,46 @@ import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { Target, Lightbulb } from 'lucide-react';
 import { useIsMobile, useShouldReduceMotion } from '../../utils/useDevice';
+import { IndianRupee, Clock, BadgeCheck, Headset } from "lucide-react";
 
 // --- Types & Data ---
 
 const cardsData = [
   {
-    title: "Communication",
-    icon: Target,
-    content: "Transparent reporting with proactive updates and consistent client engagement.",
+    title: "Competitive Pricing",
+    icon: IndianRupee,
+    content:
+      "Transparent and competitive pricing designed to deliver maximum value without compromising quality.",
     gradient: "from-blue-500/20 via-indigo-500/5 to-transparent",
     border: "group-hover:border-blue-500/50",
     iconColor: "text-blue-400"
   },
   {
-    title: "Certification",
-    icon: Lightbulb,
-    content: "ISO 27001:2013 certified processes ensuring secure and compliant operations.",
+    title: "Incredible TAT",
+    icon: Clock,
+    content:
+      "Quick turnaround times ensuring timely delivery without delays or operational disruption.",
     gradient: "from-purple-500/20 via-fuchsia-500/5 to-transparent",
     border: "group-hover:border-purple-500/50",
     iconColor: "text-purple-400"
   },
   {
-    title: "Support",
-    icon: Lightbulb,
-    content: "24×7 operational support for uninterrupted service and faster issue resolution.",
-    gradient: "from-purple-500/20 via-fuchsia-500/5 to-transparent",
-    border: "group-hover:border-purple-500/50",
-    iconColor: "text-purple-400"
+    title: "Quality & Comprehensive Work",
+    icon: BadgeCheck,
+    content:
+      "Accurate, detailed, and well-structured deliverables aligned with industry and compliance standards.",
+    gradient: "from-emerald-500/20 via-green-500/5 to-transparent",
+    border: "group-hover:border-emerald-500/50",
+    iconColor: "text-emerald-400"
   },
   {
-    title: "Actuary",
-    icon: Lightbulb,
-    content: "Guidance from qualified actuaries in India and the UK with strong regulatory expertise.",
-    gradient: "from-purple-500/20 via-fuchsia-500/5 to-transparent",
-    border: "group-hover:border-purple-500/50",
-    iconColor: "text-purple-400"
+    title: "24/7 Availability",
+    icon: Headset,
+    content:
+      "Round-the-clock support ensuring continuous assistance whenever you need it.",
+    gradient: "from-orange-500/20 via-amber-500/5 to-transparent",
+    border: "group-hover:border-orange-500/50",
+    iconColor: "text-orange-400"
   }
 ];
 
@@ -146,8 +151,8 @@ export const Stats = () => {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-xl sm:text-2xl lg:text-4xl font-bold mb-2 sm:mb-3 text-slate-900 dark:text-white">
-              Driving Digital
-              <span className="text-accent-600 dark:text-accent-500"> Transformation </span>
+              Why Choose
+              <span className="text-accent-600 dark:text-accent-500"> Us</span>
             </h2>
             <p className="text-slate-700 dark:text-slate-400 text-xs sm:text-sm lg:text-base">
               Building the future with precision, passion, and unparalleled expertise.

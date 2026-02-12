@@ -97,7 +97,7 @@ a singular objective to enhance client value and experience
               <div className="absolute inset-0 bg-gradient-to-t from-brand-900/50 to-transparent mix-blend-multiply dark:mix-blend-overlay" />
             </div>
             
-            <motion.div 
+            {/* <motion.div 
                whileHover={{ y: -5, scale: 1.02 }}
                transition={{ type: "spring", stiffness: 300 }}
                className="absolute -bottom-10 -left-10 bg-white dark:bg-dark-card border-l-4 border-accent-500 p-6 shadow-2xl max-w-xs hidden md:block rounded-r-lg z-10"
@@ -114,7 +114,7 @@ a singular objective to enhance client value and experience
               <p className="text-sm text-slate-500 dark:text-slate-400">
                  Setting the benchmark for actuarial consulting services across Europe and Asia.
               </p>
-            </motion.div>
+            </motion.div> */}
           </motion.div>
           
         </div>

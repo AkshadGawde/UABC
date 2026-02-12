@@ -78,9 +78,9 @@ export const AboutOverview = () => {
 
   const stats = [
     { value: "80+", label: "Years Combined Experience", icon: Star, color: "text-yellow-500" },
-    { value: "500+", label: "Clients Served", icon: Users, color: "text-blue-500" },
+    { value: "1500+", label: "Clients Served", icon: Users, color: "text-blue-500" },
     { value: "25+", label: "Countries", icon: Globe, color: "text-green-500" },
-    { value: "1000+", label: "Projects Delivered", icon: Zap, color: "text-purple-500" }
+    { value: "3000+", label: "Projects Delivered", icon: Zap, color: "text-purple-500" }
   ];
 
   const coreValues = [
@@ -88,35 +88,35 @@ export const AboutOverview = () => {
     icon: TrendingUp,
     title: "Current & Future-Ready",
     description:
-      "Accurate employee benefit valuations ensuring compliance today and readiness for future regulatory changes.",
+      "With us as your partner, your business is not only compliant today but also prepared for tomorrow by providing accurate and valuation of your statutory liabilities pertaining to employee benefits.",
     gradient: "from-blue-500 to-cyan-500"
   },
   {
     icon: Award,
     title: "Excellence in Service",
     description:
-      "High industry standards, consistent quality, and reliable delivery across every engagement.",
+      "Our commitment to adhering to the highest industry standards always guarantees unparalleled service quality. We aim at perfection but tolerate excellence.",
     gradient: "from-green-500 to-emerald-500"
   },
   {
     icon: Zap,
     title: "Efficiency at its Best",
     description:
-      "Fast turnaround times without compromising accuracy, quality, or compliance.",
+      "We pride ourselves on delivering the Quick turnaround times, enabling your business to move forward without compromising on quality and comprehensiveness.",
     gradient: "from-purple-500 to-pink-500"
   },
   {
     icon: ShieldCheck,
     title: "Certified Security",
     description:
-      "ISO 27001:2022 certified processes ensuring data security, compliance, and operational integrity.",
+      "As an ISO 27001:2022 certified partner, we prioritize the protection and integrity of your data. Ensuring compliance, efficiency and accountability across operations.",
     gradient: "from-red-500 to-orange-500"
   },
   {
     icon: Users,
     title: "Experienced Leadership",
     description:
-      "80+ years of combined actuarial and industry experience guiding every engagement.",
+      "With over 80 years of relevant, combined experience, we bring deep industry knowledge and expertise to every partnership.",
     gradient: "from-red-500 to-orange-500"
   }
 ];
@@ -409,7 +409,7 @@ export const AboutOverview = () => {
 </section>
 
       {/* Expertise Areas - Modern Card Grid */}
-      <section className="py-20">
+      {/* <section className="py-20">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -463,7 +463,7 @@ export const AboutOverview = () => {
             })}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
       <section className="py-24 bg-gradient-to-br from-accent-600 via-accent-500 to-blue-600 relative overflow-hidden">

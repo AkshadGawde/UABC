@@ -87,6 +87,61 @@ export default function BenefitConsulting() {
 
         {/* --- WHY AUDIT SECTION --- */}
         <section className="py-16">
+
+          {/* --- 4 STEP PROCESS --- */}
+        <section className="py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-slate-900 dark:text-white">
+              Our 4-Step Approach
+            </h2>
+            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              A systematic methodology to identify and resolve benefits compliance issues
+            </p>
+          </motion.div>
+          
+          <div className="relative">
+            {/* Desktop Connector Line */}
+            <div className="hidden md:block absolute top-20 left-0 w-full h-0.5 bg-gradient-to-r from-accent-200 via-accent-400 to-accent-200 dark:from-accent-700 dark:via-accent-500 dark:to-accent-700" />
+            
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              {howSteps.map((step, i) => (
+                <motion.div 
+                  key={step.title}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.15 }}
+                  className="relative z-10 flex flex-col items-center text-center"
+                >
+                  <motion.div 
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    className="w-20 h-20 rounded-full bg-gradient-to-br from-accent-500 to-accent-700 text-white flex items-center justify-center shadow-lg mb-6"
+                  >
+                    <step.icon className="w-10 h-10" />
+                  </motion.div>
+                  <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-slate-100 dark:border-slate-700 w-full hover:shadow-lg transition-shadow">
+                    <div className="text-xs font-bold text-accent-600 dark:text-accent-400 mb-2">
+                      STEP {i + 1}
+                    </div>
+                    <h4 className="font-bold text-lg text-slate-900 dark:text-white mb-2">
+                      {step.title}
+                    </h4>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                      {step.desc}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
           <ScrollReveal>
             <div className="text-center mb-12">
               <h2 className="text-2xl md:text-3xl font-bold mb-4 text-slate-900 dark:text-white">
@@ -168,60 +223,7 @@ export default function BenefitConsulting() {
         </section>
 
       
-        {/* --- 4 STEP PROCESS --- */}
-        <section className="py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-slate-900 dark:text-white">
-              Our 4-Step Approach
-            </h2>
-            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              A systematic methodology to identify and resolve benefits compliance issues
-            </p>
-          </motion.div>
-          
-          <div className="relative">
-            {/* Desktop Connector Line */}
-            <div className="hidden md:block absolute top-20 left-0 w-full h-0.5 bg-gradient-to-r from-accent-200 via-accent-400 to-accent-200 dark:from-accent-700 dark:via-accent-500 dark:to-accent-700" />
-            
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              {howSteps.map((step, i) => (
-                <motion.div 
-                  key={step.title}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: i * 0.15 }}
-                  className="relative z-10 flex flex-col items-center text-center"
-                >
-                  <motion.div 
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    className="w-20 h-20 rounded-full bg-gradient-to-br from-accent-500 to-accent-700 text-white flex items-center justify-center shadow-lg mb-6"
-                  >
-                    <step.icon className="w-10 h-10" />
-                  </motion.div>
-                  <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-slate-100 dark:border-slate-700 w-full hover:shadow-lg transition-shadow">
-                    <div className="text-xs font-bold text-accent-600 dark:text-accent-400 mb-2">
-                      STEP {i + 1}
-                    </div>
-                    <h4 className="font-bold text-lg text-slate-900 dark:text-white mb-2">
-                      {step.title}
-                    </h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                      {step.desc}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
+        
       </div>
 
       {/* --- CTA SECTION --- */}

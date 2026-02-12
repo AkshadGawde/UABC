@@ -113,7 +113,9 @@ export const AboutApproach = () => {
             >
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Our Approach</h3>
               <p className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
-                In today's world, financial risk, market instability and regulatory changes can make it difficult for a company to manage their Life, General or Health Insurance, retirement and benefit programs. This is especially those that align with business goals and optimize results for all stakeholders.
+                The ever-changing economic and geopolitical landscape continues to create financial risks and uncertainties that businesses must carefully navigate.
+Employee-related liabilities remain one of the most critical aspects of any organization, directly influencing its reputation, credibility, and brand value.
+Our approach is designed to safeguard your company against such contingencies, ensuring stability, compliance, and long-term resilience.
               </p>
               
               <div className="bg-gradient-to-r from-accent-50 to-blue-50 dark:from-accent-900/20 dark:to-blue-900/20 rounded-xl p-6">
@@ -123,7 +125,7 @@ export const AboutApproach = () => {
             </motion.div>
 
             {/* Differentiators Grid */}
-            <div className="grid md:grid-cols-2 gap-8">
+            {/* <div className="grid md:grid-cols-2 gap-8">
               {differentiators.map((diff, index) => {
                 const IconComponent = diff.icon;
                 return (
@@ -151,7 +153,7 @@ export const AboutApproach = () => {
                   </motion.div>
                 );
               })}
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

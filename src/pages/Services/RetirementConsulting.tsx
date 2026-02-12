@@ -119,7 +119,7 @@ export const RetirementConsulting: React.FC = () => {
         </section>
 
         {/* Why Choose Section */}
-        <section className="py-16">
+        {/* <section className="py-16">
           <ScrollReveal>
             <div className="text-center mb-12">
               <h2 className="text-2xl md:text-3xl font-bold mb-4 text-slate-900 dark:text-white">
@@ -151,7 +151,7 @@ export const RetirementConsulting: React.FC = () => {
               </motion.div>
             ))}
           </div>
-        </section>
+        </section> */}
 
         {/* Services Grid */}
         <section className="py-16 bg-slate-50 dark:bg-dark-card -mx-6 px-6">

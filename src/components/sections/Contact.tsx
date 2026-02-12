@@ -74,7 +74,7 @@ export const Contact = () => {
                     <h4 className="text-slate-900 dark:text-white font-bold text-sm sm:text-lg mb-1">Call Us</h4>
                     <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">Chitra Jayasimha: +91-9987-769-877</p>
                     <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">UABC: +91 22 49632112</p>
-                    <p className="text-slate-500 text-[10px] sm:text-xs mt-1">Mon-Fri, 9am - 6pm IST</p>
+                    <p className="text-slate-500 text-[10px] sm:text-xs mt-1">Mon-Fri, 10am - 6pm IST</p>
                   </div>
                 </motion.div>
               </div>

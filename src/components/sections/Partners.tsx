@@ -40,16 +40,16 @@ export const Partners = () => {
     { name: "Professional Services", icon: Briefcase },
   ];
 
-  const awards = [
-    { name: "Top Actuarial Firm 2024", icon: Award, color: "text-yellow-500" },
-    { name: "Employee Benefits Excellence", icon: Trophy, color: "text-blue-500" },
-    { name: "Retirement Planning Leader", icon: Star, color: "text-purple-500" },
-    { name: "Risk Management Innovation", icon: Zap, color: "text-orange-500" },
-    { name: "Client Trust Award", icon: Target, color: "text-green-500" },
-    { name: "Pension Consulting Expert", icon: Shield, color: "text-indigo-500" },
-    { name: "Insurance Advisory Excellence", icon: Building2, color: "text-cyan-500" },
-    { name: "Healthcare Benefits Specialist", icon: Activity, color: "text-red-500" },
-  ];
+  // const awards = [
+  //   { name: "Top Actuarial Firm 2024", icon: Award, color: "text-yellow-500" },
+  //   { name: "Employee Benefits Excellence", icon: Trophy, color: "text-blue-500" },
+  //   { name: "Retirement Planning Leader", icon: Star, color: "text-purple-500" },
+  //   { name: "Risk Management Innovation", icon: Zap, color: "text-orange-500" },
+  //   { name: "Client Trust Award", icon: Target, color: "text-green-500" },
+  //   { name: "Pension Consulting Expert", icon: Shield, color: "text-indigo-500" },
+  //   { name: "Insurance Advisory Excellence", icon: Building2, color: "text-cyan-500" },
+  //   { name: "Healthcare Benefits Specialist", icon: Activity, color: "text-red-500" },
+  // ];
 
   return (
     <section className="py-8 sm:py-10 lg:py-14 bg-slate-50 dark:bg-[#030612] relative border-t border-slate-200 dark:border-white/5 overflow-hidden transition-colors duration-300">
@@ -100,7 +100,7 @@ export const Partners = () => {
       </div>
 
       {/* Marquee 2 - Awards (Right) */}
-      <div className="relative w-full group">
+      {/* <div className="relative w-full group">
          <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-slate-50 dark:from-[#030612] to-transparent z-20 pointer-events-none" />
          <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-slate-50 dark:from-[#030612] to-transparent z-20 pointer-events-none" />
 
@@ -118,7 +118,7 @@ export const Partners = () => {
               ))}
             </motion.div>
          </div>
-      </div>
+      </div> */}
     </section>
   );
 };
