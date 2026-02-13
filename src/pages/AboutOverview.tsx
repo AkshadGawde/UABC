@@ -122,7 +122,7 @@ export const AboutOverview = () => {
 ];
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24 relative overflow-hidden">
+    <div ref={containerRef} className="min-h-screen bg-light-bg dark:bg-dark-bg pt-16 relative overflow-hidden">
       {/* Animated Background Elements */}
       <motion.div
         className="absolute inset-0 pointer-events-none overflow-hidden"
@@ -151,7 +151,7 @@ export const AboutOverview = () => {
                 className="inline-flex items-center gap-2 bg-accent-100 dark:bg-accent-900/30 px-4 py-2 rounded-full mb-6"
               >
                 <Sparkles className="w-4 h-4 text-accent-600 dark:text-accent-500" />
-                <span className="text-sm font-bold text-accent-700 dark:text-accent-400">ISO 27001-2013 Certified</span>
+                <span className="text-sm font-bold text-accent-700 dark:text-accent-400">ISO 27001-2022 Certified</span>
               </motion.div>
               
               <h1 className="text-2xl sm:text-2xl md:text-4xl lg:text-4xl font-bold mb-6 text-slate-900 dark:text-white leading-tight">
@@ -182,7 +182,7 @@ export const AboutOverview = () => {
                 >
                   <Award className="w-12 h-12 mb-4" />
                   <h3 className="text-xl font-bold mb-2">Certified Excellence</h3>
-                  <p className="text-sm text-accent-100">ISO 27001-2013 Certified</p>
+                  <p className="text-sm text-accent-100">ISO 27001-2022 Certified</p>
                 </motion.div>
 
                 <motion.div
@@ -279,13 +279,13 @@ export const AboutOverview = () => {
               </h2>
 
               <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
-                Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001-2013 certified actuarial and Benefits consulting firm serving multiple clients in India and across the world. We have 80+ years of total experience delivering quality service with a singular objective to enhance client value and experience.
+                Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001-2022 certified actuarial and Benefits consulting firm serving multiple clients in India and across the world. We have 80+ years of total experience delivering quality service with a singular objective to enhance client value and experience.
               </p>
 
               <div className="space-y-4">
                 {[
                   "80+ years of combined expertise",
-                  "ISO 27001-2013 certified operations",
+                  "ISO 27001-2022 certified operations",
                   "Global client portfolio across 25+ countries",
                   "Comprehensive actuarial solutions"
                 ].map((item, index) => (

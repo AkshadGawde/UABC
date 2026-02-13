@@ -118,7 +118,7 @@ export const AboutSuccessStories = () => {
   const IndustryIcon = industryColors[currentStory.industry].icon;
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24 overflow-hidden">
+    <div ref={containerRef} className="min-h-screen bg-light-bg dark:bg-dark-bg pt-16 overflow-hidden">
       {/* Animated Background Elements */}
       <div className="fixed inset-0 pointer-events-none">
         <motion.div 

@@ -153,7 +153,7 @@ export const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center pt-16 sm:pt-20 pb-6 sm:pb-0 overflow-hidden bg-light-bg dark:bg-dark-bg transition-colors duration-300">
+    <section id="home" className="relative min-h-screen flex items-center pb-6 sm:pb-0 overflow-hidden bg-light-bg dark:bg-dark-bg transition-colors duration-300">
       {/* Background Effects - Multi-directional Parallax */}
       <motion.div style={{ y: yBg, x: xBg }} className="absolute inset-0 z-0 pointer-events-none">
           {!disableParallax ? (

@@ -90,13 +90,13 @@ export const RetirementConsulting: React.FC = () => {
   return (
     <main 
       ref={containerRef}
-      className="min-h-screen bg-light-bg dark:bg-dark-bg text-slate-900 dark:text-white pt-24"
+      className="min-h-screen bg-light-bg dark:bg-dark-bg text-slate-900 dark:text-white pt-16"
       style={{ scrollBehavior: 'smooth' }}
     >
       <div className="container mx-auto px-6">
         
         {/* Hero Section */}
-        <section className="py-12 md:py-16 lg:py-20">
+        <section className="-mt-16 py-12 md:py-16 lg:py-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}

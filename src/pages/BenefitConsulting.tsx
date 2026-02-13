@@ -56,7 +56,7 @@ export default function BenefitConsulting() {
   return (
     <main 
       ref={containerRef}
-      className="min-h-screen bg-light-bg dark:bg-dark-bg text-slate-900 dark:text-white pt-24"
+      className="min-h-screen bg-light-bg dark:bg-dark-bg text-slate-900 dark:text-white pt-16"
       style={{ scrollBehavior: 'smooth' }}
     >
       <div className="container mx-auto px-6">

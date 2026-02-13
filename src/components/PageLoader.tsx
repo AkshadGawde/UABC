@@ -7,6 +7,12 @@ import { motion, AnimatePresence } from 'framer-motion';
  */
 export const PageLoader = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return false;
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -14,6 +20,21 @@ export const PageLoader = () => {
     }, 1500);
 
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    // Update dark mode state when it changes
+    const checkDarkMode = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    
+    checkDarkMode();
+    
+    // Listen for theme changes
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -26,25 +47,26 @@ export const PageLoader = () => {
           className="fixed inset-0 z-[99999] flex items-center justify-center bg-white dark:bg-slate-900"
         >
           <div className="relative flex items-center justify-center">
-            {/* Rotating outer circle */}
+            {/* Single Rotating Ring - GPU Accelerated */}
             <motion.div
-              className="absolute w-32 h-32 rounded-full border-4 border-transparent border-t-accent-600 border-r-accent-500"
-              animate={{ rotate: 360 }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "linear"
+              className="absolute w-32 h-32 rounded-full border-4 border-transparent"
+              style={{
+                willChange: 'transform',
+                borderTopColor: isDark ? '#ef4444' : '#2563eb',
+                borderRightColor: isDark ? '#ef4444' : '#2563eb',
+                borderTopStyle: 'solid',
+                borderRightStyle: 'solid',
+                borderBottomStyle: 'solid',
+                borderBottomColor: 'transparent',
+                borderLeftStyle: 'solid',
+                borderLeftColor: 'transparent',
               }}
-            />
-
-            {/* Rotating inner circle - opposite direction */}
-            <motion.div
-              className="absolute w-24 h-24 rounded-full border-4 border-transparent border-b-blue-500 border-l-purple-500"
-              animate={{ rotate: -360 }}
+              animate={{ rotate: 360 }}
               transition={{
                 duration: 2,
                 repeat: Infinity,
-                ease: "linear"
+                ease: "linear",
+                repeatType: "loop"
               }}
             />
 
@@ -61,7 +83,7 @@ export const PageLoader = () => {
               }}
             >
               <img
-                src="/UABC Logo.png"
+                src="/UABC-icon.png"
                 alt="UABC"
                 className="w-20 h-20 object-contain"
               />
@@ -72,7 +94,6 @@ export const PageLoader = () => {
     </AnimatePresence>
   );
 };
-
 /**
  * Route Change Loader
  * Shows a subtle loading indicator during route changes

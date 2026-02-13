@@ -433,10 +433,10 @@ export const EmployeeBenefits = () => {
   const stepsX = useMemo(() => useTransform(scrollYProgress, [0, 1], [-50, 50]), [scrollYProgress]);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-powder-50 dark:bg-slate-950 pt-20 font-slate-900 dark:text-slate-100">
+    <div ref={containerRef} className="min-h-screen bg-powder-50 dark:bg-slate-950 pt-12 font-slate-900 dark:text-slate-100">
       
       {/* Hero Section with Powder Blue */}
-      <section className="relative py-12 md:py-20 lg:py-32 overflow-hidden">
+      <section className="relative -mt-12 py-12 md:py-20 lg:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-powder-100 via-powder-50 to-white dark:from-dark-bg dark:via-slate-950 dark:to-dark-bg"></div>
         
         

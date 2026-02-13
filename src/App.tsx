@@ -6,7 +6,7 @@ import { ScrollToTop } from './components/layout/ScrollToTop';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { PageTransition } from './components/PageTransition';
-import { PageLoader, AnimatedScrollProgress } from './components/PageLoader';
+import { PageLoader } from './components/PageLoader';
 import { Home, AboutUs, AboutOverview, AboutApproach, AboutManagement, AboutSuccessStories, ServicesPage, EmployeeBenefits, Insights, InsightsCategory, Careers, ContactUs, InsuranceConsulting, RetirementConsulting, BenefitConsulting } from './pages';
 import { AuthProvider } from './admin/hooks/useAuth';
 import { AdminLogin } from './admin/pages/AdminLogin';
@@ -104,7 +104,6 @@ const App = () => {
         <PageLoader />
         <div className="antialiased min-h-screen font-sans selection:bg-accent-500/30 selection:text-accent-900 dark:selection:text-white">
           <ScrollToTop />
-          <AnimatedScrollProgress />
           
           <Routes>
             {/* Admin Routes */}

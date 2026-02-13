@@ -61,7 +61,7 @@ export const ContactUs = () => {
       phone: "+91 22 49632112",
       email: "universalactuaries@uabc.co.in",
       timezone: "IST",
-      image: "/public/KBP.jpeg"
+      image: "/KBP.jpeg"
     }
   ];
 
@@ -101,7 +101,7 @@ export const ContactUs = () => {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24 flex items-center justify-center">
+      <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-16 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -139,9 +139,9 @@ export const ContactUs = () => {
   }
 
   return (
-    <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24">
+    <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-16">
       {/* Hero Section */}
-      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
+      <section className="-mt-16 py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

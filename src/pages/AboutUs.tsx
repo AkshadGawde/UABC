@@ -168,9 +168,9 @@ export const AboutUs = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-24">
+    <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-16">
       {/* Hero Section */}
-      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
+      <section className="-mt-16 py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -186,7 +186,7 @@ export const AboutUs = () => {
               <span className="text-accent-600 dark:text-accent-500">Actuarial Consulting</span>
             </h1>
             <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-              ISO 27001-2013 certified firm with 80+ years of combined experience, 
+              ISO 27001-2022 certified firm with 80+ years of combined experience, 
               serving clients across India and worldwide with unwavering commitment to quality.
             </p>
           </motion.div>
@@ -245,13 +245,13 @@ export const AboutUs = () => {
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white">Our Company</h3>
                 </div>
                 <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-                  Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001-2013 certified actuarial and Benefits consulting firm serving multiple clients in India and across the world. We have 80+ years of total experience delivering quality service with a singular objective to enhance client value and experience.
+                  Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001-2022 certified actuarial and Benefits consulting firm serving multiple clients in India and across the world. We have 80+ years of total experience delivering quality service with a singular objective to enhance client value and experience.
                 </p>
                 
                 <div className="flex items-center gap-4 p-4 bg-accent-50 dark:bg-accent-900/20 rounded-lg">
                   <Award className="w-8 h-8 text-accent-600 dark:text-accent-500 flex-shrink-0" />
                   <div>
-                    <h4 className="font-bold text-slate-900 dark:text-white text-sm">ISO 27001-2013 Certified</h4>
+                    <h4 className="font-bold text-slate-900 dark:text-white text-sm">ISO 27001-2022 Certified</h4>
                     <p className="text-xs text-slate-600 dark:text-slate-400">Ensuring the highest standards of information security management</p>
                   </div>
                 </div>

@@ -65,10 +65,10 @@ const InsuranceConsulting = () => {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 font-sans text-slate-900 dark:text-slate-100"
+      className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-12 font-sans text-slate-900 dark:text-slate-100"
     >
       {/* Hero Section */}
-      <section className="relative py-12 md:py-20 lg:py-32 overflow-hidden">
+      <section className="relative -mt-12 py-12 md:py-20 lg:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-accent-50 via-white to-blue-50 dark:from-dark-bg dark:via-slate-950 dark:to-dark-bg"></div>
         <motion.div
           animate={{ rotate: 360 }}
