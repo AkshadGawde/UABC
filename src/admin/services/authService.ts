@@ -1,12 +1,9 @@
-// Use dev URL in development, production URL in production
-const API_URL = import.meta.env.MODE === 'development' 
-  ? (import.meta.env.VITE_API_URL_DEV || 'http://localhost:5000/api')
-  : (import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api');
+// API URL configuration
+const API_URL = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
 
 console.log('🔧 Auth Service Config:', {
-  mode: import.meta.env.MODE,
   apiUrl: API_URL,
-  isDev: import.meta.env.MODE === 'development'
+  viteApiUrl: import.meta.env.VITE_API_URL
 });
 
 export interface User {
@@ -120,7 +117,7 @@ class AuthService {
       if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
         return {
           success: false,
-          message: 'Cannot connect to backend server. Please ensure the server is running on http://localhost:5000'
+          message: 'Cannot connect to backend server. Please check API configuration and Render deployment.'
         };
       }
       

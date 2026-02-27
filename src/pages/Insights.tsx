@@ -222,10 +222,7 @@ export const Insights = () => {
     // For PDF insights, open the PDF directly
     if (insight.pdfFilename) {
       // Use development URL in dev mode
-      const isDev = import.meta.env.DEV;
-      const apiUrl = isDev 
-        ? (import.meta.env.VITE_API_URL_DEV || 'http://localhost:5000/api')
-        : import.meta.env.VITE_API_URL;
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
       
       const pdfUrl = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
       console.log('Opening PDF:', pdfUrl);
@@ -268,7 +265,7 @@ export const Insights = () => {
   }
 
   if (error) {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
     return (
       <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-16 flex items-center justify-center">
         <div className="text-center max-w-2xl mx-auto px-6">

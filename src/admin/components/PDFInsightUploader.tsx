@@ -111,11 +111,8 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
         formData.append('featuredImage', featuredImage.trim());
       }
 
-      // Use development URL in dev mode, production in production
-      const isDev = import.meta.env.DEV;
-      const apiUrl = isDev 
-        ? (import.meta.env.VITE_API_URL_DEV || 'http://localhost:5000/api')
-        : import.meta.env.VITE_API_URL;
+      // API URL configuration
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
       
       console.log('Uploading to:', `${apiUrl}/pdf-insights/upload`);
       

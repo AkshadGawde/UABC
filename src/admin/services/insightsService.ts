@@ -1,14 +1,11 @@
 import { authService } from './authService';
 
-// Use dev URL in development, production URL in production
-const API_URL = import.meta.env.MODE === 'development' 
-  ? (import.meta.env.VITE_API_URL_DEV || 'http://localhost:5000/api')
-  : (import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api');
+// API URL configuration
+const API_URL = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
 
 console.log('🔧 Insights Service Config:', {
-  mode: import.meta.env.MODE,
   apiUrl: API_URL,
-  isDev: import.meta.env.MODE === 'development'
+  viteApiUrl: import.meta.env.VITE_API_URL
 });
 
 export interface Insight {

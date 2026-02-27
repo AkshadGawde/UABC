@@ -31,32 +31,45 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://127.0.0.1:5173",
   "http://127.0.0.1:3000",
-  "https://uabc.vercel.app",
   "https://uabc.co.in",
+  "https://www.uabc.co.in",
+  "https://uabc.vercel.app",
+  "https://www.uabc.vercel.app",
   "https://uabc-cms.vercel.app",
 ];
+
+console.log("✅ CORS allowed origins:", allowedOrigins);
 
 app.use(
   cors({
     origin: function (origin, callback) {
       // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
+      if (!origin) {
+        console.log("✅ Request with no origin accepted");
+        return callback(null, true);
+      }
 
-      if (
-        allowedOrigins.indexOf(origin) !== -1 ||
-        process.env.NODE_ENV === "development"
-      ) {
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        console.log(`✅ CORS allowed for origin: ${origin}`);
+        callback(null, true);
+      } else if (process.env.NODE_ENV === "development") {
+        console.log(`✅ Development mode - allowing origin: ${origin}`);
         callback(null, true);
       } else {
-        console.log("⚠️  CORS blocked origin:", origin);
+        console.log(`⚠️  CORS blocked origin: ${origin}`);
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    preflightContinue: false,
+    optionsSuccessStatus: 200,
   }),
 );
+
+// Handle preflight requests explicitly
+app.options("*", cors());
 
 // Body parsing middleware
 app.use(express.json({ limit: "10mb" }));

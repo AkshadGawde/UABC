@@ -144,7 +144,7 @@ export const Hero = () => {
   const handleInsightClick = (insight: InsightCard) => {
     // For PDF insights, open the PDF directly
     if (insight.pdfFilename && (insight._id || insight.id)) {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
       window.open(`${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`, '_blank');
     } else if (insight._id || insight.id) {
       // For regular insights, navigate to insights page or detail (implement as needed)
