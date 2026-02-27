@@ -330,11 +330,21 @@ router.get("/:id/pdf", async (req, res) => {
     const { id } = req.params;
     const { download = "false" } = req.query;
 
+    // Validate MongoDB ID format
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      console.warn("Invalid MongoDB ID format:", id);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid insight ID format",
+      });
+    }
+
     const insight = await Insight.findById(id).select(
       "pdfData pdfFilename published"
     );
 
     if (!insight) {
+      console.warn("Insight not found:", id);
       return res.status(404).json({
         success: false,
         message: "Insight not found",
@@ -342,6 +352,7 @@ router.get("/:id/pdf", async (req, res) => {
     }
 
     if (!insight.published) {
+      console.warn("Insight not published:", id);
       return res.status(403).json({
         success: false,
         message: "This insight is not published",
@@ -349,31 +360,63 @@ router.get("/:id/pdf", async (req, res) => {
     }
 
     if (!insight.pdfData) {
+      console.warn("PDF data not found for insight:", id);
       return res.status(404).json({
         success: false,
-        message: "PDF data not found",
+        message: "PDF data not found for this insight",
       });
     }
 
-    // Convert base64 back to buffer
-    const pdfBuffer = Buffer.from(insight.pdfData, "base64");
+    // Validate pdfData is a valid string
+    if (typeof insight.pdfData !== 'string') {
+      console.error("Invalid pdfData type:", typeof insight.pdfData);
+      return res.status(500).json({
+        success: false,
+        message: "PDF data is corrupted",
+      });
+    }
 
-    // Set appropriate headers
+    let pdfBuffer;
+    try {
+      // Convert base64 back to buffer
+      pdfBuffer = Buffer.from(insight.pdfData, "base64");
+      
+      // Validate buffer size (max 50MB)
+      if (pdfBuffer.length > 50 * 1024 * 1024) {
+        console.error("PDF size exceeds limit:", pdfBuffer.length);
+        return res.status(413).json({
+          success: false,
+          message: "PDF file is too large",
+        });
+      }
+    } catch (bufferError) {
+      console.error("Buffer conversion error:", bufferError);
+      return res.status(500).json({
+        success: false,
+        message: "Failed to process PDF data",
+      });
+    }
+
+    // Set appropriate headers with CORS
+    const filename = insight.pdfFilename || `insight-${id}.pdf`;
     res.set({
       "Content-Type": "application/pdf",
       "Content-Length": pdfBuffer.length,
       "Content-Disposition":
         download === "true"
-          ? `attachment; filename="${insight.pdfFilename}"`
-          : `inline; filename="${insight.pdfFilename}"`,
+          ? `attachment; filename="${filename}"`
+          : `inline; filename="${filename}"`,
+      "Cache-Control": "public, max-age=86400",
     });
 
+    console.log(`Serving PDF: ${filename} (${pdfBuffer.length} bytes)`);
     res.send(pdfBuffer);
   } catch (error) {
-    console.error("PDF serve error:", error);
+    console.error("PDF serve error:", error.message);
     res.status(500).json({
       success: false,
       message: "Server error while serving PDF",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
     });
   }
 });
