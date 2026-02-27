@@ -142,7 +142,7 @@ export const AboutSuccessStories = () => {
       </div>
 
       {/* Hero Section with Modern Design */}
-      <section className="relative py-12 md:py-16">
+      <section className="relative py-12 md:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -163,11 +163,11 @@ export const AboutSuccessStories = () => {
               </span>
             </motion.div> */}
 
-             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
+             <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
               Success
               <span className="text-accent-600 dark:text-accent-500"> Stories</span>
             </h1>
-            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-base md:text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed">
               Real results from real partnerships. Explore how we've helped organizations 
               navigate complex actuarial challenges and achieve measurable outcomes.
             </p>
@@ -176,24 +176,24 @@ export const AboutSuccessStories = () => {
       </section>
 
       {/* Enhanced Carousel Section */}
-      <section className="relative py-8 md:py-12">
+      <section className="relative py-8 md:py-12 lg:py-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative">
             {/* Modern Navigation Arrows */}
             <button
               onClick={prevSlide}
-              className="absolute -left-2 md:left-0 lg:-left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 bg-white dark:bg-dark-card rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-accent-600 dark:text-accent-400 hover:bg-accent-50 dark:hover:bg-accent-900/20 transition-colors"
+              className="absolute -left-2 md:left-0 lg:-left-6 top-1/2 -translate-y-1/2 z-30 w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-white dark:bg-dark-card rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-accent-600 dark:text-accent-400 hover:bg-accent-50 dark:hover:bg-accent-900/20 transition-colors"
               aria-label="Previous slide"
             >
-              <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+              <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" />
             </button>
             
             <button
               onClick={nextSlide}
-              className="absolute -right-2 md:right-0 lg:-right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 bg-white dark:bg-dark-card rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-accent-600 dark:text-accent-400 hover:bg-accent-50 dark:hover:bg-accent-900/20 transition-colors"
+              className="absolute -right-2 md:right-0 lg:-right-6 top-1/2 -translate-y-1/2 z-30 w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-white dark:bg-dark-card rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-accent-600 dark:text-accent-400 hover:bg-accent-50 dark:hover:bg-accent-900/20 transition-colors"
               aria-label="Next slide"
             >
-              <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+              <ChevronRight className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" />
             </button>
 
             {/* Enhanced Carousel Content */}
@@ -210,7 +210,7 @@ export const AboutSuccessStories = () => {
                 >
                   <div className="relative bg-white dark:bg-dark-card rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
                     {/* Decorative Top Border with Industry Color */}
-                    <div className={`h-1.5 bg-gradient-to-r ${
+                    <div className={`h-1 bg-gradient-to-r ${
                       currentStory.industry === 'Banking & Finance' ? 'from-blue-500 to-blue-600' :
                       currentStory.industry === 'Conglomerate' ? 'from-purple-500 to-purple-600' :
                       currentStory.industry === 'IT & Technology' ? 'from-green-500 to-green-600' :
@@ -218,34 +218,34 @@ export const AboutSuccessStories = () => {
                     }`} />
 
                     {/* Card Content */}
-                    <div className="p-4 md:p-6 lg:p-8">
+                    <div className="p-3 md:p-6 lg:p-8">
                       {/* Header with Industry Badge and Icon */}
-                      <div className="flex flex-col lg:flex-row items-start justify-between gap-4 mb-4">
+                      <div className="flex flex-col lg:flex-row items-start justify-between gap-3 md:gap-4 mb-3 md:mb-4">
                         <div className="flex-1">
                           {/* Industry Badge with Icon */}
-                          <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${industryColors[currentStory.industry].bg} border ${industryColors[currentStory.industry].border} mb-3`}>
-                            <IndustryIcon className={`w-4 h-4 ${industryColors[currentStory.industry].text}`} />
-                            <span className={`text-xs md:text-sm font-semibold ${industryColors[currentStory.industry].text}`}>
+                          <div className={`inline-flex items-center gap-2 px-2 py-1 md:px-3 md:py-1.5 rounded-full ${industryColors[currentStory.industry].bg} border ${industryColors[currentStory.industry].border} mb-2 md:mb-3`}>
+                            <IndustryIcon className={`w-3 h-3 md:w-4 md:h-4 ${industryColors[currentStory.industry].text}`} />
+                            <span className={`text-xs font-semibold ${industryColors[currentStory.industry].text}`}>
                               {currentStory.industry}
                             </span>
                           </div>
 
-                          <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-slate-900 dark:text-white mb-3 leading-tight">
+                          <h2 className="text-base md:text-lg lg:text-2xl font-bold text-slate-900 dark:text-white mb-2 md:mb-3 leading-tight">
                             {currentStory.title}
                           </h2>
 
-                          <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">
+                          <p className="text-xs md:text-sm lg:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-3 md:mb-4">
                             {currentStory.description}
                           </p>
                         </div>
 
                         {/* Metrics Card */}
-                        <div className={`flex lg:flex-col items-center justify-center gap-2 lg:gap-0 lg:w-32 lg:h-32 px-4 py-2 lg:p-0 rounded-lg lg:rounded-xl ${industryColors[currentStory.industry].bg} border ${industryColors[currentStory.industry].border}`}>
-                          <div className={`text-2xl lg:text-3xl font-bold ${industryColors[currentStory.industry].text} lg:mb-2`}>
+                        <div className={`flex lg:flex-col items-center justify-center gap-2 lg:gap-0 lg:w-24 lg:h-24 xl:w-32 xl:h-32 px-3 py-2 lg:p-0 rounded-lg lg:rounded-xl ${industryColors[currentStory.industry].bg} border ${industryColors[currentStory.industry].border}`}>
+                          <div className={`text-xl md:text-2xl lg:text-3xl font-bold ${industryColors[currentStory.industry].text} lg:mb-2`}>
                             {currentStory.metrics.percentage}
                           </div>
                           <div className="flex lg:flex-col items-center lg:items-center gap-1">
-                            <div className="text-xs lg:text-sm font-medium text-slate-600 dark:text-slate-400 text-center">
+                            <div className="text-xs font-medium text-slate-600 dark:text-slate-400 text-center">
                               {currentStory.metrics.label}
                             </div>
                             <div className={`text-xs font-semibold ${industryColors[currentStory.industry].text}`}>
@@ -256,18 +256,18 @@ export const AboutSuccessStories = () => {
                       </div>
 
                       {/* Key Outcomes with Enhanced Design */}
-                      <div className="space-y-2 mb-4">
-                        <h4 className="text-sm md:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
-                          <Sparkles className="w-4 h-4 text-accent-500" />
+                      <div className="space-y-2 mb-3 md:mb-4">
+                        <h4 className="text-xs md:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2 md:mb-3">
+                          <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-accent-500" />
                           Key Outcomes
                         </h4>
                         <div className="grid gap-2">
                           {currentStory.details.map((detail, idx) => (
                             <div
                               key={idx}
-                              className="flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-700/50 hover:border-accent-500/30 transition-colors"
+                              className="flex items-start gap-2 p-2 md:p-3 rounded-lg bg-white/50 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-700/50 hover:border-accent-500/30 transition-colors"
                             >
-                              <CheckCircle2 className="w-4 h-4 text-accent-500 mt-0.5 flex-shrink-0" />
+                              <CheckCircle2 className="w-3 h-3 md:w-4 md:h-4 text-accent-500 mt-0.5 flex-shrink-0" />
                               <span className="text-xs md:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
                                 {detail}
                               </span>
@@ -278,11 +278,11 @@ export const AboutSuccessStories = () => {
 
                       {/* Outcome Section */}
                       {currentStory.outcome && (
-                        <div className="relative p-4 rounded-xl bg-gradient-to-br from-accent-50 to-blue-50 dark:from-accent-900/20 dark:to-blue-900/20 border border-accent-200/50 dark:border-accent-700/50">
+                        <div className="relative p-3 md:p-4 rounded-xl bg-gradient-to-br from-accent-50 to-blue-50 dark:from-accent-900/20 dark:to-blue-900/20 border border-accent-200/50 dark:border-accent-700/50">
                           <div className="flex items-start gap-2">
-                            <TrendingUp className="w-4 h-4 text-accent-600 dark:text-accent-400 flex-shrink-0 mt-0.5" />
+                            <TrendingUp className="w-3 h-3 md:w-4 md:h-4 text-accent-600 dark:text-accent-400 flex-shrink-0 mt-0.5" />
                             <div>
-                              <h5 className="text-xs md:text-sm font-bold text-slate-900 dark:text-white mb-1">
+                              <h5 className="text-xs md:text-sm font-bold text-slate-900 dark:text-white mb-1 md:mb-2">
                                 Impact
                               </h5>
                               <p className="text-xs md:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
@@ -299,7 +299,7 @@ export const AboutSuccessStories = () => {
             </div>
 
             {/* Enhanced Dot Navigation */}
-            <div className="flex justify-center items-center gap-2 mt-6">
+            <div className="flex justify-center items-center gap-2 mt-4 md:mt-6">
               {successStories.map((_, index) => (
                 <button
                   key={index}

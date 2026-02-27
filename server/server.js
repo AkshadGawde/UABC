@@ -32,6 +32,7 @@ const allowedOrigins = [
   "http://127.0.0.1:5173",
   "http://127.0.0.1:3000",
   "https://uabc.vercel.app",
+  "https://uabc.co.in",
   "https://uabc-cms.vercel.app",
 ];
 
@@ -54,7 +55,7 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })
+  }),
 );
 
 // Body parsing middleware

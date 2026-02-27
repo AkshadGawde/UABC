@@ -171,7 +171,7 @@ export const AboutUs = () => {
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-16">
       {/* Hero Section */}
       <section className="-mt-16 py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -181,7 +181,7 @@ export const AboutUs = () => {
             <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
               About Universal Actuaries and Benefit Consultants
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
+            <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
               Excellence in <br />
               <span className="text-accent-600 dark:text-accent-500">Actuarial Consulting</span>
             </h1>
@@ -194,7 +194,7 @@ export const AboutUs = () => {
       </section>
 
       {/* Overview Section */}
-      <section ref={overviewRef} className="py-12 md:py-16 lg:py-24 bg-light-bg dark:bg-dark-bg overflow-hidden">
+      <section ref={overviewRef} className="py-12 md:py-16 lg:py-20 bg-light-bg dark:bg-dark-bg overflow-hidden">
         <motion.div 
           style={{ 
             y: overviewY,
@@ -202,7 +202,7 @@ export const AboutUs = () => {
             opacity: isMobile ? 1 : overviewOpacity
           }}
         >
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -213,12 +213,12 @@ export const AboutUs = () => {
               <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
                 Who We Are
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
                 About UABC
               </h2>
             </motion.div>
 
-            <div className="grid lg:grid-cols-2 gap-8 md:gap-12 mb-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 mb-16">
               {/* Company Introduction Card */}
               <motion.div
                 initial={{ opacity: 0, x: -80, rotateY: -20 }}
@@ -236,20 +236,20 @@ export const AboutUs = () => {
                   boxShadow: "0 30px 60px -15px rgba(0, 0, 0, 0.3)",
                   transition: { duration: 0.3 }
                 }}
-                className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg"
+                className="bg-white dark:bg-dark-card rounded-2xl p-4 md:p-8 shadow-lg"
               >
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center">
-                    <Building2 className="w-6 h-6 text-accent-600 dark:text-accent-500" />
+                <div className="flex items-center gap-3 mb-4 md:mb-6">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center">
+                    <Building2 className="w-5 h-5 md:w-6 md:h-6 text-accent-600 dark:text-accent-500" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">Our Company</h3>
+                  <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">Our Company</h3>
                 </div>
-                <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+                <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4 md:mb-6">
                   Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001-2022 certified actuarial and Benefits consulting firm serving multiple clients in India and across the world. We have 80+ years of total experience delivering quality service with a singular objective to enhance client value and experience.
                 </p>
                 
-                <div className="flex items-center gap-4 p-4 bg-accent-50 dark:bg-accent-900/20 rounded-lg">
-                  <Award className="w-8 h-8 text-accent-600 dark:text-accent-500 flex-shrink-0" />
+                <div className="flex items-center gap-3 md:gap-4 p-4 bg-accent-50 dark:bg-accent-900/20 rounded-lg">
+                  <Award className="w-6 h-6 md:w-8 md:h-8 text-accent-600 dark:text-accent-500 flex-shrink-0" />
                   <div>
                     <h4 className="font-bold text-slate-900 dark:text-white text-sm">ISO 27001-2022 Certified</h4>
                     <p className="text-xs text-slate-600 dark:text-slate-400">Ensuring the highest standards of information security management</p>
@@ -280,20 +280,20 @@ export const AboutUs = () => {
                 <h3 className="text-xl font-bold mb-8">Our Impact</h3>
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <div className="text-4xl font-bold mb-2">80+</div>
-                    <div className="text-accent-100 text-sm">Years of Combined Experience</div>
+                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">80+</div>
+                    <div className="text-accent-100 text-xs md:text-sm">Years of Combined Experience</div>
                   </div>
                   <div>
-                    <div className="text-4xl font-bold mb-2">100+</div>
-                    <div className="text-accent-100 text-sm">Clients Served</div>
+                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">100+</div>
+                    <div className="text-accent-100 text-xs md:text-sm">Clients Served</div>
                   </div>
                   <div>
-                    <div className="text-4xl font-bold mb-2">10+</div>
-                    <div className="text-accent-100 text-sm">Countries</div>
+                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">10+</div>
+                    <div className="text-accent-100 text-xs md:text-sm">Countries</div>
                   </div>
                   <div>
-                    <div className="text-4xl font-bold mb-2">24/7</div>
-                    <div className="text-accent-100 text-sm">Availability</div>
+                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">24/7</div>
+                    <div className="text-accent-100 text-xs md:text-sm">Availability</div>
                   </div>
                 </div>
               </motion.div>
@@ -319,13 +319,13 @@ export const AboutUs = () => {
               <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
                 Areas of Expertise
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
                 What We Do
               </h2>
             </motion.div>
 
             <StaggerReveal staggerDelay={0.08} duration={0.5}>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {expertiseAreas.map((area, index) => {
                   const IconComponent = area.icon;
                   return (
@@ -348,15 +348,15 @@ export const AboutUs = () => {
                         boxShadow: "0 25px 50px -15px rgba(0, 0, 0, 0.25)",
                         transition: { duration: 0.25 } 
                       }}
-                      className="bg-white dark:bg-dark-card p-6 rounded-2xl group hover:shadow-lg transition-all border border-slate-100 dark:border-slate-700"
+                      className="bg-white dark:bg-dark-card p-4 md:p-6 rounded-2xl group hover:shadow-lg transition-all border border-slate-100 dark:border-slate-700"
                     >
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <IconComponent className="w-5 h-5 text-accent-600 dark:text-accent-500" />
+                      <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
+                        <div className="w-8 h-8 md:w-10 md:h-10 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <IconComponent className="w-4 h-4 md:w-5 md:h-5 text-accent-600 dark:text-accent-500" />
                         </div>
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">{area.title}</h3>
+                        <h3 className="text-base md:text-lg font-bold text-slate-900 dark:text-white">{area.title}</h3>
                       </div>
-                      <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{area.description}</p>
+                      <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{area.description}</p>
                     </motion.div>
                   );
                 })}
@@ -367,14 +367,14 @@ export const AboutUs = () => {
       </section>
 
       {/* Approach Section */}
-      <section ref={approachRef} className="py-12 md:py-16 lg:py-24 bg-slate-50 dark:bg-dark-card overflow-hidden">
+      <section ref={approachRef} className="py-12 md:py-16 lg:py-20 bg-slate-50 dark:bg-dark-card overflow-hidden">
         <motion.div 
           style={{ 
             y: approachY,
             scale: isMobile ? 1 : approachScale
           }}
         >
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -385,7 +385,7 @@ export const AboutUs = () => {
               <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
                 Our Approach
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
                 What Makes Us Different
               </h2>
               <p className="text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
@@ -394,7 +394,7 @@ export const AboutUs = () => {
             </motion.div>
 
             <StaggerReveal staggerDelay={0.1} duration={0.6}>
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
                 {differentiators.map((diff, index) => {
                   const IconComponent = diff.icon;
                   return (
@@ -417,20 +417,20 @@ export const AboutUs = () => {
                         boxShadow: "0 30px 60px -15px rgba(0, 0, 0, 0.3)",
                         transition: { duration: 0.25 } 
                       }}
-                      className="bg-white dark:bg-dark-bg p-8 rounded-2xl group hover:shadow-xl transition-all"
+                      className="bg-white dark:bg-dark-bg p-4 md:p-8 rounded-2xl group hover:shadow-xl transition-all"
                     >
                       <motion.div
-                        className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mb-6 mx-auto"
+                        className="w-12 h-12 md:w-16 md:h-16 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mb-4 md:mb-6 mx-auto"
                         whileHover={{ rotate: 360, scale: 1.1, transition: { duration: 0.5 } }}
                       >
-                        <IconComponent className={`w-8 h-8 ${diff.color}`} />
+                        <IconComponent className={`w-6 h-6 md:w-8 md:h-8 ${diff.color}`} />
                       </motion.div>
-                      <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-4 text-center">{diff.title}</h4>
-                      <ul className="space-y-2">
+                      <h4 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white mb-3 md:mb-4 text-center">{diff.title}</h4>
+                      <ul className="space-y-1.5 md:space-y-2">
                         {diff.points.map((point, idx) => (
                           <li key={idx} className="flex items-start gap-2">
-                            <CheckCircle2 className="w-4 h-4 text-accent-600 dark:text-accent-500 flex-shrink-0 mt-0.5" />
-                            <span className="text-slate-600 dark:text-slate-400 text-sm">{point}</span>
+                            <CheckCircle2 className="w-3 h-3 md:w-4 md:h-4 text-accent-600 dark:text-accent-500 flex-shrink-0 mt-0.5" />
+                            <span className="text-xs md:text-sm text-slate-600 dark:text-slate-400">{point}</span>
                           </li>
                         ))}
                       </ul>
@@ -444,14 +444,14 @@ export const AboutUs = () => {
       </section>
 
       {/* Management Section */}
-      <section ref={managementRef} className="py-12 md:py-16 lg:py-24 bg-light-bg dark:bg-dark-bg overflow-hidden">
+      <section ref={managementRef} className="py-12 md:py-16 lg:py-20 bg-light-bg dark:bg-dark-bg overflow-hidden">
         <motion.div 
           style={{ 
             y: managementY,
             rotate: isMobile ? 0 : managementRotate
           }}
         >
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -462,7 +462,7 @@ export const AboutUs = () => {
               <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
                 Leadership
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
                 Meet Our Founder
               </h2>
             </motion.div>
@@ -487,9 +487,9 @@ export const AboutUs = () => {
                   boxShadow: "0 35px 70px -20px rgba(0, 0, 0, 0.35)",
                   transition: { duration: 0.35 }
                 }}
-                className="bg-white dark:bg-dark-card rounded-2xl p-8 md:p-12 shadow-lg mb-12"
+                className="bg-white dark:bg-dark-card rounded-2xl p-4 md:p-8 lg:p-12 shadow-lg mb-8 md:mb-12"
               >
-                <div className="grid lg:grid-cols-3 gap-8 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8 items-start">
                   {/* Photo */}
                   <div className="lg:col-span-1">
                     <div className="relative">
@@ -501,32 +501,32 @@ export const AboutUs = () => {
                   
                   {/* Profile Info */}
                   <div className="lg:col-span-2">
-                    <div className="mb-6">
-                      <h4 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Chitra Jayasimha</h4>
-                      <p className="text-accent-600 dark:text-accent-500 font-semibold text-xl mb-6">Founder & CEO</p>
+                    <div className="mb-4 md:mb-6">
+                      <h4 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">Chitra Jayasimha</h4>
+                      <p className="text-accent-600 dark:text-accent-500 font-semibold text-base md:text-xl mb-4 md:mb-6">Founder & CEO</p>
                       
-                      <div className="flex flex-wrap gap-3 mb-8">
-                        <div className="flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
-                          <Award className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                          <span className="text-sm font-bold text-blue-800 dark:text-blue-300">FIA</span>
+                      <div className="flex flex-wrap gap-2 md:gap-3 mb-6 md:mb-8">
+                        <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                          <Award className="w-4 h-4 md:w-5 md:h-5 text-blue-600 dark:text-blue-400" />
+                          <span className="text-xs md:text-sm font-bold text-blue-800 dark:text-blue-300">FIA</span>
                         </div>
-                        <div className="flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 rounded-full">
-                          <Award className="w-5 h-5 text-green-600 dark:text-green-400" />
-                          <span className="text-sm font-bold text-green-800 dark:text-green-300">FIAI</span>
+                        <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-green-100 dark:bg-green-900/30 rounded-full">
+                          <Award className="w-4 h-4 md:w-5 md:h-5 text-green-600 dark:text-green-400" />
+                          <span className="text-xs md:text-sm font-bold text-green-800 dark:text-green-300">FIAI</span>
                         </div>
-                        <div className="flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
-                          <Award className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                          <span className="text-sm font-bold text-purple-800 dark:text-purple-300">FIII</span>
+                        <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
+                          <Award className="w-4 h-4 md:w-5 md:h-5 text-purple-600 dark:text-purple-400" />
+                          <span className="text-xs md:text-sm font-bold text-purple-800 dark:text-purple-300">FIII</span>
                         </div>
-                        <div className="flex items-center gap-2 px-4 py-2 bg-orange-100 dark:bg-orange-900/30 rounded-full">
-                          <Clock className="w-5 h-5 text-orange-600 dark:text-orange-400" />
-                          <span className="text-sm font-bold text-orange-800 dark:text-orange-300">35+ Years</span>
+                        <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-orange-100 dark:bg-orange-900/30 rounded-full">
+                          <Clock className="w-4 h-4 md:w-5 md:h-5 text-orange-600 dark:text-orange-400" />
+                          <span className="text-xs md:text-sm font-bold text-orange-800 dark:text-orange-300">35+ Years</span>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="space-y-4">
-                      <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
+                    <div className="space-y-3 md:space-y-4">
+                      <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed">
                         Chitra is a Senior Consulting Actuary and Founder of Universal Actuaries and Benefit Consultants with 35 plus years of experience in Life Insurance, General Insurance, Health Insurance, Pension, Retirement and Benefits.
                       </p>
                       
@@ -539,7 +539,7 @@ export const AboutUs = () => {
               </motion.div>
               
               {/* Experience Grid */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 {[
                   {
                     icon: Shield,
@@ -582,12 +582,12 @@ export const AboutUs = () => {
                         boxShadow: "0 20px 40px -12px rgba(0, 0, 0, 0.25)",
                         transition: { duration: 0.25 }
                       }}
-                      className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6 hover:shadow-lg transition-all"
+                      className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 md:p-6 hover:shadow-lg transition-all"
                     >
-                      <div className="w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center mb-4">
-                        <IconComponent className="w-6 h-6 text-accent-600 dark:text-accent-500" />
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center mb-3 md:mb-4">
+                        <IconComponent className="w-5 h-5 md:w-6 md:h-6 text-accent-600 dark:text-accent-500" />
                       </div>
-                      <h6 className="font-bold text-slate-900 dark:text-white mb-2 text-sm">{item.title}</h6>
+                      <h6 className="font-bold text-slate-900 dark:text-white mb-2 text-xs md:text-sm">{item.title}</h6>
                       <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed">{item.description}</p>
                     </motion.div>
                   );
@@ -599,8 +599,8 @@ export const AboutUs = () => {
       </section>
 
       {/* CTA Section */}
-      <section ref={ctaRef} className="py-24 bg-gradient-to-r from-accent-600 to-accent-500 overflow-hidden">
-        <div className="container mx-auto px-6 text-center">
+      <section ref={ctaRef} className="py-16 md:py-20 lg:py-24 bg-gradient-to-r from-accent-600 to-accent-500 overflow-hidden">
+        <div className="container mx-auto px-4 md:px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 70, scale: 0.85 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -613,17 +613,17 @@ export const AboutUs = () => {
             }}
             style={{ scale: isMobile ? 1 : ctaScale }}
           >
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-4 md:mb-6">
               Ready to Work With Us?
             </h2>
-            <p className="text-xl text-accent-100 mb-8 max-w-2xl mx-auto">
+            <p className="text-base md:text-lg lg:text-xl text-accent-100 mb-6 md:mb-8 max-w-2xl mx-auto">
               Let's discuss how our expertise can help solve your actuarial and benefits challenges.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/contact" className="inline-block px-8 py-4 bg-white text-accent-600 rounded-lg font-bold text-lg hover:bg-accent-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 text-center">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
+              <Link to="/contact" className="inline-block px-6 md:px-8 py-3 md:py-4 bg-white text-accent-600 rounded-lg font-bold text-base md:text-lg hover:bg-accent-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 text-center">
                 Get in Touch
               </Link>
-              <Link to="/services" className="inline-block px-8 py-4 border-2 border-white text-white rounded-lg font-bold text-lg hover:bg-white hover:text-accent-600 transition-all text-center">
+              <Link to="/services" className="inline-block px-6 md:px-8 py-3 md:py-4 border-2 border-white text-white rounded-lg font-bold text-base md:text-lg hover:bg-white hover:text-accent-600 transition-all text-center">
                 Explore Our Services
               </Link>
             </div>

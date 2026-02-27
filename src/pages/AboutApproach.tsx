@@ -79,7 +79,7 @@ export const AboutApproach = () => {
 
       {/* Hero Section */}
       <section className="-mt-16 py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg relative">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -89,11 +89,11 @@ export const AboutApproach = () => {
             {/* <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
               About Universal Actuaries and Benefit Consultants
             </div> */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
+            <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
               Our 
               <span className="text-accent-600 dark:text-accent-500"> Approach</span>
             </h1>
-            <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-sm md:text-base lg:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
               What makes us different in delivering innovative solutions and client-focused strategies.
             </p>
           </motion.div>
@@ -101,26 +101,26 @@ export const AboutApproach = () => {
       </section>
 
       {/* Content Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-6">
+      <section className="py-12 md:py-16 lg:py-20">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="space-y-12">
             {/* Approach Introduction */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg"
+              className="bg-white dark:bg-dark-card rounded-2xl p-4 md:p-8 shadow-lg"
             >
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Our Approach</h3>
-              <p className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+              <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-4 md:mb-6">Our Approach</h3>
+              <p className="text-sm md:text-base lg:text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6 md:mb-8">
                 The ever-changing economic and geopolitical landscape continues to create financial risks and uncertainties that businesses must carefully navigate.
 Employee-related liabilities remain one of the most critical aspects of any organization, directly influencing its reputation, credibility, and brand value.
 Our approach is designed to safeguard your company against such contingencies, ensuring stability, compliance, and long-term resilience.
               </p>
               
-              <div className="bg-gradient-to-r from-accent-50 to-blue-50 dark:from-accent-900/20 dark:to-blue-900/20 rounded-xl p-6">
-                <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-3">What Makes Us Different</h4>
-                <p className="text-slate-700 dark:text-slate-300">Our unique combination of deep expertise, unwavering integrity, client focus, and quality culture sets us apart in the industry.</p>
+              <div className="bg-gradient-to-r from-accent-50 to-blue-50 dark:from-accent-900/20 dark:to-blue-900/20 rounded-xl p-4 md:p-6">
+                <h4 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white mb-2 md:mb-3">What Makes Us Different</h4>
+                <p className="text-sm md:text-base text-slate-700 dark:text-slate-300">Our unique combination of deep expertise, unwavering integrity, client focus, and quality culture sets us apart in the industry.</p>
               </div>
             </motion.div>
 

@@ -106,15 +106,15 @@ export const ContactUs = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="text-center max-w-md mx-auto px-6"
+          className="text-center max-w-md mx-auto px-4 md:px-6"
         >
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-10 h-10 text-green-600" />
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+            <CheckCircle2 className="w-8 h-8 md:w-10 md:h-10 text-green-600" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3 md:mb-4">
             Message Sent Successfully!
           </h2>
-          <p className="text-slate-600 dark:text-slate-400 mb-8">
+          <p className="text-sm md:text-base text-slate-600 dark:text-slate-400 mb-6 md:mb-8">
             Thank you for reaching out. We'll get back to you within 24 hours.
           </p>
           <button
@@ -129,7 +129,7 @@ export const ContactUs = () => {
                 service: 'General Inquiry'
               });
             }}
-            className="px-6 py-3 bg-accent-600 text-white rounded-lg font-medium hover:bg-accent-700 transition-colors"
+            className="px-6 py-2 md:py-3 bg-accent-600 text-white rounded-lg font-medium text-sm md:text-base hover:bg-accent-700 transition-colors"
           >
             Send Another Message
           </button>
@@ -141,22 +141,22 @@ export const ContactUs = () => {
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-16">
       {/* Hero Section */}
-      <section className="-mt-16 py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
-        <div className="container mx-auto px-6">
+      <section className="-mt-16 py-8 md:py-12 lg:py-16 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
+        <div className="container mx-auto px-4 md:px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center max-w-4xl mx-auto"
+            className="text-center max-w-4xl mx-auto px-4 md:px-0"
           >
-            <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
+            <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-3 md:mb-4 text-xs md:text-sm">
               Get In Touch
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-6 text-slate-900 dark:text-white leading-tight">
               Let's Start a <br />
               <span className="text-accent-600 dark:text-accent-500">Conversation</span>
             </h1>
-            <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-sm md:text-base lg:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
               Ready to transform your risk management approach? Our team of experts 
               is here to help you navigate complex actuarial challenges.
             </p>
@@ -172,17 +172,17 @@ export const ContactUs = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            className="text-center mb-10 md:mb-16 px-4 md:px-0"
           >
-            <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-4 text-sm">
+            <div className="text-accent-600 dark:text-accent-500 font-bold tracking-widest uppercase mb-3 md:mb-4 text-xs md:text-sm">
               Contact Methods
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-slate-900 dark:text-white">
               Choose Your Preferred Way to Connect
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-20">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-12 md:mb-20">
             {contactMethods.map((method, index) => {
               const IconComponent = method.icon;
               return (
@@ -192,33 +192,33 @@ export const ContactUs = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-white dark:bg-dark-card p-8 rounded-xl text-center shadow-lg hover:shadow-xl transition-shadow group cursor-pointer"
+                  className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-xl text-center shadow-lg hover:shadow-xl transition-shadow group cursor-pointer"
                 >
-                  <div className="w-16 h-16 bg-accent-100 dark:bg-accent-900/30 rounded-xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                    <IconComponent className="w-8 h-8 text-accent-600 dark:text-accent-500" />
+                  <div className="w-12 h-12 md:w-16 md:h-16 bg-accent-100 dark:bg-accent-900/30 rounded-xl flex items-center justify-center mx-auto mb-3 md:mb-6 group-hover:scale-110 transition-transform">
+                    <IconComponent className="w-6 h-6 md:w-8 md:h-8 text-accent-600 dark:text-accent-500" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{method.title}</h3>
-                  <p className="text-slate-600 dark:text-slate-400 mb-4">{method.description}</p>
-                  <div className="text-accent-600 dark:text-accent-500 font-medium mb-2">{method.contact}</div>
-                  <div className="text-sm text-slate-500 dark:text-slate-400">{method.availability}</div>
+                  <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white mb-2 md:mb-3">{method.title}</h3>
+                  <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400 mb-3 md:mb-4">{method.description}</p>
+                  <div className="text-sm md:text-base text-accent-600 dark:text-accent-500 font-medium mb-2">{method.contact}</div>
+                  <div className="text-xs md:text-sm text-slate-500 dark:text-slate-400">{method.availability}</div>
                 </motion.div>
               );
             })}
           </div>
 
           {/* Contact Form and Info */}
-          <div className="grid lg:grid-cols-2 gap-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 px-4 md:px-0">
             {/* Contact Form */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="bg-white dark:bg-dark-card p-8 rounded-2xl shadow-lg"
+              className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-2xl shadow-lg"
             >
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Send Us a Message</h3>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
+              <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-4 md:mb-6">Send Us a Message</h3>
+              <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                       Full Name *
