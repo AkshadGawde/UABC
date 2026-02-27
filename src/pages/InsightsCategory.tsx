@@ -104,9 +104,7 @@ export const InsightsCategory = () => {
     // For PDF insights, open the PDF directly
     if (insight.pdfFilename) {
       // Use development URL in dev mode
-      const isDev = import.meta.env.DEV;
-      const apiUrl = isDev 
-        : (import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api');
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
       
       const pdfUrl = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
       console.log('Opening PDF:', pdfUrl);
