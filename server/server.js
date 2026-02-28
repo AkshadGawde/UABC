@@ -82,24 +82,41 @@ console.log("- PORT:", process.env.PORT);
 console.log("- MongoDB URI exists:", !!process.env.MONGODB_URI);
 console.log("- JWT Secret exists:", !!process.env.JWT_SECRET);
 
-// MongoDB connection
+// MongoDB connection with improved error handling
 if (!process.env.MONGODB_URI) {
   console.error("❌ MONGODB_URI environment variable is not set");
   process.exit(1);
 }
 
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => {
+let dbConnected = false;
+
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      connectTimeoutMS: 10000,
+      retryWrites: true,
+    });
+    dbConnected = true;
     console.log("✅ Connected to MongoDB Atlas");
     console.log("📊 Database:", mongoose.connection.name);
-  })
-  .catch((error) => {
+  } catch (error) {
+    dbConnected = false;
     console.error("❌ MongoDB connection error:", error.message);
-    console.error("🔧 Check your MongoDB URI and network connection");
-    // Don't exit - show error in health checks instead
-    console.error("⚠️  Server will start but database operations will fail");
-  });
+    console.error("🔧 Troubleshooting:");
+    console.error("   1. Check MONGODB_URI environment variable");
+    console.error("   2. Verify MongoDB Atlas network access (0.0.0.0/0)");
+    console.error("   3. Check if database credentials are correct");
+    console.error("   4. Ensure Render IP is whitelisted in MongoDB Atlas");
+    
+    // Retry connection after 5 seconds
+    setTimeout(connectDB, 5000);
+  }
+};
+
+// Try to connect to MongoDB
+connectDB();
 
 // Root endpoint
 app.get("/", (req, res) => {
@@ -130,28 +147,41 @@ app.use("/api/pdf-insights", pdfInsightRoutes);
 // Health check endpoint
 app.get("/api/health", (req, res) => {
   const dbConnected = mongoose.connection.readyState === 1;
+  const status = dbConnected ? 200 : 503;
   
-  res.status(dbConnected ? 200 : 503).json({
-    status: dbConnected ? "OK" : "WARNING",
+  res.status(status).json({
+    status: dbConnected ? "OK" : "DB_DISCONNECTED",
     message: dbConnected 
-      ? "UABC CMS Backend is running" 
-      : "UABC CMS Backend is running but database is disconnected",
+      ? "UABC CMS Backend is running with database connected" 
+      : "UABC CMS Backend is running but database is disconnected. Check MongoDB Atlas settings.",
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
     database: {
       connected: dbConnected,
-      name: mongoose.connection.name || "unknown"
-    }
+      readyState: mongoose.connection.readyState,
+      name: mongoose.connection.name || "unknown",
+      host: mongoose.connection.host || "unknown"
+    },
+    uptime: process.uptime()
   });
 });
 
-// Global error handler
+// Global error handler - MUST be last middleware
 app.use((error, req, res, next) => {
-  console.error("Error:", error);
+  console.error("❌ Uncaught Error:", {
+    message: error.message,
+    stack: error.stack,
+    path: req.originalUrl,
+    method: req.method,
+  });
+  
   res.status(error.status || 500).json({
     success: false,
     message: error.message || "Internal server error",
-    ...(process.env.NODE_ENV === "development" && { stack: error.stack }),
+    ...(process.env.NODE_ENV === "development" && { 
+      stack: error.stack,
+      path: req.originalUrl 
+    }),
   });
 });
 
