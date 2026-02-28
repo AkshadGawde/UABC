@@ -139,10 +139,17 @@ app.get("/favicon.ico", (req, res) => {
   res.status(204).send();
 });
 
+// Middleware for PDF routes - increase timeout for large file transfers
+const pdfTimeout = (req, res, next) => {
+  req.setTimeout(120000); // 120 second timeout for PDF operations
+  res.setTimeout(120000); // 120 second timeout for PDF responses
+  next();
+};
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/insights", insightsRoutes);
-app.use("/api/pdf-insights", pdfInsightRoutes);
+app.use("/api/pdf-insights", pdfTimeout, pdfInsightRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
@@ -203,7 +210,7 @@ app.listen(PORT, () => {
   console.log(`   - Auth: http://localhost:${PORT}/api/auth`);
   console.log(`   - Insights: http://localhost:${PORT}/api/insights`);
   console.log(`   - PDF Insights: http://localhost:${PORT}/api/pdf-insights`);
-});
+}).setTimeout(120000); // 120 second timeout for large file transfers
 
 // Handle graceful shutdown
 process.on("SIGTERM", () => {

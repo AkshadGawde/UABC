@@ -355,7 +355,7 @@ router.get("/:id/pdf", async (req, res) => {
     console.log(`🔍 Searching for insight with ID: ${id}`);
     const insight = await Insight.findById(id).select(
       "pdfData pdfFilename published"
-    ).timeout(10000); // 10 second timeout
+    ).timeout(60000); // 60 second timeout for large PDF retrieval
 
     if (!insight) {
       console.warn("❌ Insight not found:", id);
