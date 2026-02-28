@@ -95,9 +95,10 @@ mongoose
     console.log("📊 Database:", mongoose.connection.name);
   })
   .catch((error) => {
-    console.error("❌ MongoDB connection error:", error);
+    console.error("❌ MongoDB connection error:", error.message);
     console.error("🔧 Check your MongoDB URI and network connection");
-    process.exit(1);
+    // Don't exit - show error in health checks instead
+    console.error("⚠️  Server will start but database operations will fail");
   });
 
 // Root endpoint
@@ -128,11 +129,19 @@ app.use("/api/pdf-insights", pdfInsightRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
-  res.json({
-    status: "OK",
-    message: "UABC CMS Backend is running",
+  const dbConnected = mongoose.connection.readyState === 1;
+  
+  res.status(dbConnected ? 200 : 503).json({
+    status: dbConnected ? "OK" : "WARNING",
+    message: dbConnected 
+      ? "UABC CMS Backend is running" 
+      : "UABC CMS Backend is running but database is disconnected",
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
+    database: {
+      connected: dbConnected,
+      name: mongoose.connection.name || "unknown"
+    }
   });
 });
 
@@ -159,4 +168,16 @@ app.all("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV}`);
+  console.log(`📡 API Health Check: http://localhost:${PORT}/api/health`);
+  console.log(`🔗 API Endpoints:`);
+  console.log(`   - Auth: http://localhost:${PORT}/api/auth`);
+  console.log(`   - Insights: http://localhost:${PORT}/api/insights`);
+  console.log(`   - PDF Insights: http://localhost:${PORT}/api/pdf-insights`);
+});
+
+// Handle graceful shutdown
+process.on("SIGTERM", () => {
+  console.log("⚠️  SIGTERM received, shutting down gracefully...");
+  mongoose.connection.close();
+  process.exit(0);
 });
