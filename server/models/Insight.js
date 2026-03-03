@@ -88,12 +88,15 @@ const insightSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    pdfUrl: {
+      type: String,
+    },
   },
   {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  }
+  },
 );
 
 // Virtual for formatted date

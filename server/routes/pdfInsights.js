@@ -4,6 +4,7 @@ const pdfParse = require("pdf-parse");
 const { body, validationResult } = require("express-validator");
 const Insight = require("../models/Insight");
 const { authenticateToken, requireEditor } = require("../middleware/auth");
+const cloudinary = require("../config/cloudinary");
 
 const router = express.Router();
 
@@ -168,7 +169,7 @@ router.post(
       console.log("- User:", req.user?.username, "Role:", req.user?.role);
       console.log(
         "- Files received:",
-        req.files ? Object.keys(req.files) : "none"
+        req.files ? Object.keys(req.files) : "none",
       );
 
       if (req.files) {
@@ -176,7 +177,7 @@ router.post(
           console.log(
             "  - PDF:",
             req.files.pdf[0].originalname,
-            `(${req.files.pdf[0].size} bytes)`
+            `(${req.files.pdf[0].size} bytes)`,
           );
         if (req.files.image)
           console.log("  - Image:", req.files.image[0].originalname);
@@ -215,7 +216,7 @@ router.post(
         console.log(
           "✅ PDF parsed successfully:",
           pdfText.length,
-          "characters"
+          "characters",
         );
       } catch (pdfError) {
         console.error("❌ PDF parsing error:", pdfError);
@@ -243,8 +244,22 @@ router.post(
       console.log("  - Author:", author || "Unknown");
       console.log("  - Excerpt length:", excerpt.length);
 
-      // Convert PDF to base64 for storage
-      const pdfBase64 = pdfFile.buffer.toString("base64");
+      const uploadResult = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            resource_type: "raw",
+            folder: "insights",
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          },
+        );
+
+        stream.end(pdfFile.buffer);
+      });
+
+      const pdfUrl = uploadResult.secure_url;
 
       // Handle image - either uploaded file or URL
       let finalImageUrl;
@@ -268,7 +283,7 @@ router.post(
         excerpt,
         author: author || "Unknown Author",
         category: category || "General", // Use category from form or default to General
-        pdfData: pdfBase64,
+        pdfUrl: pdfUrl,
         pdfFilename: pdfFile.originalname,
         pdfSize: pdfFile.size,
         featuredImage: finalImageUrl,
@@ -319,7 +334,7 @@ router.post(
         message: "Server error while uploading PDF",
       });
     }
-  }
+  },
 );
 
 // @route   GET /api/insights/:id/pdf
@@ -328,185 +343,24 @@ router.post(
 router.get("/:id/pdf", async (req, res) => {
   try {
     const { id } = req.params;
-    const { download = "false" } = req.query;
 
-    console.log(`📥 PDF request for ID: ${id}`);
-
-    // Check if database is connected
-    const dbConnected = require('mongoose').connection.readyState === 1;
-    if (!dbConnected) {
-      console.error("❌ Database not connected");
-      return res.status(503).json({
-        success: false,
-        message: "Database service unavailable. Please try again later.",
-        hint: "Backend database connection failed"
-      });
-    }
-
-    // Validate MongoDB ID format
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      console.warn("❌ Invalid MongoDB ID format:", id);
-      return res.status(400).json({
-        success: false,
-        message: "Invalid insight ID format",
-      });
-    }
-
-    console.log(`🔍 Searching for insight with ID: ${id}`);
     const insight = await Insight.findById(id).select(
-      "pdfData pdfFilename published"
-    ).timeout(60000); // 60 second timeout for large PDF retrieval
+      "pdfUrl pdfFilename published",
+    );
 
-    if (!insight) {
-      console.warn("❌ Insight not found:", id);
+    if (!insight || !insight.published || !insight.pdfUrl) {
       return res.status(404).json({
         success: false,
-        message: "Insight not found",
+        message: "PDF not found",
       });
     }
 
-    if (!insight.published) {
-      console.warn("❌ Insight not published:", id);
-      return res.status(403).json({
-        success: false,
-        message: "This insight is not published",
-      });
-    }
-
-    if (!insight.pdfData) {
-      console.warn("❌ PDF data not found for insight:", id);
-      return res.status(404).json({
-        success: false,
-        message: "PDF data not found for this insight",
-      });
-    }
-
-    // Validate pdfData is a valid string
-    if (typeof insight.pdfData !== 'string') {
-      console.error("Invalid pdfData type:", typeof insight.pdfData);
-      return res.status(500).json({
-        success: false,
-        message: "PDF data is corrupted",
-      });
-    }
-
-    let pdfBuffer;
-    try {
-      // Convert base64 back to buffer
-      pdfBuffer = Buffer.from(insight.pdfData, "base64");
-      
-      // Validate buffer size (max 50MB)
-      if (pdfBuffer.length > 50 * 1024 * 1024) {
-        console.error("PDF size exceeds limit:", pdfBuffer.length);
-        return res.status(413).json({
-          success: false,
-          message: "PDF file is too large",
-        });
-      }
-    } catch (bufferError) {
-      console.error("Buffer conversion error:", bufferError);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to process PDF data",
-      });
-    }
-
-    // Set appropriate headers with CORS
-    const filename = insight.pdfFilename || `insight-${id}.pdf`;
-    res.set({
-      "Content-Type": "application/pdf",
-      "Content-Length": pdfBuffer.length,
-      "Content-Disposition":
-        download === "true"
-          ? `attachment; filename="${filename}"`
-          : `inline; filename="${filename}"`,
-      "Cache-Control": "public, max-age=86400",
-    });
-
-    console.log(`Serving PDF: ${filename} (${pdfBuffer.length} bytes)`);
-    res.send(pdfBuffer);
+    return res.redirect(insight.pdfUrl);
   } catch (error) {
-    console.error("❌ PDF serve error:", error.message);
-    console.error("Stack:", error.stack);
-    
-    // Send detailed error based on error type
-    if (error.name === 'MongooseError' || error.name === 'MongoError') {
-      return res.status(503).json({
-        success: false,
-        message: "Database connection error",
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-        hint: "Check MongoDB Atlas network access and connection string"
-      });
-    }
-    
-    if (error.message.includes('timeout')) {
-      return res.status(504).json({
-        success: false,
-        message: "Request timeout - database took too long to respond",
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-      });
-    }
-    
+    console.error("PDF serve error:", error);
     res.status(500).json({
       success: false,
       message: "Server error while serving PDF",
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-    });
-  }
-});
-
-// @route   GET /api/pdf-insights/:id/debug
-// @desc    Debug endpoint to check insight details
-// @access  Public (for debugging)
-router.get("/:id/debug", async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // Validate MongoDB ID format
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid insight ID format",
-      });
-    }
-
-    const insight = await Insight.findById(id)
-      .select("title author category published pdfFilename pdfSize pdfData")
-      .lean();
-
-    if (!insight) {
-      return res.status(404).json({
-        success: false,
-        message: "Insight not found",
-      });
-    }
-
-    // Don't return full PDF data, just metadata
-    const response = {
-      success: true,
-      data: {
-        id: insight._id,
-        title: insight.title,
-        author: insight.author,
-        category: insight.category,
-        published: insight.published,
-        pdfFilename: insight.pdfFilename,
-        pdfSize: insight.pdfSize,
-        hasPdfData: !!insight.pdfData,
-        pdfDataLength: insight.pdfData ? insight.pdfData.length : 0,
-        message: insight.pdfData 
-          ? "PDF data is stored correctly" 
-          : "⚠️ PDF data is missing!" 
-      }
-    };
-
-    res.json(response);
-  } catch (error) {
-    console.error("Debug endpoint error:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Server error while fetching insight details",
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
     });
   }
 });
