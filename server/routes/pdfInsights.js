@@ -386,7 +386,10 @@ router.delete("/:id", authenticateToken, requireEditor, async (req, res) => {
 
         console.log("✅ Deleted from Cloudinary:", publicId);
       } catch (cloudinaryError) {
-        console.error("⚠️  Cloudinary deletion warning:", cloudinaryError.message);
+        console.error(
+          "⚠️  Cloudinary deletion warning:",
+          cloudinaryError.message,
+        );
         // Don't fail the entire operation if Cloudinary deletion fails
         // Continue with MongoDB deletion
       }

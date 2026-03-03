@@ -102,7 +102,7 @@ const App = () => {
     <AuthProvider>
       <Router>
         <PageLoader />
-        <div className="antialiased min-h-screen font-sans selection:bg-accent-500/30 selection:text-accent-900 dark:selection:text-white">
+        <div className="antialiased min-h-screen font-sans selection:bg-accent-500/30 selection:text-accent-900 dark:selection:text-white bg-light-bg dark:bg-dark-bg">
           <ScrollToTop />
           
           <Routes>
@@ -151,7 +151,7 @@ const App = () => {
                     isDark={theme === 'dark'} 
                     toggleTheme={toggleTheme}
                   />
-                  <main className="pt-[72px]">
+                  <main className="pt-[72px] w-full bg-light-bg dark:bg-dark-bg">
                     <PageTransition transitionType="fade">
                       <Routes>
                         <Route path="/" element={<Home />} />

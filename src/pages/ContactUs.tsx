@@ -141,7 +141,7 @@ export const ContactUs = () => {
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-16">
       {/* Hero Section */}
-      <section className="-mt-16 py-8 md:py-12 lg:py-16 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
+      <section className="py-8 md:py-12 lg:py-16 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

@@ -307,9 +307,9 @@ export const Insights = () => {
   }
 
   return (
-    <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-16" style={{ scrollBehavior: 'smooth' }}>
+    <div className="w-full bg-light-bg dark:bg-dark-bg" style={{ scrollBehavior: 'smooth' }}>
       {/* Hero Section */}
-      <section className="-mt-16 py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg relative will-change-transform">
+      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg relative will-change-transform">
         {/* Subtle Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
           <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent-200/10 rounded-full" />

@@ -95,7 +95,7 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
 
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 bg-white dark:bg-dark-bg ${isScrolled 
+      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 bg-light-bg dark:bg-dark-bg border-b border-slate-200 dark:border-transparent ${isScrolled 
           ? 'py-2 sm:py-2 md:py-2 shadow-md shadow-black/5' 
           : 'py-2.5 sm:py-3 md:py-4'
       }`}
@@ -195,7 +195,7 @@ export const Navbar = ({ isDark, toggleTheme }: NavbarProps) => {
             animate={{ opacity: 1, scaleY: 1 }}
             exit={{ opacity: 0, scaleY: 0 }}
             style={{ transformOrigin: 'top' }}
-            className="lg:hidden bg-white dark:bg-dark-card border-b border-slate-200 dark:border-white/10"
+            className="lg:hidden bg-light-bg dark:bg-dark-bg"
           >
             <div className="w-full max-h-[calc(100vh-70px)] overflow-y-auto flex flex-col p-3 sm:p-4 gap-1">
               {navLinks.map((link) => (

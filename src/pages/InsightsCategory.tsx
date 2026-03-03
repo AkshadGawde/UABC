@@ -167,7 +167,7 @@ export const InsightsCategory = () => {
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-16">
       {/* Hero Section */}
-      <section className="-mt-16 py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg relative">
+      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg relative">
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
           <div className="absolute -top-1/2 -right-1/4 w-96 h-96 bg-accent-200 dark:bg-accent-900/20 rounded-full blur-3xl"></div>
           <div className="absolute -bottom-1/2 -left-1/4 w-96 h-96 bg-blue-200 dark:bg-blue-900/20 rounded-full blur-3xl"></div>
