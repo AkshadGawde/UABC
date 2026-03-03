@@ -16,6 +16,7 @@ export const AdminDashboard = () => {
   const { user, logout } = useAuth();
   const [authError, setAuthError] = useState<string | null>(null);
   const [showSetup, setShowSetup] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const loadInsights = async () => {
     try {
@@ -65,7 +66,8 @@ export const AdminDashboard = () => {
   };
 
   const handleDelete = async (id: string, isPDF: boolean = false) => {
-    if (window.confirm('Are you sure you want to delete this insight?')) {
+    if (window.confirm('Are you sure you want to delete this insight? This action cannot be undone.')) {
+      setDeletingId(id);
       try {
         if (isPDF) {
           // Delete PDF insight
@@ -81,20 +83,30 @@ export const AdminDashboard = () => {
           });
           
           if (!response.ok) {
-            throw new Error('Failed to delete PDF insight');
+            // Parse error response for more details
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || 'Failed to delete PDF insight');
           }
         } else {
           // Delete regular insight
-          await insightsService.deleteInsight(id);
+          const result = await insightsService.deleteInsight(id);
+          if (!result.success) {
+            throw new Error(result.message || 'Failed to delete insight');
+          }
         }
         
         setSuccessMessage('Insight deleted successfully!');
         setTimeout(() => setSuccessMessage(null), 3000);
-        loadInsights();
+        
+        // Update UI immediately by removing the deleted insight
+        setInsights(insights.filter(insight => (insight._id || insight.id) !== id));
       } catch (error) {
         console.error('Failed to delete insight:', error);
-        setErrorMessage('Failed to delete insight. Please try again.');
+        const errorMsg = error instanceof Error ? error.message : 'Failed to delete insight. Please try again.';
+        setErrorMessage(errorMsg);
         setTimeout(() => setErrorMessage(null), 5000);
+      } finally {
+        setDeletingId(null);
       }
     }
   };
@@ -379,7 +391,8 @@ export const AdminDashboard = () => {
                       <>
                         <button
                           onClick={() => handleViewPDF(insight._id || insight.id)}
-                          className="p-2 text-slate-400 hover:text-accent-600 transition-colors"
+                          disabled={deletingId === (insight._id || insight.id)}
+                          className="p-2 text-slate-400 hover:text-accent-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           title="View PDF"
                         >
                           <Eye className="w-4 h-4" />
@@ -393,7 +406,8 @@ export const AdminDashboard = () => {
                         </button> */}
                         <button
                           onClick={() => handleTogglePublished(insight._id || insight.id)}
-                          className={`p-2 transition-colors ${
+                          disabled={deletingId === (insight._id || insight.id)}
+                          className={`p-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                             insight.published 
                               ? 'text-green-600 hover:text-green-700' 
                               : 'text-slate-400 hover:text-green-600'
@@ -404,10 +418,15 @@ export const AdminDashboard = () => {
                         </button>
                         <button
                           onClick={() => handleDelete(insight._id || insight.id, true)}
-                          className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+                          disabled={deletingId === (insight._id || insight.id)}
+                          className="p-2 text-slate-400 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           title="Delete"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          {deletingId === (insight._id || insight.id) ? (
+                            <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+                          ) : (
+                            <Trash2 className="w-4 h-4" />
+                          )}
                         </button>
                       </>
                     ) : (
@@ -429,7 +448,8 @@ export const AdminDashboard = () => {
                         </a>
                         <button
                           onClick={() => handleToggleFeatured(insight.id)}
-                          className={`p-2 transition-colors ${
+                          disabled={deletingId === insight.id}
+                          className={`p-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                             insight.featured 
                               ? 'text-yellow-500 hover:text-yellow-600' 
                               : 'text-slate-400 hover:text-yellow-500'
@@ -440,7 +460,8 @@ export const AdminDashboard = () => {
                         </button>
                         <button
                           onClick={() => handleTogglePublished(insight.id)}
-                          className={`p-2 transition-colors ${
+                          disabled={deletingId === insight.id}
+                          className={`p-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                             insight.published 
                               ? 'text-green-600 hover:text-green-700' 
                               : 'text-slate-400 hover:text-green-600'
@@ -451,10 +472,15 @@ export const AdminDashboard = () => {
                         </button>
                         <button
                           onClick={() => handleDelete(insight.id, false)}
-                          className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+                          disabled={deletingId === insight.id}
+                          className="p-2 text-slate-400 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           title="Delete"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          {deletingId === insight.id ? (
+                            <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+                          ) : (
+                            <Trash2 className="w-4 h-4" />
+                          )}
                         </button>
                       </>
                     )}

@@ -337,7 +337,60 @@ router.post(
   },
 );
 
-// @route   GET /api/insights/:id/pdf
+// @route   DELETE /api/pdf-insights/:id
+// @desc    Delete a PDF insight
+// @access  Private (Editor+)
+router.delete("/:id", authenticateToken, requireEditor, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    console.log("🗑️  Delete PDF Insight Request");
+    console.log("- Insight ID:", id);
+    console.log("- User:", req.user?.username, "Role:", req.user?.role);
+
+    // Validate ID format
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid insight ID format",
+      });
+    }
+
+    // Find and delete the insight
+    const insight = await Insight.findByIdAndDelete(id);
+
+    if (!insight) {
+      console.log("❌ Insight not found:", id);
+      return res.status(404).json({
+        success: false,
+        message: "PDF insight not found",
+      });
+    }
+
+    // Clean up Cloudinary URL if it exists
+    if (insight.pdfUrl) {
+      console.log("📤 PDF URL exists:", insight.pdfUrl);
+      // Note: Cloudinary cleanup would require additional configuration
+      // For now, we can log it for manual cleanup if needed
+    }
+
+    console.log("✅ Insight deleted successfully:", id);
+
+    res.json({
+      success: true,
+      message: "PDF insight deleted successfully",
+      data: { id: insight._id },
+    });
+  } catch (error) {
+    console.error("❌ Delete insight error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while deleting PDF insight",
+    });
+  }
+});
+
+// @route   GET /api/pdf-insights/:id/pdf
 // @desc    Download or view PDF
 // @access  Public (for published insights)
 router.get("/:id/pdf", async (req, res) => {
