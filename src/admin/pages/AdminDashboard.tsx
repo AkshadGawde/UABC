@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Plus, Eye, Edit, Trash2, Star, Globe, Clock, LogOut, Upload } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { insightsService, Insight } from '../services/insightsService';
+import { authService } from '../services/authService';
 import { AdminSetup } from '../components/AdminSetup';
 import PDFInsightUploader from '../components/PDFInsightUploader';
 
@@ -72,7 +73,11 @@ export const AdminDashboard = () => {
         if (isPDF) {
           // Delete PDF insight
           const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc-backend.onrender.com/api';
-          const token = localStorage.getItem('token');
+          const token = authService.getToken();
+          
+          if (!token) {
+            throw new Error('Authentication token not found. Please log in again.');
+          }
           
           const response = await fetch(`${apiUrl}/pdf-insights/${id}`, {
             method: 'DELETE',

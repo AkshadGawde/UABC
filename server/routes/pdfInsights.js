@@ -338,7 +338,7 @@ router.post(
 );
 
 // @route   DELETE /api/pdf-insights/:id
-// @desc    Delete a PDF insight
+// @desc    Delete a PDF insight (removes from MongoDB and Cloudinary)
 // @access  Private (Editor+)
 router.delete("/:id", authenticateToken, requireEditor, async (req, res) => {
   try {
@@ -356,8 +356,8 @@ router.delete("/:id", authenticateToken, requireEditor, async (req, res) => {
       });
     }
 
-    // Find and delete the insight
-    const insight = await Insight.findByIdAndDelete(id);
+    // Find the insight first to get the Cloudinary URL
+    const insight = await Insight.findById(id);
 
     if (!insight) {
       console.log("❌ Insight not found:", id);
@@ -367,14 +367,35 @@ router.delete("/:id", authenticateToken, requireEditor, async (req, res) => {
       });
     }
 
-    // Clean up Cloudinary URL if it exists
+    // Delete from Cloudinary if PDF URL exists
     if (insight.pdfUrl) {
-      console.log("📤 PDF URL exists:", insight.pdfUrl);
-      // Note: Cloudinary cleanup would require additional configuration
-      // For now, we can log it for manual cleanup if needed
+      try {
+        // Extract public_id from URL
+        // URL format: https://res.cloudinary.com/.../insights/filename.pdf
+        // We need to extract the public_id (insights/filename)
+        const urlParts = insight.pdfUrl.split("/");
+        const lastParts = urlParts.slice(-2); // Get [filename, pdf]
+        const filename = lastParts[0];
+        const publicId = `insights/${filename}`; // Reconstruct public_id
+
+        console.log("📤 Deleting from Cloudinary:", publicId);
+
+        await cloudinary.uploader.destroy(publicId, {
+          resource_type: "raw", // PDFs are stored as raw files
+        });
+
+        console.log("✅ Deleted from Cloudinary:", publicId);
+      } catch (cloudinaryError) {
+        console.error("⚠️  Cloudinary deletion warning:", cloudinaryError.message);
+        // Don't fail the entire operation if Cloudinary deletion fails
+        // Continue with MongoDB deletion
+      }
     }
 
-    console.log("✅ Insight deleted successfully:", id);
+    // Delete from MongoDB
+    await Insight.findByIdAndDelete(id);
+
+    console.log("✅ Insight deleted from MongoDB:", id);
 
     res.json({
       success: true,
