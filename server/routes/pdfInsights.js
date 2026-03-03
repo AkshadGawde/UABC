@@ -345,17 +345,37 @@ router.get("/:id/pdf", async (req, res) => {
     const { id } = req.params;
 
     const insight = await Insight.findById(id).select(
-      "pdfUrl pdfFilename published",
+      "pdfUrl pdfData pdfFilename published",
     );
 
-    if (!insight || !insight.published || !insight.pdfUrl) {
+    if (!insight || !insight.published) {
       return res.status(404).json({
         success: false,
         message: "PDF not found",
       });
     }
 
-    return res.redirect(insight.pdfUrl);
+    // NEW Cloudinary-based PDFs
+    if (insight.pdfUrl) {
+      return res.redirect(insight.pdfUrl);
+    }
+
+    // OLD base64 PDFs (fallback)
+    if (insight.pdfData) {
+      const pdfBuffer = Buffer.from(insight.pdfData, "base64");
+
+      res.set({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `inline; filename="${insight.pdfFilename}"`,
+      });
+
+      return res.send(pdfBuffer);
+    }
+
+    return res.status(404).json({
+      success: false,
+      message: "PDF not found",
+    });
   } catch (error) {
     console.error("PDF serve error:", error);
     res.status(500).json({
