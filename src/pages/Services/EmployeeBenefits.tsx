@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
 import { optimizeImage } from '../../utils/imageUtils';
 import { ScrollReveal, StaggerReveal, ParallaxScroll, TextReveal } from '../../components/PageTransition';
@@ -567,13 +568,15 @@ export const EmployeeBenefits = () => {
               >
                 Schedule Consultation
               </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 border-2 border-white text-white rounded-xl font-bold text-lg hover:bg-white hover:text-accent-600 transition-all"
-              >
-                View Our Services
-              </motion.button>
+              <Link to="/services">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-8 py-4 border-2 border-white text-white rounded-xl font-bold text-lg hover:bg-white hover:text-accent-600 transition-all"
+                >
+                  View Our Services
+                </motion.button>
+              </Link>
             </div>
           </motion.div>
         </div>

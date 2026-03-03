@@ -8,8 +8,17 @@ export const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    // Instant scroll to top on route change
-    window.scrollTo(0, 0);
+    // Scroll to top immediately
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    
+    // Fallback: ensure scroll happens even in edge cases
+    const scrollToTopTimeout = setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 0);
+
+    return () => clearTimeout(scrollToTopTimeout);
   }, [pathname]);
 
   return null;
