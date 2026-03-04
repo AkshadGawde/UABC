@@ -11,6 +11,8 @@ const router = express.Router();
 // Helper function to add inline viewing flag to Cloudinary PDF URLs
 const addInlineViewingFlag = (pdfUrl) => {
   if (!pdfUrl) return pdfUrl;
+  // Check if flag already exists to avoid duplicates
+  if (pdfUrl.includes("fl_attachment:false")) return pdfUrl;
   // Insert fl_attachment:false flag after /upload/ to force inline viewing
   return pdfUrl.replace("/upload/", "/upload/fl_attachment:false/");
 };

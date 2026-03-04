@@ -234,7 +234,7 @@ router.get("/admin", authenticateToken, requireEditor, async (req, res) => {
     // Add inline viewing flag to PDF URLs for proper browser rendering
     const insightsWithInlinePdfs = insights.map((insight) => {
       const insightObj = insight.toObject();
-      if (insightObj.pdfUrl) {
+      if (insightObj.pdfUrl && !insightObj.pdfUrl.includes("fl_attachment:false")) {
         insightObj.pdfUrl = insightObj.pdfUrl.replace(
           "/upload/",
           "/upload/fl_attachment:false/",
@@ -310,7 +310,7 @@ router.get("/:id", async (req, res) => {
 
     // Add inline viewing flag to PDF URL for proper browser rendering
     const insightData = insight.toObject();
-    if (insightData.pdfUrl) {
+    if (insightData.pdfUrl && !insightData.pdfUrl.includes("fl_attachment:false")) {
       insightData.pdfUrl = insightData.pdfUrl.replace(
         "/upload/",
         "/upload/fl_attachment:false/",
