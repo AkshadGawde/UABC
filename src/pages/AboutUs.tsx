@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef, useState } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { optimizeImage } from '../utils/imageUtils';
 import { useIsMobile } from '../utils/useDevice';
 import { ScrollReveal, StaggerReveal } from '../components/PageTransition';
+import { ConsultationForm } from '../components/ConsultationForm';
 import { 
   Target, 
   Users, 
@@ -25,13 +26,15 @@ import {
   Phone,
   Lightbulb,
   FileCheck,
-  BarChart3
+  BarChart3,
+  X
 } from 'lucide-react';
 
 /**
  * About Us Page Component - Redesigned
  */
 export const AboutUs = () => {
+  const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
   const isMobile = useIsMobile();
   
   // Refs for parallax sections
@@ -620,9 +623,12 @@ export const AboutUs = () => {
               Let's discuss how our expertise can help solve your actuarial and benefits challenges.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
-              <Link to="/contact" className="inline-block px-6 md:px-8 py-3 md:py-4 bg-white text-accent-600 rounded-lg font-bold text-base md:text-lg hover:bg-accent-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 text-center">
-                Get in Touch
-              </Link>
+              <button 
+                onClick={() => setIsConsultationModalOpen(true)}
+                className="inline-block px-6 md:px-8 py-3 md:py-4 bg-white text-accent-600 rounded-lg font-bold text-base md:text-lg hover:bg-accent-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 text-center"
+              >
+                Get in touch
+              </button>
               <Link to="/services" className="inline-block px-6 md:px-8 py-3 md:py-4 border-2 border-white text-white rounded-lg font-bold text-base md:text-lg hover:bg-white hover:text-accent-600 transition-all text-center">
                 Explore Our Services
               </Link>
@@ -630,6 +636,42 @@ export const AboutUs = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Consultation Modal */}
+      <AnimatePresence>
+        {isConsultationModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+            onClick={() => setIsConsultationModalOpen(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3 }}
+              className="w-full max-w-2xl bg-light-bg dark:bg-dark-bg rounded-2xl shadow-2xl relative my-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setIsConsultationModalOpen(false)}
+                className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10 p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-6 h-6 text-slate-600 dark:text-slate-400" />
+              </button>
+
+              {/* Modal Content */}
+              <div className="p-6 sm:p-8 md:p-10 pt-12 sm:pt-14 max-h-[80vh] overflow-y-auto">
+                <ConsultationForm />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

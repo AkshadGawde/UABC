@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
 import { optimizeImage } from '../../utils/imageUtils';
 import { ScrollReveal, StaggerReveal, ParallaxScroll, TextReveal } from '../../components/PageTransition';
+import { ConsultationForm } from '../../components/ConsultationForm';
 import {
   CheckCircle2,
   Users,
@@ -17,7 +18,8 @@ import {
   Heart,
   ChevronDown,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  X
 } from 'lucide-react';
 
 // --- Components ---
@@ -437,6 +439,7 @@ const steps = [
 
 export const EmployeeBenefits = () => {
   const [activeStep, setActiveStep] = useState<number | null>(null);
+  const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const servicesRef = useRef<HTMLDivElement>(null);
   const stepsRef = useRef<HTMLDivElement>(null);
@@ -578,13 +581,14 @@ export const EmployeeBenefits = () => {
 
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
+              {/* <motion.button
+                onClick={() => setIsConsultationModalOpen(true)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="px-8 py-4 bg-white text-accent-600 rounded-xl font-bold text-lg hover:bg-accent-50 transition-all shadow-2xl"
               >
-                Schedule Consultation
-              </motion.button>
+                Get in touch
+              </motion.button> */}
               <Link to="/services">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -599,6 +603,43 @@ export const EmployeeBenefits = () => {
         </div>
       </section>
 
+      {/* Consultation Modal */}
+      <AnimatePresence>
+        {isConsultationModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+            onClick={() => setIsConsultationModalOpen(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3 }}
+              className="w-full max-w-2xl bg-light-bg dark:bg-dark-bg rounded-2xl shadow-2xl relative my-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setIsConsultationModalOpen(false)}
+                className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10 p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-6 h-6 text-slate-600 dark:text-slate-400" />
+              </button>
+
+              {/* Modal Content */}
+              <div className="p-6 sm:p-8 md:p-10 pt-12 sm:pt-14 max-h-[80vh] overflow-y-auto">
+                <h2 className="text-2xl font-bold mb-4">Schedule a Consultation</h2>
+                <p className="text-slate-600 dark:text-slate-400">Loading form...</p>
+                <ConsultationForm />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

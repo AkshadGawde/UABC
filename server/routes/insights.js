@@ -123,14 +123,31 @@ router.get("/", async (req, res) => {
       .limit(limitNumber)
       .select("-content -pdfData"); // Exclude full content and PDF data for list view
 
+    // Add inline viewing flag to PDF URLs for proper browser rendering
+    const insightsWithInlinePdfs = insights.map((insight) => {
+      const insightObj = insight.toObject();
+      if (insightObj.pdfUrl) {
+        insightObj.pdfUrl = insightObj.pdfUrl.replace(
+          "/upload/",
+          "/upload/fl_attachment:false/",
+        );
+      }
+      return insightObj;
+    });
+
     const total = await Insight.countDocuments(query);
 
-    console.log("✅ Found insights:", insights.length, "/", total);
+    console.log(
+      "✅ Found insights:",
+      insightsWithInlinePdfs.length,
+      "/",
+      total,
+    );
 
     res.json({
       success: true,
       data: {
-        insights,
+        insights: insightsWithInlinePdfs,
         pagination: {
           current: pageNumber,
           pages: Math.ceil(total / limitNumber),
@@ -214,12 +231,24 @@ router.get("/admin", authenticateToken, requireEditor, async (req, res) => {
       .skip(skip)
       .limit(limitNumber);
 
+    // Add inline viewing flag to PDF URLs for proper browser rendering
+    const insightsWithInlinePdfs = insights.map((insight) => {
+      const insightObj = insight.toObject();
+      if (insightObj.pdfUrl) {
+        insightObj.pdfUrl = insightObj.pdfUrl.replace(
+          "/upload/",
+          "/upload/fl_attachment:false/",
+        );
+      }
+      return insightObj;
+    });
+
     const total = await Insight.countDocuments(query);
 
     res.json({
       success: true,
       data: {
-        insights,
+        insights: insightsWithInlinePdfs,
         pagination: {
           current: pageNumber,
           pages: Math.ceil(total / limitNumber),
@@ -279,9 +308,18 @@ router.get("/:id", async (req, res) => {
       await insight.incrementViews();
     }
 
+    // Add inline viewing flag to PDF URL for proper browser rendering
+    const insightData = insight.toObject();
+    if (insightData.pdfUrl) {
+      insightData.pdfUrl = insightData.pdfUrl.replace(
+        "/upload/",
+        "/upload/fl_attachment:false/",
+      );
+    }
+
     res.json({
       success: true,
-      data: insight,
+      data: insightData,
     });
   } catch (error) {
     console.error("Get insight error:", error);
@@ -340,7 +378,7 @@ router.post(
         message: "Server error while creating insight",
       });
     }
-  }
+  },
 );
 
 // @route   PUT /api/insights/:id
@@ -401,7 +439,7 @@ router.put(
         message: "Server error while updating insight",
       });
     }
-  }
+  },
 );
 
 // @route   DELETE /api/insights/:id
@@ -475,7 +513,7 @@ router.patch(
         message: "Server error while updating publish status",
       });
     }
-  }
+  },
 );
 
 // @route   PATCH /api/insights/:id/featured
@@ -516,7 +554,7 @@ router.patch(
         message: "Server error while updating featured status",
       });
     }
-  }
+  },
 );
 
 // @route   GET /api/insights/categories/stats

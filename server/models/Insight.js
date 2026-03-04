@@ -14,19 +14,11 @@ const insightSchema = new mongoose.Schema(
       trim: true,
       maxlength: [500, "Excerpt cannot exceed 500 characters"],
     },
-    // PDF storage - using base64 for simplicity (optional - only for PDF insights)
-    pdfData: {
-      type: String, // Base64 encoded PDF
-      required: false,
-    },
-    pdfFilename: {
+    // Cloudinary PDF URL (optional - only for PDF insights)
+    pdfUrl: {
       type: String,
       required: false,
       trim: true,
-    },
-    pdfSize: {
-      type: Number, // File size in bytes
-      required: false,
     },
     // Regular insight fields (optional - only for text insights)
     content: {
@@ -87,9 +79,6 @@ const insightSchema = new mongoose.Schema(
     publishedAt: {
       type: Date,
       default: null,
-    },
-    pdfUrl: {
-      type: String,
     },
   },
   {

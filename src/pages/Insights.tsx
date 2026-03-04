@@ -35,10 +35,8 @@ interface Insight {
   views?: number;
   likes?: number;
   slug?: string;
-  // PDF-specific fields
-  pdfData?: string;
-  pdfFilename?: string;
-  pdfSize?: number;
+  // Cloudinary PDF URL (for PDF insights)
+  pdfUrl?: string;
   publishDate?: string;
 }
 import { 
@@ -219,14 +217,10 @@ export const Insights = () => {
   };
 
   const handleInsightClick = (insight: Insight) => {
-    // For PDF insights, open the PDF directly
-    if (insight.pdfFilename) {
-      // Use development URL in dev mode
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
-      
-      const pdfUrl = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
-      console.log('Opening PDF:', pdfUrl);
-      window.open(pdfUrl, '_blank');
+    // For PDF insights, open the PDF directly from Cloudinary
+    if (insight.pdfUrl) {
+      console.log('Opening PDF:', insight.pdfUrl);
+      window.open(insight.pdfUrl, '_blank');
     } else {
       // For regular insights, navigate to detail page (implement later)
       console.log('Navigate to insight detail:', insight.id);
@@ -235,16 +229,15 @@ export const Insights = () => {
 
   const copyPdfLink = (e: React.MouseEvent, insight: Insight) => {
     e.stopPropagation();
-    // Use deployed backend API URL directly for sharing
-    const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc-backend.onrender.com/api';
-    const shareableUrl = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
-    
-    navigator.clipboard.writeText(shareableUrl).then(() => {
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 2000);
-    }).catch(err => {
-      console.error('Failed to copy link:', err);
-    });
+    // Copy the direct Cloudinary PDF URL for sharing
+    if (insight.pdfUrl) {
+      navigator.clipboard.writeText(insight.pdfUrl).then(() => {
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 2000);
+      }).catch(err => {
+        console.error('Failed to copy link:', err);
+      });
+    }
   };
 
   const clearAllFilters = () => {
@@ -475,7 +468,7 @@ export const Insights = () => {
               >
                 {filteredInsights.map((insight, index) => {
                 const isFeatured = insight.featured;
-                const isPDF = !!insight.pdfFilename;
+                const isPDF = !!insight.pdfUrl;
                 return (
                   <motion.article
                     key={insight._id || insight.id}

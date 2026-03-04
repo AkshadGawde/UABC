@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { ConsultationForm } from '../components/ConsultationForm';
 import { 
   Shield, FileText, Users, CheckCircle, TrendingUp, 
-  ArrowRight, Activity, ClipboardCheck, Layout, Sparkles 
+  ArrowRight, Activity, ClipboardCheck, Layout, Sparkles, X
 } from 'lucide-react';
 import { ScrollReveal } from '../components/PageTransition';
 
@@ -46,6 +47,7 @@ const howSteps = [
 ];
 
 export default function BenefitConsulting() {
+  const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -226,10 +228,10 @@ export default function BenefitConsulting() {
                   <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Our comprehensive audit covers every legal and structural aspect of your benefits package to ensure 100% compliance with Indian Labor Laws.
                   </p>
-                  <button className="bg-accent-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-accent-700 transition-colors flex items-center gap-2 group">
+                  {/* <button className="bg-accent-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-accent-700 transition-colors flex items-center gap-2 group">
                     Download Brochure 
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
+                  </button> */}
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {whatIsAuditList.map((item, i) => (
@@ -275,11 +277,12 @@ export default function BenefitConsulting() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <motion.button
+                  onClick={() => setIsConsultationModalOpen(true)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="px-8 py-4 bg-white text-accent-600 rounded-xl font-bold text-lg hover:bg-accent-50 transition-all shadow-2xl"
                 >
-                  Schedule Consultation
+                  Get in touch
                 </motion.button>
                 <Link to="/services">
                   <motion.button
@@ -294,6 +297,42 @@ export default function BenefitConsulting() {
             </motion.div>
         </div>
       </section>
+
+      {/* Consultation Modal */}
+      <AnimatePresence>
+        {isConsultationModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+            onClick={() => setIsConsultationModalOpen(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3 }}
+              className="w-full max-w-2xl bg-light-bg dark:bg-dark-bg rounded-2xl shadow-2xl relative my-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setIsConsultationModalOpen(false)}
+                className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10 p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-6 h-6 text-slate-600 dark:text-slate-400" />
+              </button>
+
+              {/* Modal Content */}
+              <div className="p-6 sm:p-8 md:p-10 pt-12 sm:pt-14 max-h-[80vh] overflow-y-auto">
+                <ConsultationForm />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

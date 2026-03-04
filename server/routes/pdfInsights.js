@@ -8,6 +8,13 @@ const cloudinary = require("../config/cloudinary");
 
 const router = express.Router();
 
+// Helper function to add inline viewing flag to Cloudinary PDF URLs
+const addInlineViewingFlag = (pdfUrl) => {
+  if (!pdfUrl) return pdfUrl;
+  // Insert fl_attachment:false flag after /upload/ to force inline viewing
+  return pdfUrl.replace("/upload/", "/upload/fl_attachment:false/");
+};
+
 // Configure multer for PDF and image upload (memory storage)
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -247,8 +254,9 @@ router.post(
       const uploadResult = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
           {
-            resource_type: "raw",
-            folder: "insights",
+            resource_type: "auto",
+            folder: "insights-pdfs",
+            format: "pdf",
           },
           (error, result) => {
             if (error) reject(error);
@@ -260,6 +268,10 @@ router.post(
       });
 
       const pdfUrl = uploadResult.secure_url;
+
+      // Add inline viewing flag to PDF URL
+      const inlinePdfUrl = addInlineViewingFlag(pdfUrl);
+      console.log("🔗 PDF URL with inline flag:", inlinePdfUrl);
 
       // Handle image - either uploaded file or URL
       let finalImageUrl;
@@ -282,13 +294,11 @@ router.post(
         title,
         excerpt,
         author: author || "Unknown Author",
-        category: category || "General", // Use category from form or default to General
-        pdfUrl: pdfUrl,
-        pdfFilename: pdfFile.originalname,
-        pdfSize: pdfFile.size,
+        category: category || "General",
+        pdfUrl: inlinePdfUrl,
         featuredImage: finalImageUrl,
         publishDate: publishDate ? new Date(publishDate) : new Date(),
-        published: true, // Auto-publish PDF insights
+        published: true,
       };
 
       console.log("💾 Saving to database...");
@@ -296,14 +306,10 @@ router.post(
       await insight.save();
       console.log("✅ Insight saved successfully:", insight._id);
 
-      // Return without PDF data to avoid large response
-      const responseData = { ...insight.toObject() };
-      delete responseData.pdfData;
-
       res.status(201).json({
         success: true,
         message: "PDF insight created successfully",
-        data: responseData,
+        data: insight.toObject(),
       });
     } catch (error) {
       console.error("❌ Upload insight error:", error);
@@ -381,7 +387,7 @@ router.delete("/:id", authenticateToken, requireEditor, async (req, res) => {
         console.log("📤 Deleting from Cloudinary:", publicId);
 
         await cloudinary.uploader.destroy(publicId, {
-          resource_type: "raw", // PDFs are stored as raw files
+          resource_type: "auto",
         });
 
         console.log("✅ Deleted from Cloudinary:", publicId);
@@ -415,15 +421,13 @@ router.delete("/:id", authenticateToken, requireEditor, async (req, res) => {
 });
 
 // @route   GET /api/pdf-insights/:id/pdf
-// @desc    Download or view PDF
+// @desc    Get PDF URL for viewing in browser
 // @access  Public (for published insights)
 router.get("/:id/pdf", async (req, res) => {
   try {
     const { id } = req.params;
 
-    const insight = await Insight.findById(id).select(
-      "pdfUrl pdfData pdfFilename published",
-    );
+    const insight = await Insight.findById(id).select("pdfUrl published");
 
     if (!insight || !insight.published) {
       return res.status(404).json({
@@ -432,26 +436,21 @@ router.get("/:id/pdf", async (req, res) => {
       });
     }
 
-    // NEW Cloudinary-based PDFs
-    if (insight.pdfUrl) {
-      return res.redirect(insight.pdfUrl);
-    }
-
-    // OLD base64 PDFs (fallback)
-    if (insight.pdfData) {
-      const pdfBuffer = Buffer.from(insight.pdfData, "base64");
-
-      res.set({
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `inline; filename="${insight.pdfFilename}"`,
+    if (!insight.pdfUrl) {
+      return res.status(404).json({
+        success: false,
+        message: "PDF URL not found for this insight",
       });
-
-      return res.send(pdfBuffer);
     }
 
-    return res.status(404).json({
-      success: false,
-      message: "PDF not found",
+    // Add inline viewing flag to ensure browser opens PDF instead of downloading
+    const inlinePdfUrl = addInlineViewingFlag(insight.pdfUrl);
+
+    // Return the Cloudinary PDF URL
+    // The frontend will handle opening it in a new tab
+    res.json({
+      success: true,
+      pdfUrl: inlinePdfUrl,
     });
   } catch (error) {
     console.error("PDF serve error:", error);

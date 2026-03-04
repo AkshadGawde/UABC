@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef, useState } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { optimizeImage } from '../utils/imageUtils';
 import { useIsMobile } from '../utils/useDevice';
 import { ScrollReveal, StaggerReveal, MagneticButton } from '../components/PageTransition';
+import { ConsultationForm } from '../components/ConsultationForm';
 import { 
   Calculator, 
   Shield, 
@@ -16,13 +17,15 @@ import {
   ArrowRight,
   Clock,
   Award,
-  Zap
+  Zap,
+  X
 } from 'lucide-react';
 
 /**
  * Services Page Component
  */
 export const ServicesPage = () => {
+  const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
   const isMobile = useIsMobile();
   
   // Refs for parallax sections
@@ -247,15 +250,14 @@ export const ServicesPage = () => {
               Let's discuss how our actuarial expertise can help solve your business challenges.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/contact">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-8 py-4 bg-white text-accent-600 rounded-xl font-bold text-lg hover:bg-accent-50 transition-all shadow-2xl"
-                >
-                  Schedule Consultation
-                </motion.button>
-              </Link>
+              <motion.button
+                onClick={() => setIsConsultationModalOpen(true)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-8 py-4 bg-white text-accent-600 rounded-xl font-bold text-lg hover:bg-accent-50 transition-all shadow-2xl"
+              >
+                Get in touch
+              </motion.button>
               <Link to="/services">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -269,6 +271,42 @@ export const ServicesPage = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Consultation Modal */}
+      <AnimatePresence>
+        {isConsultationModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+            onClick={() => setIsConsultationModalOpen(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3 }}
+              className="w-full max-w-2xl bg-light-bg dark:bg-dark-bg rounded-2xl shadow-2xl relative my-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setIsConsultationModalOpen(false)}
+                className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10 p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-6 h-6 text-slate-600 dark:text-slate-400" />
+              </button>
+
+              {/* Modal Content */}
+              <div className="p-6 sm:p-8 md:p-10 pt-12 sm:pt-14 max-h-[80vh] overflow-y-auto">
+                <ConsultationForm />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
