@@ -4,6 +4,7 @@ import { useIsMobile, useShouldReduceMotion } from '../../utils/useDevice';
 import { optimizeImage } from '../../utils/imageUtils';
 import { CheckCircle2, Building2 } from 'lucide-react';
 import { ArrowRight} from 'lucide-react';
+import { Link } from "react-router-dom";
 /**
  * About Section
  */
@@ -39,31 +40,37 @@ export const About = () => {
               <span className="text-slate-500">Through Actuarial Services.</span>
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm lg:text-base leading-relaxed mb-2 sm:mb-6">
-              Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001 -2013 certified
-2013 certified actuarial and Benefits consulting firm serving multiple clients in India and
-across the world. We have 80 + years of total experience delivering quality service with
-a singular objective to enhance client value and experience
+              We provide end-to-end solutions across Employee Benefits, combining actuarial precision with strategic insight. Our services help organizations manage financial risk, ensure compliance, and design sustainable benefit programs that support both business goals and employee well-being.
+<br/>
+<br/>
+We deliver comprehensive actuarial services for:
+
             </p>
-            <ul className="space-y-1.5 sm:space-y-4">
-              {[
-                "Employee Benefits",
-                "Insurance Consulting",
-                "Retirement Consulting",
-                "Benefit Consulting"
-              ].map((item, i) => (
-                <motion.li 
-                  key={i}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: false }}
-                  transition={{ delay: 0.1 * i }}
-                  className="flex items-center gap-3 text-slate-700 dark:text-slate-200 group"
-                >
-                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-accent-500 group-hover:scale-110 transition-transform shrink-0" />
-                  <span className="text-xs sm:text-sm lg:text-base text-slate-700 dark:text-slate-200">{item}</span>
-                </motion.li>
-              ))}
-            </ul>
+           <ul className="space-y-1.5 sm:space-y-4">
+  {[
+    { name: "Employee Benefits", link: "/services/employee-benefits" },
+    { name: "Insurance Consulting", link: "/services/insurance-consulting" },
+    { name: "Retirement Consulting", link: "/services/retirement-consulting" },
+    { name: "Benefit Consulting", link: "/services/benefit-consulting" }
+  ].map((item, i) => (
+    <motion.li 
+      key={i}
+      initial={{ opacity: 0, x: -20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: false }}
+      transition={{ delay: 0.1 * i }}
+      className="group"
+    >
+      <Link 
+        to={item.link}
+        className="flex items-center gap-3 text-slate-700 dark:text-slate-200 hover:text-accent-500 transition-colors"
+      >
+        <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-accent-500 group-hover:scale-110 transition-transform shrink-0" />
+        <span className="text-xs sm:text-sm lg:text-base">{item.name}</span>
+      </Link>
+    </motion.li>
+  ))}
+</ul>
 
             <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -71,10 +78,10 @@ a singular objective to enhance client value and experience
             transition={{ duration: 0.6, delay: 0.6 }}
             className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 pt-1"
           >
-            <a href="/services" className="group px-4 sm:px-5 py-2 sm:py-2.5 bg-slate-900 dark:bg-white text-white dark:text-dark-bg font-bold rounded-md flex items-center justify-center sm:justify-start gap-2 hover:bg-accent-600 dark:hover:bg-slate-200 transition-colors shadow-lg hover:shadow-accent-500/25 text-xs sm:text-sm mt-5">
+            <Link to="/services" className="group px-4 sm:px-5 py-2 sm:py-2.5 bg-slate-900 dark:bg-white text-white dark:text-dark-bg font-bold rounded-md flex items-center justify-center sm:justify-start gap-2 hover:bg-accent-600 dark:hover:bg-slate-200 transition-colors shadow-lg hover:shadow-accent-500/25 text-xs sm:text-sm mt-5">
               Explore Services 
               <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-white dark:text-accent-600 group-hover:translate-x-1 transition-transform" />
-            </a>
+            </Link>
           </motion.div>
           </motion.div>
           

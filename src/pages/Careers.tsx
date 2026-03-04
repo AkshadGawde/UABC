@@ -145,21 +145,21 @@ export const Careers = () => {
   },
   {
     icon: Heart,
-    title: "Health & Wellness",
+    title: "Employee Recognition",
     description:
-      "Comprehensive health insurance, mental health support, and wellness programs."
+      "We celebrate achievements, value contributions, and foster a culture where hard work and innovation are recognized and rewarded."
   },
   {
     icon: Globe,
-    title: "Global Opportunities",
-    description:
-      "Work with international teams and gain exposure to global assignments."
-  },
-  {
-    icon: Coffee,
     title: "Work-Life Balance",
     description:
       "Flexible working hours, remote work options, and generous vacation policies."
+  },
+  {
+    icon: Coffee,
+    title: "Global Opportunities",
+    description:
+      "Work with international teams and gain exposure to global assignments."
   }
 ];
 

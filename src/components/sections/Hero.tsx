@@ -5,6 +5,7 @@ import { optimizeImage, getInsightImageUrl } from '../../utils/imageUtils';
 import { ArrowRight, TrendingUp, ShieldCheck, FileText } from 'lucide-react';
 import { insightsService } from '../../admin/services/insightsService';
 import { CheckCircle2} from 'lucide-react';
+import { Mail } from "lucide-react";
 
 
 // Interface for insight data
@@ -134,6 +135,13 @@ export const Hero = () => {
 
   const getInsightImage = (insight: InsightCard) => {
     return getInsightImageUrl(insight);
+  };
+
+  const handleNewsletterClick = () => {
+    const footerElement = document.getElementById('footer');
+    if (footerElement) {
+      footerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   // Show loading skeleton or fallback if no insights
@@ -354,27 +362,24 @@ export const Hero = () => {
                 style={{ y: y2 }}
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-4 -right-4 w-48 bg-white dark:bg-dark-card border border-slate-200 dark:border-white/10 p-4 rounded-xl shadow-xl z-20"
+                onClick={handleNewsletterClick}
+                className="absolute -top-4 -right-4 w-48 bg-white dark:bg-dark-card border border-slate-200 dark:border-white/10 p-4 rounded-xl shadow-xl z-20 cursor-pointer hover:shadow-2xl hover:border-accent-500/30 transition-all duration-300"
               >
                  <div className="flex items-center gap-3 mb-2">
-                    <div className={`p-2 rounded-lg ${currentInsightData?.pdfFilename ? 'bg-blue-500/10 dark:bg-blue-500/20' : 'bg-green-500/10 dark:bg-green-500/20'}`}>
-                       {currentInsightData?.pdfFilename ? (
-                         <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                       ) : (
-                         <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400" />
-                       )}
-                    </div>
-                    <span className="text-sm font-bold text-slate-900 dark:text-white">
-                      {currentInsightData?.pdfFilename ? 'PDF Available' : `${displayInsights.length} Insights`}
-                    </span>
-                 </div>
-                 <div className="text-xs text-slate-500">
-                   {currentInsightData?.pdfFilename ? 'Download Research' : 'Latest Analysis'}
-                 </div>
+  <div className="p-2 rounded-lg bg-blue-500/10 dark:bg-blue-500/20">
+    <Mail className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+  </div>
+                   <span className="text-sm font-bold text-slate-900 dark:text-white">
+  Newsletter
+</span>
+</div>
+<div className="text-xs text-slate-500">
+  Subscribe to our newsletter for the latest updates.
+</div>
               </motion.div>
 
               {/* Floating Element 2 - Category & Featured Status */}
-              <motion.div 
+              {/* <motion.div 
                 style={{ y: useTransform(scrollY, [0, 500], [0, 50]) }}
                 animate={{ y: [0, 10, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
@@ -393,7 +398,7 @@ export const Hero = () => {
                        </div>
                     </div>
                  </div>
-              </motion.div>
+              </motion.div> */}
            </motion.div>
         </div>
       </div>

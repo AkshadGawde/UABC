@@ -79,9 +79,9 @@ export const AboutOverview = () => {
 
   const stats = [
     { value: "80+", label: "Years Combined Experience", icon: Star, color: "text-yellow-500" },
-    { value: "1500+", label: "Clients Served", icon: Users, color: "text-blue-500" },
+    { value: "2500+", label: "Clients Served", icon: Users, color: "text-blue-500" },
     { value: "25+", label: "Countries", icon: Globe, color: "text-green-500" },
-    { value: "3000+", label: "Projects Delivered", icon: Zap, color: "text-purple-500" }
+    { value: "750+", label: "Research Reports", icon: Zap, color: "text-purple-500" }
   ];
 
   const coreValues = [
@@ -156,8 +156,8 @@ export const AboutOverview = () => {
               </motion.div>
               
               <h1 className="text-2xl sm:text-2xl md:text-4xl lg:text-4xl font-bold mb-6 text-slate-900 dark:text-white leading-tight">
-                Transforming
-                <span className="block text-accent-600 dark:text-accent-500">Actuarial Excellence</span>
+                Delivering Actuarial Excellence
+                <span className="block text-accent-600 dark:text-accent-500">with Impact</span>
               </h1>
               
               <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
@@ -203,7 +203,7 @@ export const AboutOverview = () => {
                 >
                   <Users className="w-12 h-12 mb-4" />
                   <h3 className="text-xl font-bold mb-2">Trusted Partner</h3>
-                  <p className="text-sm text-purple-100">500+ Happy Clients</p>
+                  <p className="text-sm text-purple-100">2500+ Happy Clients</p>
                 </motion.div>
               </div>
             </motion.div>
@@ -275,20 +275,24 @@ export const AboutOverview = () => {
               </div>
 
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-6">
-                Leading the Way in
-                <span className="block text-accent-600 dark:text-accent-500">Actuarial Innovation</span>
+Turning Complexity                <span className="block text-accent-600 dark:text-accent-500"> into Clarity
+</span>
               </h2>
 
               <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
-                Universal Actuaries and Benefit Consultants (UABC) is an ISO 27001-2022 certified actuarial and Benefits consulting firm serving multiple clients in India and across the world. We have 80+ years of total experience delivering quality service with a singular objective to enhance client value and experience.
+                At Universal Actuaries and Benefit Consultants (UABC), we empower organizations to make confident, future-ready decisions through rigorous analysis and ethical advisory practices. Our approach blends technical precision with a deep understanding of business realities, ensuring solutions that are practical, transparent, and value focused.
+                <br/>
+                <br/>
+                We believe actuarial science is more than numbers — it is about responsibility, trust, and long-term impact.
+
               </p>
 
               <div className="space-y-4">
                 {[
-                  "80+ years of combined expertise",
-                  "ISO 27001-2022 certified operations",
-                  "Global client portfolio across 25+ countries",
-                  "Comprehensive actuarial solutions"
+                  "Client-first, value-driven engagement model",
+                  "Integrity and transparency at every step",
+                  "Insight-led strategies backed by strong analytics",
+                  "Long-term partnerships built on trust"
                 ].map((item, index) => (
                   <motion.div
                     key={index}
@@ -479,10 +483,10 @@ export const AboutOverview = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Ready to Transform Your Benefits Strategy?
+             Ready to Get Started?
             </h2>
             <p className="text-xl text-accent-100 mb-10 max-w-2xl mx-auto">
-              Let's discuss how our expertise can help achieve your actuarial and benefits goals.
+              Let’s discuss how our expertise can support smarter decision-making
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.button

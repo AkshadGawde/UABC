@@ -288,7 +288,7 @@ const accountingStandards = [
 const servicesOffered = [
   {
     title: "Actuarial Valuation",
-    description: "Expert valuation of retirement benefits, gratuity, leave encashment, and post-retirement medical benefits under AS 15R, IND AS 19, IAS 19, and US GAAP standards with detailed liability projections.",
+    description: "We provide comprehensive actuarial valuation services for employee benefit obligations in compliance with applicable accounting and regulatory standards.",
     icon: BarChart3,
     color: "accent",
     gradient: "from-accent-500 to-accent-400",
@@ -297,14 +297,16 @@ const servicesOffered = [
     bgColor: "#3B82F6",
     bgColorDark: "#1E40AF",
     benefits: [
-      "Liability Assessment & Projections",
-      "Discount Rate Optimization",
-      "Mortality & Longevity Analysis"
+      "Accurate liability measurement",
+      "Transparent disclosure reporting",
+      "Sensitivity analysis and risk insights",
+      "Audit-ready documentation",
+      "Compliance with Ind AS 19, AS 15, IFRS, US GAAP"
     ]
   },
   {
-    title: "Funding Strategy",
-    description: "Strategic funding recommendations for defined benefit plans including contribution planning, cash flow optimization, and long-term sustainability analysis to minimize volatility and ensure compliance.",
+    title: "Assumption Setting & Trend Analysis",
+    description: "Actuarial valuations are only as reliable as the assumptions underlying them. Thoughtful assumption setting is critical to ensuring realistic liability measurement.",
     icon: TrendingUp,
     color: "emerald",
     gradient: "from-emerald-500 to-teal-500",
@@ -313,46 +315,16 @@ const servicesOffered = [
     bgColor: "#10B981",
     bgColorDark: "#059669",
     benefits: [
-      "Cash Flow Projections",
-      "Contribution Scheduling",
-      "Cost Reduction Analysis"
+      "Align assumptions with workforce experience",
+      "Reduce unexpected actuarial gains/losses",
+      "Improve forecast accuracy",
+      "Strengthen audit defensibility",
+      "Enhance long-term financial planning"
     ]
   },
   {
-    title: "Benefit Plan Design",
-    description: "Custom design of competitive benefit structures including DB/DC plans, hybrid schemes, and flexible benefits. We balance cost efficiency with employee attraction and retention goals.",
-    icon: Target,
-    color: "blue",
-    gradient: "from-blue-500 to-cyan-500",
-    bg: "bg-blue-50 dark:bg-blue-900/20",
-    text: "text-blue-600 dark:text-blue-500",
-    bgColor: "#0EA5E9",
-    bgColorDark: "#0284C7",
-    benefits: [
-      "Formula Optimization",
-      "Coverage Maximization",
-      "Compliance Review"
-    ]
-  },
-  {
-    title: "De-risking Strategies",
-    description: "Pension risk transfer solutions, liability-driven investment strategies, and DB to DC conversions. Expert support in buyouts, buy-ins, and plan freezes with seamless implementation.",
-    icon: Shield,
-    color: "orange",
-    gradient: "from-orange-500 to-amber-500",
-    bg: "bg-orange-50 dark:bg-orange-900/20",
-    text: "text-orange-600 dark:text-orange-500",
-    bgColor: "#F97316",
-    bgColorDark: "#EA580C",
-    benefits: [
-      "Pension Risk Transfer",
-      "Asset-Liability Matching",
-      "Transition Support"
-    ]
-  },
-  {
-    title: "ESOP & Incentives",
-    description: "Fair value measurement of stock options, SARs, and RSUs using Black-Scholes and binomial models. Full compliance with IND AS 102/IFRS 2 including expense recognition and disclosure support.",
+    title: "ESOPs & Incentives",
+    description: "We provide actuarial and valuation support for equity-linked compensation and long-term incentive programs.",
     icon: Award,
     color: "purple",
     gradient: "from-purple-500 to-pink-500",
@@ -361,15 +333,56 @@ const servicesOffered = [
     bgColor: "#A855F7",
     bgColorDark: "#7E22CE",
     benefits: [
-      "Valuation Services",
-      "Black-Scholes Modeling",
-      "Employee Education"
+      "Fair valuation of ESOPs and stock options",
+      "Expense recognition with monthly bifurcation",
+      "Black-Scholes and Monte Carlo modeling",
+      "Modification and repricing analysis",
+      "Performance-linked incentive modeling",
+      "ESOP & Incentive plan design"
     ]
   },
   {
-    title: "Loyalty Programs",
-    description: "Actuarial modeling for customer loyalty rewards, extended warranties, gift cards, and promotional schemes. Liability estimation with redemption pattern analysis and breakage rate calculations.",
-    icon: Heart,
+    title: "Benefit Plan Design",
+    description: "Employee benefits are a powerful tool for talent attraction and retention when designed thoughtfully.",
+    icon: Target,
+    color: "blue",
+    gradient: "from-blue-500 to-cyan-500",
+    bg: "bg-blue-50 dark:bg-blue-900/20",
+    text: "text-blue-600 dark:text-blue-500",
+    bgColor: "#0EA5E9",
+    bgColorDark: "#0284C7",
+    benefits: [
+      "Structuring new benefit schemes",
+      "Redesigning legacy plans for cost efficiency",
+      "Benchmarking against industry standards",
+      "Financial and behavioral impact evaluation",
+      "Scenario modeling for cost projections",
+      "Statutory Compliance Review"
+    ]
+  },
+  {
+    title: "Funding Strategy & Valuations",
+    description: "We help organizations assess the gap between employee benefit liabilities and assets, developing a structured roadmap to bridge that gap over time.",
+    icon: Zap,
+    color: "orange",
+    gradient: "from-orange-500 to-amber-500",
+    bg: "bg-orange-50 dark:bg-orange-900/20",
+    text: "text-orange-600 dark:text-orange-500",
+    bgColor: "#F97316",
+    bgColorDark: "#EA580C",
+    benefits: [
+      "Liability vs asset gap analysis",
+      "Long-term liability projections",
+      "Asset growth modeling and contribution planning",
+      "Structured catch-up funding strategies",
+      "Scenario and sensitivity analysis",
+      "Plan systematic contributions"
+    ]
+  },
+  {
+    title: "De-Risking Strategies",
+    description: "Employee benefit liabilities can introduce financial volatility and long-term uncertainty. We provide strategic advisory to enhance stability.",
+    icon: Shield,
     color: "rose",
     gradient: "from-rose-500 to-pink-500",
     bg: "bg-rose-50 dark:bg-rose-900/20",
@@ -377,9 +390,12 @@ const servicesOffered = [
     bgColor: "#EF4444",
     bgColorDark: "#DC2626",
     benefits: [
-      "Program Strategy",
-      "Warranty Planning",
-      "Special Schemes"
+      "Liability restructuring",
+      "Plan modifications to manage cost risk",
+      "Transition from DB to DC structures",
+      "Risk transfer mechanisms",
+      "Experience analysis and assumption reviews",
+      "Enhanced balance sheet stability"
     ]
   }
 ];
@@ -555,10 +571,11 @@ export const EmployeeBenefits = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Ready to Transform Your Benefits Strategy?
+              Ready to Get Started?
             </h2>
             <p className="text-xl text-accent-100 mb-10 max-w-2xl mx-auto">
-              Let's discuss how our expertise can help achieve your employee benefits goals.
+              Let’s discuss how our expertise can support smarter decision-making
+
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.button

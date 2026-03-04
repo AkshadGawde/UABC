@@ -11,17 +11,17 @@ const benefitAuditList = [
   { 
     text: "Mitigating Compliance Risk", 
     icon: Shield, 
-    desc: "Stay aligned with evolving labor laws and regulatory requirements. Our comprehensive audit ensures your benefits program meets all statutory obligations, protecting your organization from legal penalties, audits, and regulatory non-compliance issues." 
+    desc: "Employee benefit obligations are governed by evolving accounting standards, regulatory requirements, and tax provisions. Non-compliance can result in financial misstatements, audit qualifications, penalties, and reputational risk.\n\nWe help organizations proactively manage and mitigate compliance exposure through structured advisory and review processes. Our services include review of benefit schemes for regulatory alignment, compliance assessment under applicable accounting standards (Ind AS, AS, IFRS, US GAAP), evaluation of funding structures and trust compliance, disclosure review and audit support, assumption governance and documentation review, and identification of gaps in policy, process, or reporting.\n\nWe work closely with finance, HR, and auditors to ensure that benefit liabilities are measured, funded, and disclosed in accordance with applicable regulations. Our objective is to transform compliance from a reactive obligation into a well-governed, structured, and defensible framework — reducing financial and operational risk." 
   },
   { 
     text: "Mitigating Financial Risk", 
     icon: TrendingUp, 
-    desc: "Optimize costs and prevent financial leakages through detailed analysis of benefit expenditures. We identify areas of overspending, inefficiencies, and opportunities for cost optimization while maintaining competitive employee benefits packages." 
+    desc: "Employee benefit obligations can introduce significant balance sheet volatility and long-term financial uncertainty if not actively managed.\n\nWe help organizations identify, measure, and manage financial risks arising from employee benefit schemes, including volatility in actuarial gains and losses, sensitivity to discount rate and salary escalation changes, medical inflation risk in PRMB schemes, funding shortfall exposure, cash flow unpredictability, and demographic and longevity risk.\n\nThrough structured analysis, stress testing, and forward-looking projections, we provide actionable insights that enable organizations to improve predictability of costs, optimize funding strategies, reduce balance sheet volatility, and align benefit commitments with financial capacity. Our focus is on converting uncertainty into informed, data-driven decision-making." 
   },
   { 
     text: "Mitigating Reputation Risk", 
     icon: Users, 
-    desc: "Protect your brand as an employer of choice by ensuring fair, transparent, and well-managed benefits programs. A strong benefits framework enhances employee satisfaction, attracts top talent, and reinforces your position as a responsible employer in the market." 
+    desc: "Employee benefits directly impact workforce trust and stakeholder confidence. Inadequate funding, delayed payments, or compliance lapses can adversely affect an organization's credibility.\n\nWe assist organizations in strengthening governance and transparency around employee benefit commitments by ensuring accurate and defensible liability measurement, supporting clear and compliant financial disclosures, advising on sustainable benefit design, reviewing funding adequacy and benefit security, and providing audit-ready documentation and technical support.\n\nBy enhancing the robustness and transparency of benefit programs, we help organizations protect employee confidence, investor trust, and overall corporate reputation." 
   },
 ];
 
@@ -154,25 +154,53 @@ export default function BenefitConsulting() {
             </div>
           </ScrollReveal>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {benefitAuditList.map((item, i) => (
-              <motion.div
-                key={item.text}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="p-8 bg-white dark:bg-dark-card rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group border border-slate-100 dark:border-slate-700"
-              >
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 bg-accent-100 dark:bg-accent-900/30 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                    <item.icon className="w-7 h-7 text-accent-600 dark:text-accent-500" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {benefitAuditList.map((item, i) => {
+              const sections = item.desc.split('\n\n').filter(s => s.trim());
+              return (
+                <motion.div
+                  key={item.text}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                  className="flex flex-col bg-gradient-to-br from-white to-slate-50 dark:from-dark-card dark:to-slate-900 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group border border-slate-100 dark:border-slate-700 overflow-hidden"
+                >
+                  {/* Header Section */}
+                  <div className="flex items-center gap-3 p-5 bg-gradient-to-r from-accent-50 to-accent-100/50 dark:from-accent-900/20 dark:to-accent-900/10 border-b border-slate-100 dark:border-slate-700">
+                    <motion.div 
+                      className="w-12 h-12 bg-gradient-to-br from-accent-500 to-accent-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md"
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                    >
+                      <item.icon className="w-6 h-6 text-white" />
+                    </motion.div>
+                    <h3 className="text-base md:text-lg font-bold text-slate-900 dark:text-white leading-snug">{item.text}</h3>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">{item.text}</h3>
-                </div>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{item.desc}</p>
-              </motion.div>
-            ))}
+
+                  {/* Content Section */}
+                  <div className="flex-1 overflow-y-auto p-5 space-y-4">
+                    {sections.map((section, idx) => (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 + idx * 0.1 }}
+                        className={`${idx !== 0 ? 'pt-3 border-t border-slate-200 dark:border-slate-700' : ''}`}
+                      >
+                        <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-sm">
+                          {section}
+                        </p>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Footer Accent */}
+                  <div className="h-0.5 bg-gradient-to-r from-accent-400 via-accent-500 to-accent-400"></div>
+                </motion.div>
+              );
+            })}
           </div>
         </section>
 
@@ -240,10 +268,10 @@ export default function BenefitConsulting() {
               viewport={{ once: true }}
             >
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                Ready to Optimize Your Benefits?
+                Ready to Get Started?
               </h2>
               <p className="text-xl text-accent-100 mb-10 max-w-2xl mx-auto">
-                Join leading organizations in redesigning employee benefits that meet diverse preferences while staying within budget.
+                Let’s discuss how our expertise can support smarter decision-making
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <motion.button

@@ -118,11 +118,11 @@ const InsuranceConsulting = () => {
                 className="grid md:grid-cols-2 gap-8 items-center"
               >
                 <motion.div
-                  initial={{ x: -100, opacity: 0 }}
+                  initial={{ x: index % 2 === 0 ? -100 : 100, opacity: 0 }}
                   whileInView={{ x: 0, opacity: 1 }}
                   viewport={{ once: false, margin: "-50px" }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="order-2 md:order-1"
+                  className={index % 2 === 0 ? 'order-2 md:order-1' : 'order-1 md:order-2'}
                 >
                   <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
                     {section.title}
@@ -137,11 +137,11 @@ const InsuranceConsulting = () => {
                   </ul>
                 </motion.div>
                 <motion.div
-                  initial={{ x: 100, opacity: 0 }}
+                  initial={{ x: index % 2 === 0 ? 100 : -100, opacity: 0 }}
                   whileInView={{ x: 0, opacity: 1 }}
                   viewport={{ once: false, margin: "-50px" }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="order-1 md:order-2"
+                  className={index % 2 === 0 ? 'order-1 md:order-2' : 'order-2 md:order-1'}
                 >
                   <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-video md:aspect-auto md:h-64 group">
                     <img
@@ -171,10 +171,10 @@ const InsuranceConsulting = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Ready to Elevate Your Insurance Strategy?
+              Ready to Get Started?
             </h2>
             <p className="text-xl text-accent-100 mb-10 max-w-2xl mx-auto">
-              Let's discuss how our insurance consulting expertise can help achieve your risk management goals.
+              Let’s discuss how our expertise can support smarter decision-making
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.button

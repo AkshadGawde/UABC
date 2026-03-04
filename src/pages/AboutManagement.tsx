@@ -10,7 +10,7 @@ export const AboutManagement = () => {
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-16">
       
       {/* Hero Section */}
-      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
+      {/* <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-accent-50 to-slate-50 dark:from-dark-card dark:to-dark-bg">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -29,7 +29,7 @@ export const AboutManagement = () => {
             </p>
           </motion.div>
         </div>
-      </section>
+      </section> */}
 
       {/* Content Section */}
       <section className="py-12 md:py-16 lg:py-20">
@@ -71,7 +71,7 @@ export const AboutManagement = () => {
                   Chitra Jayasimha
                 </h4>
                 <p className="text-accent-600 dark:text-accent-500 font-semibold text-base md:text-lg mb-4 md:mb-6">
-                  Founder & CEO
+                  Principal Actuary and Founder-Director
                 </p>
 
                 {/* Badges */}
@@ -94,62 +94,180 @@ export const AboutManagement = () => {
                 {/* Description */}
                 <div className="space-y-3 md:space-y-4 text-slate-700 dark:text-slate-300 leading-relaxed">
                   <p className="text-sm md:text-base">
-                    Chitra is a Senior Consulting Actuary and Founder of Universal
-                    Actuaries and Benefit Consultants with over 35 years of
-                    experience across Life, General, Health Insurance, Pension,
-                    Retirement, and Employee Benefits.
+                    Chitra Jayasimha is a distinguished actuary qualified in both India and the UK, with nearly four decades of experience across Life Insurance, General Insurance, Reinsurance, Pensions, and Employee Benefits.
+                    <br/>
+                    Chitra has also served the profession in key leadership capacities, including:
+Ex-Chairperson, NPS Trust
+Chairperson – Advisory Group on Pension, Employee Benefits and Social Security Schemes, Institute of Actuaries of India
+Core Member, APAC Retirement Council (Aon)
+Member, Aon Global Retirement Committee
+<br/>
+<br/>
+She currently serves as the Appointed Actuary for:
+Sanima Reliance Life, Nepal
+GIC Re, Bhutan
+Nepal Re
+
                   </p>
                   <p className="text-sm md:text-base">
-                    She is a Fellow of the Institute and Faculty of Actuaries, UK
-                    (FIA), Fellow of the Institute of Actuaries of India (FIAI),
-                    and Fellow of the Insurance Institute of India (FIII). She is
-                    also an appointed actuary for Samina Life, Nepal.
+                    She is a Fellow of the Institute and Faculty of Actuaries (UK), Fellow of the Institute of Actuaries of India, and Fellow of the Insurance Institute of India. She is also a Gold Medalist in B.Sc. Statistics from Madras University.
+
                   </p>
                 </div>
               </div>
             </div>
+<br/>
+<br/>
 
             {/* Experience Section */}
             <div className="mt-10 pt-8 border-t border-slate-200 dark:border-slate-700">
-              <h5 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
+              <h5 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">
                 Professional Experience
               </h5>
+              <p className="text-slate-600 dark:text-slate-400 mb-8">
+                A comprehensive profile of expertise and leadership across the actuarial and benefits consulting landscape.
+              </p>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                {[
-                  {
-                    title: 'Insurance Expertise',
-                    text:
-                      'Life, General, Health & Reinsurance including pricing, valuation, embedded value, surplus analysis and underwriting.',
-                  },
-                  {
-                    title: 'Employee Benefits',
-                    text:
-                      'Actuarial valuations under Indian GAAP, IFRS, US GAAP across Asia, Middle East, Australia & Europe.',
-                  },
-                  {
-                    title: 'Benefits Consulting',
-                    text:
-                      'M&A due diligence, retirement solutions, financial wellness programs, and benefits redesign.',
-                  },
-                  {
-                    title: 'Previous Organizations',
-                    text:
-                      'Aon Consulting, Mercer Consulting, Swiss Re India, Paternoster (UK), ING Life, LIC of India.',
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.title}
-                    className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6"
-                  >
-                    <h6 className="font-bold text-slate-900 dark:text-white mb-2">
-                      {item.title}
-                    </h6>
-                    <p className="text-sm text-slate-700 dark:text-slate-300">
-                      {item.text}
-                    </p>
-                  </div>
-                ))}
+              {/* Insurance Expertise */}
+              <div className="mb-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-1 h-8 bg-gradient-to-b from-accent-600 to-accent-400 rounded-full" />
+                  <h6 className="text-xl font-bold text-slate-900 dark:text-white">
+                    Insurance Expertise
+                  </h6>
+                </div>
+                <p className="text-slate-700 dark:text-slate-300 mb-4 text-base leading-relaxed">
+                  Extensive experience across Life Insurance, General Insurance, and Reinsurance, including:
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ml-4">
+                  {[
+                    'Product development and pricing',
+                    'Statutory valuation and financial reporting',
+                    'Surplus analysis',
+                    'Embedded value',
+                    'Underwriting and regulatory advisory'
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex items-start gap-3">
+                      <div className="w-2 h-2 rounded-full bg-accent-500 mt-2 flex-shrink-0" />
+                      <span className="text-slate-700 dark:text-slate-300">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Employee Benefits & Retirement Consulting */}
+              <div className="mb-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-1 h-8 bg-gradient-to-b from-blue-600 to-blue-400 rounded-full" />
+                  <h6 className="text-xl font-bold text-slate-900 dark:text-white">
+                    Employee Benefits & Retirement Consulting
+                  </h6>
+                </div>
+                <p className="text-slate-700 dark:text-slate-300 mb-4 text-base leading-relaxed">
+                  Comprehensive actuarial and consulting services in:
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ml-4">
+                  {[
+                    'Pension and retirement scheme design',
+                    'Employee benefits valuations',
+                    'Social security advisory',
+                    'Retirement strategy and governance',
+                    'Cross-border actuarial valuations'
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex items-start gap-3">
+                      <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0" />
+                      <span className="text-slate-700 dark:text-slate-300">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Leadership & Advisory Roles */}
+              <div>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-1 h-8 bg-gradient-to-b from-orange-600 to-orange-400 rounded-full" />
+                  <h6 className="text-xl font-bold text-slate-900 dark:text-white">
+                    Leadership & Advisory Roles
+                  </h6>
+                </div>
+                <div className="space-y-4">
+                  {[
+                    {
+                      role: 'Founder & Consulting Actuary',
+                      org: 'Universal Actuaries and Benefit Consultants',
+                      period: 'Since 2018',
+                      color: 'from-orange-500 to-orange-400'
+                    },
+                    {
+                      role: 'India Practice Leader – Retirement & Employee Benefits',
+                      org: 'Aon Consulting India',
+                      period: '2014–2018',
+                      color: 'from-orange-500 to-orange-400'
+                    },
+                    {
+                      role: 'Retirement Actuary',
+                      org: 'Mercer (India, Sri Lanka, Bangladesh, Pakistan)',
+                      period: '',
+                      color: 'from-orange-500 to-orange-400'
+                    },
+                    {
+                      role: 'Product Actuary',
+                      org: 'Swiss Re India',
+                      period: '',
+                      color: 'from-orange-500 to-orange-400'
+                    },
+                    {
+                      role: 'Head of Valuation & Reporting',
+                      org: 'Paternoster (UK)',
+                      period: '',
+                      color: 'from-orange-500 to-orange-400'
+                    },
+                    {
+                      role: 'Financial Reporting Actuary',
+                      org: 'ING Vysya Life (now Exide Life)',
+                      period: '',
+                      color: 'from-orange-500 to-orange-400'
+                    },
+                    {
+                      role: 'Senior Officer',
+                      org: 'Life Insurance Corporation of India',
+                      period: '17 years in multiple roles',
+                      color: 'from-orange-500 to-orange-400'
+                    }
+                  ].map((position, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: false }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="relative pl-6 pb-6"
+                    >
+                      {/* Timeline dot */}
+                      <div className="absolute left-0 top-2 w-3 h-3 bg-gradient-to-br from-orange-500 to-orange-400 rounded-full border-3 border-white dark:border-dark-card shadow-md" />
+                      
+                      {/* Timeline line (except for last item) */}
+                      {idx !== position ? null : (
+                        <div className={`absolute left-1 top-5 w-0.5 ${idx < 6 ? 'h-16 bg-gradient-to-b from-orange-400 to-transparent' : ''}`} />
+                      )}
+
+                      {/* Content Card */}
+                      <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-700/30 rounded-lg p-4 border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow">
+                        <h6 className="font-bold text-slate-900 dark:text-white text-base mb-1">
+                          {position.role}
+                        </h6>
+                        <p className="text-accent-600 dark:text-accent-400 font-semibold text-sm mb-2">
+                          {position.org}
+                        </p>
+                        {position.period && (
+                          <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                            {position.period}
+                          </p>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>

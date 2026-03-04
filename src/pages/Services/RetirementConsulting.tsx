@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { 
@@ -176,39 +176,146 @@ export const RetirementConsulting: React.FC = () => {
             </motion.div>
 
             <div className="grid lg:grid-cols-2 gap-8">
-              {services.map((service, i) => (
-                <motion.div
-                  key={service.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.6, delay: i * 0.1 }}
-                  className="group bg-white dark:bg-dark-bg rounded-3xl p-8 border border-slate-100 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="p-4 rounded-2xl bg-accent-100 dark:bg-accent-900/30 group-hover:bg-accent-600 dark:group-hover:bg-accent-600 transition-colors">
-                      <service.icon className="w-8 h-8 text-accent-600 dark:text-accent-500 group-hover:text-white transition-colors" />
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">{service.title}</h3>
-                  </div>
+              {services.map((service, i) => {
+                const isFlipCard = i >= 2; // Last two cards should flip
+                const [isFlipped, setIsFlipped] = useState(false);
 
-                  <ul className="space-y-3">
-                    {service.items.map((item, idx) => (
-                      <motion.li 
-                        key={idx}
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4, delay: idx * 0.05 }}
-                        className="flex items-start gap-3 text-slate-600 dark:text-slate-300"
+                if (isFlipCard) {
+                  const backContent = i === 2 ? {
+                    title: "Help Employee by",
+                    items: [
+                      "Analysis on future needs vs expected income",
+                      "Surplus/shortfall modelling for retirement adequacy"
+                    ]
+                  } : {
+                    title: "Help Employer by",
+                    items: [
+                      "Financial wellness session for employees",
+                      "Understanding employees' readiness"
+                    ]
+                  };
+
+                  return (
+                    <motion.div
+                      key={service.title}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.2 }}
+                      transition={{ duration: 0.6, delay: i * 0.1 }}
+                      className="h-96 cursor-pointer"
+                      onMouseEnter={() => setIsFlipped(true)}
+                      onMouseLeave={() => setIsFlipped(false)}
+                    >
+                      <motion.div
+                        initial={false}
+                        animate={{ rotateY: isFlipped ? 180 : 0 }}
+                        transition={{ duration: 0.6, type: "spring", stiffness: 150, damping: 25 }}
+                        className="relative w-full h-full"
+                        style={{ transformStyle: "preserve-3d" }}
                       >
-                        <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                        <span className="text-sm leading-relaxed">{item}</span>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </motion.div>
-              ))}
+                        {/* Front */}
+                        <motion.div
+                          className="absolute w-full h-full bg-white dark:bg-dark-bg rounded-3xl p-8 border border-slate-100 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col"
+                          style={{ backfaceVisibility: "hidden" }}
+                        >
+                          <div className="flex items-center gap-4 mb-6">
+                            <div className="p-4 rounded-2xl bg-accent-100 dark:bg-accent-900/30 group-hover:bg-accent-600 dark:group-hover:bg-accent-600 transition-colors">
+                              <service.icon className="w-8 h-8 text-accent-600 dark:text-accent-500 group-hover:text-white transition-colors" />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white">{service.title}</h3>
+                          </div>
+
+                          <ul className="space-y-3 flex-1">
+                            {service.items.map((item, idx) => (
+                              <motion.li 
+                                key={idx}
+                                initial={{ opacity: 0, x: -10 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.4, delay: idx * 0.05 }}
+                                className="flex items-start gap-3 text-slate-600 dark:text-slate-300"
+                              >
+                                <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                                <span className="text-sm leading-relaxed">{item}</span>
+                              </motion.li>
+                            ))}
+                          </ul>
+
+                          <div className="pt-6 mt-auto text-center">
+                            <p className="text-xs font-semibold text-accent-600 dark:text-accent-400">
+                              Hover to flip →
+                            </p>
+                          </div>
+                        </motion.div>
+
+                        {/* Back */}
+                        <motion.div
+                          className="absolute w-full h-full bg-gradient-to-br from-accent-500 to-accent-600 dark:from-accent-600 dark:to-accent-700 rounded-3xl p-8 border border-accent-400 dark:border-accent-600 shadow-lg flex flex-col justify-center"
+                          style={{
+                            backfaceVisibility: "hidden",
+                            rotateY: 180,
+                          }}
+                        >
+                          <div className="space-y-6">
+                            <h3 className="text-2xl font-bold text-white">{backContent.title}</h3>
+                            <ul className="space-y-4">
+                              {backContent.items.map((item, idx) => (
+                                <motion.li
+                                  key={idx}
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: idx * 0.1 }}
+                                  className="flex items-start gap-3"
+                                >
+                                  <div className="w-6 h-6 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <CheckCircle2 className="w-4 h-4 text-white" />
+                                  </div>
+                                  <span className="text-white/90 leading-relaxed font-medium">{item}</span>
+                                </motion.li>
+                              ))}
+                            </ul>
+                          </div>
+                        </motion.div>
+                      </motion.div>
+                    </motion.div>
+                  );
+                }
+
+                // Regular card for first two items
+                return (
+                  <motion.div
+                    key={service.title}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.6, delay: i * 0.1 }}
+                    className="group bg-white dark:bg-dark-bg rounded-3xl p-8 border border-slate-100 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="p-4 rounded-2xl bg-accent-100 dark:bg-accent-900/30 group-hover:bg-accent-600 dark:group-hover:bg-accent-600 transition-colors">
+                        <service.icon className="w-8 h-8 text-accent-600 dark:text-accent-500 group-hover:text-white transition-colors" />
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white">{service.title}</h3>
+                    </div>
+
+                    <ul className="space-y-3">
+                      {service.items.map((item, idx) => (
+                        <motion.li 
+                          key={idx}
+                          initial={{ opacity: 0, x: -10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.4, delay: idx * 0.05 }}
+                          className="flex items-start gap-3 text-slate-600 dark:text-slate-300"
+                        >
+                          <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                          <span className="text-sm leading-relaxed">{item}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -228,10 +335,10 @@ export const RetirementConsulting: React.FC = () => {
               viewport={{ once: true }}
             >
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                Ready to Review Your Retirement Programs?
+                Ready to Get Started?
               </h2>
               <p className="text-xl text-accent-100 mb-10 max-w-2xl mx-auto">
-                Get a structured view of your retirement trusts, liabilities, and employee readiness with our focused consulting engagement.
+                Let’s discuss how our expertise can support smarter decision-making
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <motion.button
