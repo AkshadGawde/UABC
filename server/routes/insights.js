@@ -2,8 +2,28 @@ const express = require("express");
 const { body, validationResult, query } = require("express-validator");
 const Insight = require("../models/Insight");
 const { authenticateToken, requireEditor } = require("../middleware/auth");
+const cloudinary = require("../config/cloudinary");
 
 const router = express.Router();
+
+// Helper function to generate inline viewing URL using Cloudinary SDK
+const getInlineViewingUrl = (secureUrl) => {
+  if (!secureUrl) return secureUrl;
+  
+  // Extract the public_id from the secure_url
+  // Format: https://res.cloudinary.com/cloud/image/upload/v123/folder/filename
+  const matches = secureUrl.match(/upload\/(?:v\d+\/)?(.+?)(\.\w+)?$/);
+  if (!matches) return secureUrl;
+  
+  const publicId = matches[1];
+  
+  // Generate URL with inline viewing flag using Cloudinary SDK
+  return cloudinary.url(publicId, {
+    resource_type: "auto",
+    flags: "attachment:false",
+    secure: true
+  });
+};
 
 // Validation rules for creating/updating insights
 const insightValidation = [
@@ -123,14 +143,11 @@ router.get("/", async (req, res) => {
       .limit(limitNumber)
       .select("-content -pdfData"); // Exclude full content and PDF data for list view
 
-    // Add inline viewing flag to PDF URLs for proper browser rendering
+    // Add inline viewing flag to PDF URLs for proper browser rendering using Cloudinary SDK
     const insightsWithInlinePdfs = insights.map((insight) => {
       const insightObj = insight.toObject();
       if (insightObj.pdfUrl) {
-        insightObj.pdfUrl = insightObj.pdfUrl.replace(
-          "/upload/",
-          "/upload/fl_attachment:false/",
-        );
+        insightObj.pdfUrl = getInlineViewingUrl(insightObj.pdfUrl);
       }
       return insightObj;
     });
@@ -231,14 +248,11 @@ router.get("/admin", authenticateToken, requireEditor, async (req, res) => {
       .skip(skip)
       .limit(limitNumber);
 
-    // Add inline viewing flag to PDF URLs for proper browser rendering
+    // Add inline viewing flag to PDF URLs for proper browser rendering using Cloudinary SDK
     const insightsWithInlinePdfs = insights.map((insight) => {
       const insightObj = insight.toObject();
-      if (insightObj.pdfUrl && !insightObj.pdfUrl.includes("fl_attachment:false")) {
-        insightObj.pdfUrl = insightObj.pdfUrl.replace(
-          "/upload/",
-          "/upload/fl_attachment:false/",
-        );
+      if (insightObj.pdfUrl) {
+        insightObj.pdfUrl = getInlineViewingUrl(insightObj.pdfUrl);
       }
       return insightObj;
     });
@@ -308,13 +322,10 @@ router.get("/:id", async (req, res) => {
       await insight.incrementViews();
     }
 
-    // Add inline viewing flag to PDF URL for proper browser rendering
+    // Add inline viewing flag to PDF URL for proper browser rendering using Cloudinary SDK
     const insightData = insight.toObject();
-    if (insightData.pdfUrl && !insightData.pdfUrl.includes("fl_attachment:false")) {
-      insightData.pdfUrl = insightData.pdfUrl.replace(
-        "/upload/",
-        "/upload/fl_attachment:false/",
-      );
+    if (insightData.pdfUrl) {
+      insightData.pdfUrl = getInlineViewingUrl(insightData.pdfUrl);
     }
 
     res.json({

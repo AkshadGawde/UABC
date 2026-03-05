@@ -8,13 +8,23 @@ const cloudinary = require("../config/cloudinary");
 
 const router = express.Router();
 
-// Helper function to add inline viewing flag to Cloudinary PDF URLs
-const addInlineViewingFlag = (pdfUrl) => {
-  if (!pdfUrl) return pdfUrl;
-  // Check if flag already exists to avoid duplicates
-  if (pdfUrl.includes("fl_attachment:false")) return pdfUrl;
-  // Insert fl_attachment:false flag after /upload/ to force inline viewing
-  return pdfUrl.replace("/upload/", "/upload/fl_attachment:false/");
+// Helper function to generate inline viewing URL using Cloudinary SDK
+const getInlineViewingUrl = (secureUrl) => {
+  if (!secureUrl) return secureUrl;
+  
+  // Extract the public_id from the secure_url
+  // Format: https://res.cloudinary.com/cloud/image/upload/v123/folder/filename
+  const matches = secureUrl.match(/upload\/(?:v\d+\/)?(.+?)(\.\w+)?$/);
+  if (!matches) return secureUrl;
+  
+  const publicId = matches[1];
+  
+  // Generate URL with inline viewing flag using Cloudinary SDK
+  return cloudinary.url(publicId, {
+    resource_type: "auto",
+    flags: "attachment:false",
+    secure: true
+  });
 };
 
 // Configure multer for PDF and image upload (memory storage)
@@ -271,9 +281,8 @@ router.post(
 
       const pdfUrl = uploadResult.secure_url;
 
-      // Add inline viewing flag to PDF URL
-      const inlinePdfUrl = addInlineViewingFlag(pdfUrl);
-      console.log("🔗 PDF URL with inline flag:", inlinePdfUrl);
+      // Don't add flag here - will add it during retrieval only
+      console.log("🔗 PDF URL from Cloudinary:", pdfUrl);
 
       // Handle image - either uploaded file or URL
       let finalImageUrl;
@@ -297,7 +306,7 @@ router.post(
         excerpt,
         author: author || "Unknown Author",
         category: category || "General",
-        pdfUrl: inlinePdfUrl,
+        pdfUrl: pdfUrl,
         featuredImage: finalImageUrl,
         publishDate: publishDate ? new Date(publishDate) : new Date(),
         published: true,
@@ -445,8 +454,8 @@ router.get("/:id/pdf", async (req, res) => {
       });
     }
 
-    // Add inline viewing flag to ensure browser opens PDF instead of downloading
-    const inlinePdfUrl = addInlineViewingFlag(insight.pdfUrl);
+    // Generate inline viewing URL using Cloudinary SDK (no string manipulation)
+    const inlinePdfUrl = getInlineViewingUrl(insight.pdfUrl);
 
     // Return the Cloudinary PDF URL
     // The frontend will handle opening it in a new tab
