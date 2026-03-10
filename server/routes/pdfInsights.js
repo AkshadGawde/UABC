@@ -8,25 +8,6 @@ const cloudinary = require("../config/cloudinary");
 
 const router = express.Router();
 
-// Helper function to generate inline viewing URL using Cloudinary SDK
-const getInlineViewingUrl = (secureUrl) => {
-  if (!secureUrl) return secureUrl;
-  
-  // Extract the public_id from the secure_url
-  // Format: https://res.cloudinary.com/cloud/image/upload/v123/folder/filename
-  const matches = secureUrl.match(/upload\/(?:v\d+\/)?(.+?)(\.\w+)?$/);
-  if (!matches) return secureUrl;
-  
-  const publicId = matches[1];
-  
-  // Generate URL with inline viewing flag using Cloudinary SDK
-  return cloudinary.url(publicId, {
-    resource_type: "auto",
-    flags: "attachment:false",
-    secure: true
-  });
-};
-
 // Configure multer for PDF and image upload (memory storage)
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -266,9 +247,8 @@ router.post(
       const uploadResult = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
           {
-            resource_type: "auto",
+            resource_type: "raw",
             folder: "insights-pdfs",
-            format: "pdf",
           },
           (error, result) => {
             if (error) reject(error);
@@ -281,7 +261,7 @@ router.post(
 
       const pdfUrl = uploadResult.secure_url;
 
-      // Don't add flag here - will add it during retrieval only
+      // Store clean URL directly from Cloudinary
       console.log("🔗 PDF URL from Cloudinary:", pdfUrl);
 
       // Handle image - either uploaded file or URL
@@ -387,21 +367,23 @@ router.delete("/:id", authenticateToken, requireEditor, async (req, res) => {
     // Delete from Cloudinary if PDF URL exists
     if (insight.pdfUrl) {
       try {
-        // Extract public_id from URL
-        // URL format: https://res.cloudinary.com/.../insights/filename.pdf
-        // We need to extract the public_id (insights/filename)
-        const urlParts = insight.pdfUrl.split("/");
-        const lastParts = urlParts.slice(-2); // Get [filename, pdf]
-        const filename = lastParts[0];
-        const publicId = `insights/${filename}`; // Reconstruct public_id
+        // Extract public_id from URL using regex for accuracy
+        // URL format: https://res.cloudinary.com/.../upload/.../insights/filename.pdf
+        // Extract everything after /upload/ up to the file extension
+        const matches = insight.pdfUrl.match(
+          /upload\/(?:v\d+\/)?(.+?)(\.\w+)?$/,
+        );
+        if (matches) {
+          const publicId = matches[1]; // This will be "insights/qtpczupsrkyinygdudhc"
 
-        console.log("📤 Deleting from Cloudinary:", publicId);
+          console.log("📤 Deleting from Cloudinary:", publicId);
 
-        await cloudinary.uploader.destroy(publicId, {
-          resource_type: "auto",
-        });
+          await cloudinary.uploader.destroy(publicId, {
+            resource_type: "auto",
+          });
 
-        console.log("✅ Deleted from Cloudinary:", publicId);
+          console.log("✅ Deleted from Cloudinary:", publicId);
+        }
       } catch (cloudinaryError) {
         console.error(
           "⚠️  Cloudinary deletion warning:",
@@ -432,7 +414,7 @@ router.delete("/:id", authenticateToken, requireEditor, async (req, res) => {
 });
 
 // @route   GET /api/pdf-insights/:id/pdf
-// @desc    Get PDF URL for viewing in browser
+// @desc    Get clean PDF URL for viewing in browser
 // @access  Public (for published insights)
 router.get("/:id/pdf", async (req, res) => {
   try {
@@ -454,14 +436,13 @@ router.get("/:id/pdf", async (req, res) => {
       });
     }
 
-    // Generate inline viewing URL using Cloudinary SDK (no string manipulation)
-    const inlinePdfUrl = getInlineViewingUrl(insight.pdfUrl);
+    // Return the stored PDF URL directly (already clean from Cloudinary)
+    // Format: https://res.cloudinary.com/cloud/image/upload/v1234/insights-pdfs/filename.pdf
+    console.log("📄 Serving PDF URL:", insight.pdfUrl);
 
-    // Return the Cloudinary PDF URL
-    // The frontend will handle opening it in a new tab
     res.json({
       success: true,
-      pdfUrl: inlinePdfUrl,
+      pdfUrl: insight.pdfUrl,
     });
   } catch (error) {
     console.error("PDF serve error:", error);

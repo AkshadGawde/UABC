@@ -217,16 +217,26 @@ export const Insights = () => {
   };
 
   const handleInsightClick = (insight: Insight) => {
-    // For PDF insights, open the PDF directly from Cloudinary
-    if (insight.pdfUrl) {
-      console.log('Opening PDF:', insight.pdfUrl);
-      window.open(insight.pdfUrl, '_blank');
-    } else {
-      // For regular insights, navigate to detail page (implement later)
-      console.log('Navigate to insight detail:', insight.id);
-    }
-  };
+  if (!insight) return;
 
+  // If insight has a PDF, open it directly
+  if (insight.pdfUrl) {
+    let pdfUrl = insight.pdfUrl;
+
+    // Safety fix for old DB records that contain invalid Cloudinary flag
+    if (pdfUrl.includes("fl_attachment:false")) {
+      pdfUrl = pdfUrl.replace("fl_attachment:false/", "");
+    }
+
+    console.log("Opening PDF:", pdfUrl);
+
+    window.open(pdfUrl, "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  // Future support for article pages
+  console.log("Navigate to insight detail:", insight._id || insight.id);
+};
   const copyPdfLink = (e: React.MouseEvent, insight: Insight) => {
     e.stopPropagation();
     // Copy the direct Cloudinary PDF URL for sharing

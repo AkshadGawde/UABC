@@ -101,14 +101,26 @@ export const InsightsCategory = () => {
   };
 
   const handleInsightClick = (insight: Insight) => {
-    // For PDF insights, open the PDF directly
+    // For PDF insights, fetch clean PDF URL from backend and open in new tab
     if (insight.pdfFilename) {
-      // Use development URL in dev mode
       const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
+      const pdfEndpoint = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
       
-      const pdfUrl = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
-      console.log('Opening PDF:', pdfUrl);
-      window.open(pdfUrl, '_blank');
+      fetch(pdfEndpoint)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.pdfUrl) {
+            console.log('Opening PDF:', data.pdfUrl);
+            window.open(data.pdfUrl, '_blank');
+          } else {
+            console.error('Failed to get PDF URL:', data.message);
+            alert('Failed to load PDF. Please try again.');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching PDF URL:', error);
+          alert('Error loading PDF. Please try again.');
+        });
     } else {
       // For regular insights, navigate to detail page
       navigate(`/insights/${insight.slug || insight._id}`);

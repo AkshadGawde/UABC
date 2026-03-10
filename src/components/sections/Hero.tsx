@@ -150,10 +150,24 @@ export const Hero = () => {
 
   // Handle insight card click
   const handleInsightClick = (insight: InsightCard) => {
-    // For PDF insights, open the PDF directly
+    // For PDF insights, fetch clean PDF URL from backend and open in new tab
     if (insight.pdfFilename && (insight._id || insight.id)) {
       const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
-      window.open(`${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`, '_blank');
+      const pdfEndpoint = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
+      
+      fetch(pdfEndpoint)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.pdfUrl) {
+            console.log('Opening PDF:', data.pdfUrl);
+            window.open(data.pdfUrl, '_blank');
+          } else {
+            console.error('Failed to get PDF URL:', data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching PDF URL:', error);
+        });
     } else if (insight._id || insight.id) {
       // For regular insights, navigate to insights page or detail (implement as needed)
       window.location.href = '/insights';
