@@ -8,12 +8,14 @@ export interface Insight {
   id?: string;
   title: string;
   excerpt: string;
-  content: string;
+  content?: string;
   author: string;
-  category: 'Technology' | 'Business' | 'Innovation' | 'Industry' | 'Research' | 'Analysis';
-  tags: string[];
-  readTime: number;
-  image: string;
+  category: 'Technology' | 'Business' | 'Innovation' | 'Industry' | 'Research' | 'Analysis' | 'General';
+  tags?: string[];
+  readTime?: number;
+  image?: string;
+  pdfUrl?: string;
+  featuredImage?: string;
   published: boolean;
   featured?: boolean;
   publishedAt?: string;
@@ -178,8 +180,9 @@ class InsightsService {
   // Get single insight by ID
   async getInsight(id: string, preview: boolean = false): Promise<Insight | null> {
     try {
+      // Use admin endpoint if preview=true (for getting draft/unpublished insights)
       const url = preview 
-        ? `${API_URL}/insights/${id}?preview=true`
+        ? `${API_URL}/insights/admin/${id}`
         : `${API_URL}/insights/${id}`;
       
       const response = preview 

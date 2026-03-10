@@ -71,7 +71,7 @@ export const Insights = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 10;
+  const ITEMS_PER_PAGE = 20;
   const [showToast, setShowToast] = useState(false);
 
   // Dynamic categories based on actual data
@@ -98,18 +98,18 @@ export const Insights = () => {
 
   useEffect(() => {
     loadInsights();
-  }, [currentPage, selectedCategory]);
+  }, []); // Only load once on mount
 
   const loadInsights = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      // Fetch published insights with pagination and filtering
+      // Fetch published insights - fetch enough to show multiple categories
+      // Using a reasonable limit to avoid timeout while getting good data variety
       const response = await insightsService.getPublicInsights({
-        page: currentPage,
-        limit: itemsPerPage,
-        category: selectedCategory === 'All' ? undefined : selectedCategory,
+        page: 1,
+        limit: 500, // Fetch a large batch of published insights
         sort: 'newest'
       });
       
@@ -194,6 +194,21 @@ export const Insights = () => {
     return matchesCategory && matchesSearch && matchesDate;
   });
 
+  // Calculate pagination
+  const totalPages_ = Math.ceil(filteredInsights.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedInsights = filteredInsights.slice(startIndex, endIndex);
+
+  // Update totalPages if it changes
+  React.useEffect(() => {
+    setTotalPages(totalPages_);
+    // Reset to page 1 if current page exceeds max pages
+    if (currentPage > totalPages_ && totalPages_ > 0) {
+      setCurrentPage(1);
+    }
+  }, [totalPages_]);
+
   const featuredInsights = insights.filter(insight => insight.featured);
 
   const formatDate = (dateString: string) => {
@@ -255,6 +270,7 @@ export const Insights = () => {
     setSearchQuery('');
     setDateRange({ start: '', end: '' });
     setSelectedCategory('All');
+    setCurrentPage(1);
   };
 
   if (loading) {
@@ -472,12 +488,17 @@ export const Insights = () => {
 
           {/* Insights Grid */}
           {filteredInsights.length > 0 ? (
-            <StaggerReveal staggerDelay={0.03} duration={0.3}>
+            <>
+              {/* Results count */}
+              <div className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+                Showing {startIndex + 1}–{Math.min(endIndex, filteredInsights.length)} of {filteredInsights.length} results
+              </div>
+              <StaggerReveal staggerDelay={0.03} duration={0.3}>
               <div
                 className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 auto-rows-fr"
                 style={{ containIntrinsicSize: 'auto 600px', contentVisibility: 'auto' }}
               >
-                {filteredInsights.map((insight, index) => {
+                {paginatedInsights.map((insight, index) => {
                 const isFeatured = insight.featured;
                 const isPDF = !!insight.pdfUrl;
                 return (
@@ -679,6 +700,7 @@ export const Insights = () => {
                 })}
               </div>
             </StaggerReveal>
+            </>
           ) : (
             <motion.div
               initial={{ opacity: 0, y: 20 }}

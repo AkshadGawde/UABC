@@ -16,6 +16,42 @@ const calculateReadTime = (content) => {
 };
 
 /* -------------------------------- */
+/* GET /api/insights/admin/:id       */
+/* Get single insight (admin view)   */
+/* @access Private (Editor+)         */
+/* -------------------------------- */
+
+router.get("/admin/:id", authenticateToken, requireEditor, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    console.log("🔍 Fetching admin insight:", id);
+
+    const insight = await Insight.findById(id).lean();
+
+    if (!insight) {
+      return res.status(404).json({
+        success: false,
+        message: "Insight not found",
+      });
+    }
+
+    console.log("✅ Found insight:", insight.title);
+
+    res.json({
+      success: true,
+      data: insight,
+    });
+  } catch (error) {
+    console.error("❌ Get admin insight error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching insight",
+    });
+  }
+});
+
+/* -------------------------------- */
 /* GET /api/insights/admin          */
 /* @access Private (Editor+)        */
 /* -------------------------------- */
@@ -220,91 +256,101 @@ router.delete("/:id", authenticateToken, requireEditor, async (req, res) => {
 /* Toggle published status          */
 /* -------------------------------- */
 
-router.patch("/:id/publish", authenticateToken, requireEditor, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { published } = req.body;
+router.patch(
+  "/:id/publish",
+  authenticateToken,
+  requireEditor,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { published } = req.body;
 
-    if (typeof published !== "boolean") {
-      return res.status(400).json({
+      if (typeof published !== "boolean") {
+        return res.status(400).json({
+          success: false,
+          message: "Published must be a boolean",
+        });
+      }
+
+      console.log(`📝 Toggling published status for ${id} to ${published}`);
+
+      const insight = await Insight.findByIdAndUpdate(
+        id,
+        { published },
+        { new: true },
+      );
+
+      if (!insight) {
+        return res.status(404).json({
+          success: false,
+          message: "Insight not found",
+        });
+      }
+
+      res.json({
+        success: true,
+        message: `Insight ${published ? "published" : "unpublished"} successfully`,
+        data: insight,
+      });
+    } catch (error) {
+      console.error("Toggle publish error:", error);
+      res.status(500).json({
         success: false,
-        message: "Published must be a boolean",
+        message: "Failed to toggle publish status",
       });
     }
-
-    console.log(`📝 Toggling published status for ${id} to ${published}`);
-
-    const insight = await Insight.findByIdAndUpdate(
-      id,
-      { published },
-      { new: true }
-    );
-
-    if (!insight) {
-      return res.status(404).json({
-        success: false,
-        message: "Insight not found",
-      });
-    }
-
-    res.json({
-      success: true,
-      message: `Insight ${published ? "published" : "unpublished"} successfully`,
-      data: insight,
-    });
-  } catch (error) {
-    console.error("Toggle publish error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to toggle publish status",
-    });
-  }
-});
+  },
+);
 
 /* -------------------------------- */
 /* PATCH /api/insights/:id/featured */
 /* Toggle featured status           */
 /* -------------------------------- */
 
-router.patch("/:id/featured", authenticateToken, requireEditor, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { featured } = req.body;
+router.patch(
+  "/:id/featured",
+  authenticateToken,
+  requireEditor,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { featured } = req.body;
 
-    if (typeof featured !== "boolean") {
-      return res.status(400).json({
+      if (typeof featured !== "boolean") {
+        return res.status(400).json({
+          success: false,
+          message: "Featured must be a boolean",
+        });
+      }
+
+      console.log(`⭐ Toggling featured status for ${id} to ${featured}`);
+
+      const insight = await Insight.findByIdAndUpdate(
+        id,
+        { featured },
+        { new: true },
+      );
+
+      if (!insight) {
+        return res.status(404).json({
+          success: false,
+          message: "Insight not found",
+        });
+      }
+
+      res.json({
+        success: true,
+        message: `Insight ${featured ? "featured" : "unfeatured"} successfully`,
+        data: insight,
+      });
+    } catch (error) {
+      console.error("Toggle featured error:", error);
+      res.status(500).json({
         success: false,
-        message: "Featured must be a boolean",
+        message: "Failed to toggle featured status",
       });
     }
-
-    console.log(`⭐ Toggling featured status for ${id} to ${featured}`);
-
-    const insight = await Insight.findByIdAndUpdate(
-      id,
-      { featured },
-      { new: true }
-    );
-
-    if (!insight) {
-      return res.status(404).json({
-        success: false,
-        message: "Insight not found",
-      });
-    }
-
-    res.json({
-      success: true,
-      message: `Insight ${featured ? "featured" : "unfeatured"} successfully`,
-      data: insight,
-    });
-  } catch (error) {
-    console.error("Toggle featured error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to toggle featured status",
-    });
-  }
-});
+  },
+);
 
 module.exports = router;

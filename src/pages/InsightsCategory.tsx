@@ -51,7 +51,7 @@ export const InsightsCategory = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 15;
+  const ITEMS_PER_PAGE = 20;
   const [showToast, setShowToast] = useState(false);
 
   // Convert URL slug to display category name
@@ -76,7 +76,7 @@ export const InsightsCategory = () => {
       
       const response = await insightsService.getPublicInsights({
         page: currentPage,
-        limit: itemsPerPage,
+        limit: ITEMS_PER_PAGE,
         category: categoryName,
         sort: 'newest'
       });
@@ -101,26 +101,32 @@ export const InsightsCategory = () => {
   };
 
   const handleInsightClick = (insight: Insight) => {
-    // For PDF insights, fetch clean PDF URL from backend and open in new tab
-    if (insight.pdfFilename) {
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
-      const pdfEndpoint = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
-      
-      fetch(pdfEndpoint)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success && data.pdfUrl) {
-            console.log('Opening PDF:', data.pdfUrl);
-            window.open(data.pdfUrl, '_blank');
-          } else {
-            console.error('Failed to get PDF URL:', data.message);
-            alert('Failed to load PDF. Please try again.');
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching PDF URL:', error);
-          alert('Error loading PDF. Please try again.');
-        });
+    // For PDF insights, open the PDF URL directly
+    if (insight.pdfUrl || insight.pdfFilename) {
+      if (insight.pdfUrl) {
+        // Use direct Cloudinary URL
+        window.open(insight.pdfUrl, '_blank');
+      } else {
+        // Fallback to old pdfFilename method
+        const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
+        const pdfEndpoint = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
+        
+        fetch(pdfEndpoint)
+          .then(res => res.json())
+          .then(data => {
+            if (data.success && data.pdfUrl) {
+              console.log('Opening PDF:', data.pdfUrl);
+              window.open(data.pdfUrl, '_blank');
+            } else {
+              console.error('Failed to get PDF URL:', data.message);
+              alert('Failed to load PDF. Please try again.');
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching PDF URL:', error);
+            alert('Error loading PDF. Please try again.');
+          });
+      }
     } else {
       // For regular insights, navigate to detail page
       navigate(`/insights/${insight.slug || insight._id}`);
@@ -235,6 +241,13 @@ export const InsightsCategory = () => {
       {/* Insights Grid */}
       <section className="py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {insights.length > 0 && (
+            <div className="mb-6 flex items-center justify-between text-sm text-slate-600 dark:text-slate-400">
+              <span>
+                Showing {Math.max(1, (currentPage - 1) * ITEMS_PER_PAGE + 1)}–{Math.min(currentPage * ITEMS_PER_PAGE, insights.length)} of {insights.length}
+              </span>
+            </div>
+          )}
           {insights.length === 0 ? (
             <div className="text-center py-12">
               <FileText className="w-16 h-16 mx-auto mb-4 text-slate-400" />
@@ -278,10 +291,10 @@ export const InsightsCategory = () => {
                       </div>
 
                       {/* PDF Badge */}
-                      {insight.pdfData && (
+                      {(insight.pdfUrl || insight.pdfFilename) && (
                         <div className="absolute top-4 right-4">
                           <div className="p-2 bg-white/90 dark:bg-dark-card/90 rounded-full backdrop-blur-sm">
-                            <FileText className="w-4 h-4 text-red-600" />
+                            <FileText className="w-4 h-4 text-blue-600" />
                           </div>
                         </div>
                       )}

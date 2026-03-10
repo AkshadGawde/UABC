@@ -6,11 +6,14 @@ import { insightsService, Insight } from '../services/insightsService';
 import { authService } from '../services/authService';
 import { AdminSetup } from '../components/AdminSetup';
 import PDFInsightUploader from '../components/PDFInsightUploader';
+import { getApiUrl } from '../../config/apiConfig';
 
 export const AdminDashboard = () => {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState<'all' | 'published' | 'drafts'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [currentPage, setCurrentPage] = useState(1);
   const [showUploader, setShowUploader] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -48,21 +51,49 @@ export const AdminDashboard = () => {
     loadInsights();
   }, []);
 
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+
   const handleTogglePublished = async (id: string) => {
+    setTogglingId(id);
     try {
-      await insightsService.togglePublished(id);
-      loadInsights();
+      console.log('🔄 Toggling published status for:', id);
+      const result = await insightsService.togglePublished(id);
+      if (!result.success) {
+        setErrorMessage(result.message || 'Failed to toggle published status');
+        setTimeout(() => setErrorMessage(null), 3000);
+      } else {
+        console.log('✅ Toggle successful:', result.message);
+        await loadInsights(); // Wait for reload to complete
+      }
     } catch (error) {
       console.error('Failed to toggle published status:', error);
+      const errorMsg = error instanceof Error ? error.message : 'Failed to toggle published status';
+      setErrorMessage(errorMsg);
+      setTimeout(() => setErrorMessage(null), 3000);
+    } finally {
+      setTogglingId(null);
     }
   };
 
   const handleToggleFeatured = async (id: string) => {
+    setTogglingId(id);
     try {
-      await insightsService.toggleFeatured(id);
-      loadInsights();
+      console.log('⭐ Toggling featured status for:', id);
+      const result = await insightsService.toggleFeatured(id);
+      if (!result.success) {
+        setErrorMessage(result.message || 'Failed to toggle featured status');
+        setTimeout(() => setErrorMessage(null), 3000);
+      } else {
+        console.log('✅ Toggle successful:', result.message);
+        await loadInsights(); // Wait for reload to complete
+      }
     } catch (error) {
       console.error('Failed to toggle featured status:', error);
+      const errorMsg = error instanceof Error ? error.message : 'Failed to toggle featured status';
+      setErrorMessage(errorMsg);
+      setTimeout(() => setErrorMessage(null), 3000);
+    } finally {
+      setTogglingId(null);
     }
   };
 
@@ -72,7 +103,7 @@ export const AdminDashboard = () => {
       try {
         if (isPDF) {
           // Delete PDF insight
-          const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc-backend.onrender.com/api';
+          const apiUrl = getApiUrl();
           const token = authService.getToken();
           
           if (!token) {
@@ -131,9 +162,21 @@ export const AdminDashboard = () => {
   };
 
   const handleViewPDF = (id: string) => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc-backend.onrender.com/api';
-    const pdfUrl = `${apiUrl}/pdf-insights/${id}/pdf`;
-    window.open(pdfUrl, '_blank');
+    // Find the insight with the matching ID
+    const insight = insights.find(i => (i._id || i.id) === id);
+    if (insight && (insight.pdfUrl || insight.pdfFilename)) {
+      // Use the direct pdfUrl stored in the insight
+      const pdfUrl = insight.pdfUrl;
+      if (pdfUrl) {
+        window.open(pdfUrl, '_blank');
+      } else {
+        setErrorMessage('PDF URL not found');
+        setTimeout(() => setErrorMessage(null), 3000);
+      }
+    } else {
+      setErrorMessage('PDF not found');
+      setTimeout(() => setErrorMessage(null), 3000);
+    }
   };
 
   const handleEditPDF = (insight: any) => {
@@ -142,16 +185,28 @@ export const AdminDashboard = () => {
     window.location.href = `/admin/insights/${id}/edit`;
   };
 
+  const ITEMS_PER_PAGE = 15;
+
   const filteredInsights = insights.filter(insight => {
-    switch (selectedTab) {
-      case 'published':
-        return insight.published;
-      case 'drafts':
-        return !insight.published;
-      default:
-        return true;
-    }
+    // Filter by status tab
+    const statusMatch = selectedTab === 'all' || 
+      (selectedTab === 'published' && insight.published) ||
+      (selectedTab === 'drafts' && !insight.published);
+    
+    // Filter by category
+    const categoryMatch = selectedCategory === 'all' || insight.category === selectedCategory;
+    
+    return statusMatch && categoryMatch;
   });
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredInsights.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedInsights = filteredInsights.slice(startIndex, endIndex);
+
+  // Extract unique categories from insights
+  const categories = ['all', ...Array.from(new Set(insights.map(i => i.category).filter(Boolean)))];
 
   const stats = {
     total: insights.length,
@@ -310,24 +365,106 @@ export const AdminDashboard = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex gap-2 mb-6">
-          {[
-            { key: 'all', label: 'All' },
-            { key: 'published', label: 'Published' },
-            { key: 'drafts', label: 'Drafts' }
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setSelectedTab(tab.key as any)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedTab === tab.key
-                  ? 'bg-accent-600 text-white'
-                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
-              }`}
+        <div className="flex flex-col gap-4 mb-6">
+          {/* Status Filters */}
+          <div className="flex gap-2">
+            {[
+              { key: 'all', label: 'All' },
+              { key: 'published', label: 'Published' },
+              { key: 'drafts', label: 'Drafts' }
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => {
+                  setSelectedTab(tab.key as any);
+                  setCurrentPage(1); // Reset to first page
+                }}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  selectedTab === tab.key
+                    ? 'bg-accent-600 text-white'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Category Filter */}
+          <div className="flex items-center gap-3">
+            <label htmlFor="category-select" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              Category:
+            </label>
+            <select
+              id="category-select"
+              value={selectedCategory}
+              onChange={(e) => {
+                setSelectedCategory(e.target.value);
+                setCurrentPage(1); // Reset to first page
+              }}
+              className="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-medium hover:border-slate-400 dark:hover:border-slate-500 transition-colors cursor-pointer"
             >
-              {tab.label}
-            </button>
-          ))}
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category === 'all' ? 'All Categories' : category}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Pagination Info */}
+          {filteredInsights.length > 0 && (
+            <div className="flex items-center justify-between text-sm text-slate-600 dark:text-slate-400">
+              <span>
+                Showing {startIndex + 1}-{Math.min(endIndex, filteredInsights.length)} of {filteredInsights.length}
+              </span>
+              {totalPages > 1 && (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    ← Previous
+                  </button>
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={`px-2 py-1 rounded-lg text-sm font-medium transition-colors ${
+                            currentPage === pageNum
+                              ? 'bg-accent-600 text-white'
+                              : 'border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <button
+                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Insights List */}
@@ -337,7 +474,7 @@ export const AdminDashboard = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {filteredInsights.map((insight, index) => (
+            {paginatedInsights.map((insight, index) => (
               <motion.div
                 key={insight.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -351,9 +488,9 @@ export const AdminDashboard = () => {
                       <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                         {insight.title}
                       </h3>
-                      {insight.pdfFilename && (
+                      {(insight.pdfUrl || insight.pdfFilename) && (
                         <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                          PDF
+                          📄 PDF
                         </span>
                       )}
                       <span className={`px-2 py-1 text-xs rounded-full ${
@@ -385,33 +522,42 @@ export const AdminDashboard = () => {
                     </p>
                     <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
                       <span>By {insight.author}</span>
-                      <span>{insight.readTime}</span>
-                      <span>{insight.views} views</span>
-                      <span>{new Date(insight.date).toLocaleDateString()}</span>
+                      {insight.readTime && <span>{insight.readTime} min read</span>}
+                      {insight.views && <span>{insight.views} views</span>}
+                      <span>{new Date(insight.publishDate || insight.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 ml-4">
-                    {insight.pdfFilename ? (
+                    {(insight.pdfUrl || insight.pdfFilename) ? (
                       // PDF insight actions
                       <>
                         <button
-                          onClick={() => handleViewPDF(insight._id || insight.id)}
+                          onClick={() => handleViewPDF(insight._id || insight.id || '')}
                           disabled={deletingId === (insight._id || insight.id)}
                           className="p-2 text-slate-400 hover:text-accent-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           title="View PDF"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
-                        {/* <button
-                          onClick={() => handleEditPDF(insight)}
-                          className="p-2 text-slate-400 hover:text-blue-600 transition-colors"
-                          title="Edit Info"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button> */}
                         <button
-                          onClick={() => handleTogglePublished(insight._id || insight.id)}
-                          disabled={deletingId === (insight._id || insight.id)}
+                          onClick={() => handleToggleFeatured(insight._id || insight.id || '')}
+                          disabled={deletingId === (insight._id || insight.id) || togglingId === (insight._id || insight.id)}
+                          className={`p-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                            insight.featured 
+                              ? 'text-yellow-500 hover:text-yellow-600' 
+                              : 'text-slate-400 hover:text-yellow-500'
+                          }`}
+                          title="Toggle Featured"
+                        >
+                          {togglingId === (insight._id || insight.id) ? (
+                            <div className="w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+                          ) : (
+                            <Star className={`w-4 h-4 ${insight.featured ? 'fill-current' : ''}`} />
+                          )}
+                        </button>
+                        <button
+                          onClick={() => handleTogglePublished(insight._id || insight.id || '')}
+                          disabled={deletingId === (insight._id || insight.id) || togglingId === (insight._id || insight.id)}
                           className={`p-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                             insight.published 
                               ? 'text-green-600 hover:text-green-700' 
@@ -419,10 +565,14 @@ export const AdminDashboard = () => {
                           }`}
                           title={insight.published ? 'Unpublish' : 'Publish'}
                         >
-                          <Globe className="w-4 h-4" />
+                          {togglingId === (insight._id || insight.id) ? (
+                            <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+                          ) : (
+                            <Globe className="w-4 h-4" />
+                          )}
                         </button>
                         <button
-                          onClick={() => handleDelete(insight._id || insight.id, true)}
+                          onClick={() => handleDelete(insight._id || insight.id || '', true)}
                           disabled={deletingId === (insight._id || insight.id)}
                           className="p-2 text-slate-400 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           title="Delete"
@@ -452,8 +602,8 @@ export const AdminDashboard = () => {
                           <Edit className="w-4 h-4" />
                         </a>
                         <button
-                          onClick={() => handleToggleFeatured(insight.id)}
-                          disabled={deletingId === insight.id}
+                          onClick={() => handleToggleFeatured(insight.id || '')}
+                          disabled={deletingId === insight.id || togglingId === insight.id}
                           className={`p-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                             insight.featured 
                               ? 'text-yellow-500 hover:text-yellow-600' 
@@ -461,11 +611,15 @@ export const AdminDashboard = () => {
                           }`}
                           title="Toggle Featured"
                         >
-                          <Star className={`w-4 h-4 ${insight.featured ? 'fill-current' : ''}`} />
+                          {togglingId === insight.id ? (
+                            <div className="w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+                          ) : (
+                            <Star className={`w-4 h-4 ${insight.featured ? 'fill-current' : ''}`} />
+                          )}
                         </button>
                         <button
-                          onClick={() => handleTogglePublished(insight.id)}
-                          disabled={deletingId === insight.id}
+                          onClick={() => handleTogglePublished(insight.id || '')}
+                          disabled={deletingId === insight.id || togglingId === insight.id}
                           className={`p-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                             insight.published 
                               ? 'text-green-600 hover:text-green-700' 
@@ -473,10 +627,14 @@ export const AdminDashboard = () => {
                           }`}
                           title={insight.published ? 'Unpublish' : 'Publish'}
                         >
-                          <Globe className="w-4 h-4" />
+                          {togglingId === insight.id ? (
+                            <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+                          ) : (
+                            <Globe className="w-4 h-4" />
+                          )}
                         </button>
                         <button
-                          onClick={() => handleDelete(insight.id, false)}
+                          onClick={() => handleDelete(insight.id || '', false)}
                           disabled={deletingId === insight.id}
                           className="p-2 text-slate-400 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           title="Delete"
