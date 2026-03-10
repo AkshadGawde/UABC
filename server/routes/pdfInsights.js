@@ -244,25 +244,18 @@ router.post(
       console.log("  - Author:", author || "Unknown");
       console.log("  - Excerpt length:", excerpt.length);
 
-      const uploadResult = await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            resource_type: "raw",
-            folder: "insights-pdfs",
-            format: "pdf",
-          },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          },
-        );
+      // Convert PDF buffer to base64
+      const base64Pdf = `data:application/pdf;base64,${pdfFile.buffer.toString("base64")}`;
 
-        stream.end(pdfFile.buffer);
+      // Upload to Cloudinary
+      const uploadResult = await cloudinary.uploader.upload(base64Pdf, {
+        resource_type: "raw",
+        folder: "insights-pdfs",
+        format: "pdf",
       });
 
       const pdfUrl = uploadResult.secure_url;
 
-      // Store clean URL directly from Cloudinary
       console.log("🔗 PDF URL from Cloudinary:", pdfUrl);
 
       // Handle image - either uploaded file or URL
