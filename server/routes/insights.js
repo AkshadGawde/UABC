@@ -16,6 +16,61 @@ const calculateReadTime = (content) => {
 };
 
 /* -------------------------------- */
+/* GET /api/insights/admin          */
+/* @access Private (Editor+)        */
+/* -------------------------------- */
+
+router.get("/admin", authenticateToken, requireEditor, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page || 1);
+    const limit = parseInt(req.query.limit || 10);
+    const skip = (page - 1) * limit;
+    const status = req.query.status || "all";
+
+    // Build query based on status filter
+    let query = {};
+    if (status === "published") {
+      query.published = true;
+    } else if (status === "draft") {
+      query.published = false;
+    }
+    // status === "all" means no filter
+
+    console.log("🔍 Admin insights query:", { page, limit, status, query });
+
+    const insights = await Insight.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const total = await Insight.countDocuments(query);
+
+    console.log(`✅ Found ${insights.length} insights (${total} total)`);
+
+    res.json({
+      success: true,
+      data: {
+        insights,
+        pagination: {
+          current: page,
+          pages: Math.ceil(total / limit),
+          total,
+          hasNext: page < Math.ceil(total / limit),
+          hasPrev: page > 1,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("❌ Get admin insights error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching insights",
+    });
+  }
+});
+
+/* -------------------------------- */
 /* GET /api/insights                */
 /* -------------------------------- */
 
@@ -156,6 +211,98 @@ router.delete("/:id", authenticateToken, requireEditor, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Delete failed",
+    });
+  }
+});
+
+/* -------------------------------- */
+/* PATCH /api/insights/:id/publish  */
+/* Toggle published status          */
+/* -------------------------------- */
+
+router.patch("/:id/publish", authenticateToken, requireEditor, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { published } = req.body;
+
+    if (typeof published !== "boolean") {
+      return res.status(400).json({
+        success: false,
+        message: "Published must be a boolean",
+      });
+    }
+
+    console.log(`📝 Toggling published status for ${id} to ${published}`);
+
+    const insight = await Insight.findByIdAndUpdate(
+      id,
+      { published },
+      { new: true }
+    );
+
+    if (!insight) {
+      return res.status(404).json({
+        success: false,
+        message: "Insight not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: `Insight ${published ? "published" : "unpublished"} successfully`,
+      data: insight,
+    });
+  } catch (error) {
+    console.error("Toggle publish error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to toggle publish status",
+    });
+  }
+});
+
+/* -------------------------------- */
+/* PATCH /api/insights/:id/featured */
+/* Toggle featured status           */
+/* -------------------------------- */
+
+router.patch("/:id/featured", authenticateToken, requireEditor, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { featured } = req.body;
+
+    if (typeof featured !== "boolean") {
+      return res.status(400).json({
+        success: false,
+        message: "Featured must be a boolean",
+      });
+    }
+
+    console.log(`⭐ Toggling featured status for ${id} to ${featured}`);
+
+    const insight = await Insight.findByIdAndUpdate(
+      id,
+      { featured },
+      { new: true }
+    );
+
+    if (!insight) {
+      return res.status(404).json({
+        success: false,
+        message: "Insight not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: `Insight ${featured ? "featured" : "unfeatured"} successfully`,
+      data: insight,
+    });
+  } catch (error) {
+    console.error("Toggle featured error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to toggle featured status",
     });
   }
 });

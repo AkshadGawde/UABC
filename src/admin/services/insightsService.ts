@@ -1,12 +1,7 @@
 import { authService } from './authService';
+import { getApiUrl } from '../../config/apiConfig';
 
-// API URL configuration
-const API_URL = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
-
-console.log('🔧 Insights Service Config:', {
-  apiUrl: API_URL,
-  viteApiUrl: import.meta.env.VITE_API_URL
-});
+const API_URL = getApiUrl();
 
 export interface Insight {
   _id?: string;

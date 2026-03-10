@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { optimizeImage, getInsightImageUrl } from '../utils/imageUtils';
 import { insightsService } from '../admin/services/insightsService';
 import { ScrollReveal, StaggerReveal } from '../components/PageTransition';
+import { getApiUrl } from '../config/apiConfig';
 
 // CSS for smooth scrolling optimization
 const scrollOptimizationStyles = {
@@ -268,7 +269,7 @@ export const Insights = () => {
   }
 
   if (error) {
-    const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
+    const apiUrl = getApiUrl();
     return (
       <div className="min-h-screen bg-light-bg dark:bg-dark-bg pt-16 flex items-center justify-center">
         <div className="text-center max-w-2xl mx-auto px-6">

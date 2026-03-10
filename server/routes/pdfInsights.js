@@ -249,9 +249,10 @@ router.post(
 
       // Upload to Cloudinary
       const uploadResult = await cloudinary.uploader.upload(base64Pdf, {
-        resource_type: "raw",
+        resource_type: "image",
         folder: "insights-pdfs",
         format: "pdf",
+        access_mode: "public",
       });
 
       const pdfUrl = uploadResult.secure_url;

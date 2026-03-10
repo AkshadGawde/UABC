@@ -1,10 +1,6 @@
-// API URL configuration
-const API_URL = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
+import { getApiUrl } from '../../config/apiConfig';
 
-console.log('🔧 Auth Service Config:', {
-  apiUrl: API_URL,
-  viteApiUrl: import.meta.env.VITE_API_URL
-});
+const API_URL = getApiUrl();
 
 export interface User {
   id: string;
