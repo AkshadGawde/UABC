@@ -249,6 +249,7 @@ router.post(
           {
             resource_type: "raw",
             folder: "insights-pdfs",
+            format: "pdf",
           },
           (error, result) => {
             if (error) reject(error);
