@@ -59,7 +59,9 @@ router.get("/admin/:id", authenticateToken, requireEditor, async (req, res) => {
 router.get("/admin", authenticateToken, requireEditor, async (req, res) => {
   try {
     const page = parseInt(req.query.page || 1);
-    const limit = parseInt(req.query.limit || 10);
+    let limit = parseInt(req.query.limit || 10);
+    // Cap the limit to a reasonable maximum (e.g., 1000 for admin bulk loading)
+    limit = Math.min(limit, 1000);
     const skip = (page - 1) * limit;
     const status = req.query.status || "all";
 

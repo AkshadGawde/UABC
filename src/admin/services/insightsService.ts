@@ -174,7 +174,8 @@ class InsightsService {
 
   // Get all insights (alias for backward compatibility)
   async getAllInsights(filters: InsightFilters = {}): Promise<InsightsResponse> {
-    return this.getInsights(filters);
+    // Fetch all insights without pagination limit for admin dashboard
+    return this.getInsights({ ...filters, limit: 1000 });
   }
 
   // Get single insight by ID

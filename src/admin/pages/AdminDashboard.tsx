@@ -185,7 +185,7 @@ export const AdminDashboard = () => {
     window.location.href = `/admin/insights/${id}/edit`;
   };
 
-  const ITEMS_PER_PAGE = 15;
+  const ITEMS_PER_PAGE = 20;
 
   const filteredInsights = insights.filter(insight => {
     // Filter by status tab
