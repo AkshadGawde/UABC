@@ -11,7 +11,7 @@ from dateutil import parser as date_parser
 
 def extract_date_from_filename(filename):
     """Extract publish date from PDF filename.
-    
+
     Handles patterns like:
     - "September 2018"
     - "March 2020"
@@ -22,15 +22,16 @@ def extract_date_from_filename(filename):
     try:
         # Remove .pdf extension
         name_without_ext = filename.replace('.pdf', '')
-        
+
         # Pattern 1: "Day[st/nd/rd/th]? Month Year" (e.g., "8th June 2022")
-        match = re.search(r'(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)\s+(\d{4})', name_without_ext)
+        match = re.search(
+            r'(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)\s+(\d{4})', name_without_ext)
         if match:
             day, month, year = match.groups()
             date_str = f"{day} {month} {year}"
             parsed_date = date_parser.parse(date_str)
             return parsed_date.strftime('%d/%m/%Y')
-        
+
         # Pattern 2: "Month Year" (e.g., "September 2018", "March 2020")
         match = re.search(r'([A-Za-z]+)\s+(\d{4})', name_without_ext)
         if match:
@@ -39,21 +40,23 @@ def extract_date_from_filename(filename):
             date_str = f"1 {month} {year}"
             parsed_date = date_parser.parse(date_str)
             return parsed_date.strftime('%d/%m/%Y')
-        
+
         # Pattern 3: "Month" and "Year" separately in filename
-        month_match = re.search(r'(January|February|March|April|May|June|July|August|September|October|November|December)', name_without_ext, re.IGNORECASE)
+        month_match = re.search(
+            r'(January|February|March|April|May|June|July|August|September|October|November|December)', name_without_ext, re.IGNORECASE)
         year_match = re.search(r'(19|20)\d{2}', name_without_ext)
-        
+
         if month_match and year_match:
             date_str = f"1 {month_match.group(1)} {year_match.group(0)}"
             parsed_date = date_parser.parse(date_str)
             return parsed_date.strftime('%d/%m/%Y')
-        
+
         # If no date found, return today's date
         return datetime.now().strftime('%d/%m/%Y')
-        
+
     except Exception as e:
-        print(f"   ⚠️  Could not parse date from '{filename}', using today's date")
+        print(
+            f"   ⚠️  Could not parse date from '{filename}', using today's date")
         return datetime.now().strftime('%Y-%m-%d')
 
 
