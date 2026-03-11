@@ -272,7 +272,7 @@ export const InsightsCategory = () => {
                     transition={{ delay: index * 0.1 }}
                   >
                     {/* Image */}
-                    <div className="relative h-48 overflow-hidden">
+                    <div className="relative h-40 overflow-hidden">
                       <motion.img
                         src={optimizeImage(
                           getInsightImageUrl(insight),
@@ -301,7 +301,7 @@ export const InsightsCategory = () => {
                     </div>
 
                     {/* Content */}
-                    <div className="p-6">
+                    <div className="p-4">
                       {/* Meta */}
                       <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400 mb-3">
                         <span className="flex items-center gap-1">
@@ -321,17 +321,19 @@ export const InsightsCategory = () => {
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-xl font-bold mb-3 text-slate-900 dark:text-white group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors line-clamp-2">
+                      <h3 className="text-xl font-bold mb-3 text-slate-900 dark:text-white group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors">
                         {insight.title}
                       </h3>
 
                       {/* Excerpt */}
-                      <p className="text-slate-600 dark:text-slate-300 mb-4 line-clamp-3">
-                        {insight.excerpt}
-                      </p>
+                      {!(insight.pdfUrl || insight.pdfFilename) && (
+                        <p className="text-slate-600 dark:text-slate-300 mb-2 line-clamp-3">
+                          {insight.excerpt}
+                        </p>
+                      )}
 
                       {/* Read More */}
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700 mt-2">
                         <div className="flex items-center gap-2 text-accent-600 dark:text-accent-400 font-medium group-hover:gap-3 transition-all">
                           <span>{insight.pdfData ? 'Open PDF' : 'Read More'}</span>
                           <ArrowRight className="w-4 h-4" />

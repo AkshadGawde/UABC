@@ -577,7 +577,7 @@ export const Insights = () => {
                           const target = e.target as HTMLImageElement;
                           target.src = 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&q=80';
                         }}
-                        className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105 will-change-transform"
+                        className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105 will-change-transform"
                       />
                       <div className="absolute top-4 left-4 flex gap-2 z-20">
                         <span className="px-3 py-1 bg-accent-600 text-white text-xs font-bold rounded-full transform group-hover:scale-105 group-hover:rotate-1 transition-all duration-200 will-change-transform">
@@ -615,17 +615,17 @@ export const Insights = () => {
                         </div>
                       )}
                     </div>
-                    <div className="flex flex-col flex-1 p-6 relative min-h-0">
-                      <h3 className="font-bold text-slate-900 dark:text-white mb-3 group-hover:text-accent-600 dark:group-hover:text-accent-500 transition-colors duration-200 text-lg leading-tight line-clamp-2 min-h-[3.5rem]">
+                    <div className="flex flex-col flex-1 p-4 relative min-h-0">
+                      <h3 className="font-bold text-slate-900 dark:text-white mb-3 group-hover:text-accent-600 dark:group-hover:text-accent-500 transition-colors duration-200 text-lg leading-tight min-h-auto">
                         {insight.title}
                       </h3>
                       
-                      <div className={`mb-4 flex-1 min-h-[4.5rem] ${isPDF ? 'relative overflow-hidden' : ''}`}>
-                        <p className={`text-slate-600 dark:text-slate-400 line-clamp-3 transition-all duration-300 group-hover:text-slate-700 dark:group-hover:text-slate-300 text-sm leading-relaxed ${
-                          isPDF ? 'group-hover:blur-[2px] group-hover:text-slate-500 group-hover:scale-[0.98]' : ''
-                        }`}>
-                          {insight.excerpt}
-                        </p>
+                      <div className={`mb-2 flex-1 ${isPDF ? 'relative overflow-hidden' : ''}`}>
+                        {!isPDF && (
+                          <p className={`text-slate-600 dark:text-slate-400 line-clamp-3 transition-all duration-300 group-hover:text-slate-700 dark:group-hover:text-slate-300 text-sm leading-relaxed`}>
+                            {insight.excerpt}
+                          </p>
+                        )}
                         {isPDF && (
                           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/90 dark:to-dark-card/90 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none" />
                         )}
@@ -638,7 +638,7 @@ export const Insights = () => {
                           </div>
                         )}
                       </div>
-                      <div className="mt-auto space-y-4">
+                      <div className="mt-auto space-y-2">
                         {/* Metadata Section */}
                         <div className="flex items-center justify-between">
                           {!isPDF && (
@@ -661,7 +661,7 @@ export const Insights = () => {
                         </div>
                         
                         {/* Action Button - Show for all cards */}
-                        <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+                        <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
                           <div className="flex items-center justify-between">
                             <div className={`flex items-center gap-2 font-medium group-hover:gap-3 transition-all duration-200 ${
                               isPDF 
