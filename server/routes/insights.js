@@ -117,11 +117,41 @@ router.get("/", async (req, res) => {
     const page = parseInt(req.query.page || 1);
     const limit = parseInt(req.query.limit || 10);
     const skip = (page - 1) * limit;
+    const category = req.query.category;
+    const search = req.query.search;
+    const sort = req.query.sort || 'newest';
 
     const query = { published: true };
 
+    // Add category filter if provided and not 'All'
+    if (category && category !== 'All') {
+      query.category = category;
+    }
+
+    // Add search filter if provided
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { excerpt: { $regex: search, $options: 'i' } },
+        { author: { $regex: search, $options: 'i' } },
+        { tags: { $in: [new RegExp(search, 'i')] } }
+      ];
+    }
+
+    // Determine sort order
+    let sortObj = {};
+    if (sort === 'oldest') {
+      sortObj = { createdAt: 1 };
+    } else if (sort === 'updated') {
+      sortObj = { updatedAt: -1 };
+    } else if (sort === 'popular') {
+      sortObj = { views: -1 };
+    } else {
+      sortObj = { createdAt: -1 }; // 'newest' is default
+    }
+
     const insights = await Insight.find(query)
-      .sort({ createdAt: -1 })
+      .sort(sortObj)
       .skip(skip)
       .limit(limit)
       .select("-content")

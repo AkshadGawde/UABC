@@ -10,7 +10,7 @@ export interface Insight {
   excerpt: string;
   content?: string;
   author: string;
-  category: 'Technology' | 'Business' | 'Innovation' | 'Industry' | 'Research' | 'Analysis' | 'General';
+  category: string; // Allow any string category instead of restricting to specific values
   tags?: string[];
   readTime?: number;
   image?: string;
@@ -56,7 +56,7 @@ export type CreateInsightData = {
   excerpt: string;
   content: string;
   author: string;
-  category: 'Technology' | 'Business' | 'Innovation' | 'Industry' | 'Research' | 'Analysis';
+  category: string; // Allow any string category
   image?: string;
   tags?: string[];
   published?: boolean;
