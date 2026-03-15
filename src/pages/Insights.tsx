@@ -639,26 +639,7 @@ export const Insights = () => {
                         )}
                       </div>
                       <div className="mt-auto space-y-2">
-                        {/* Metadata Section */}
-                        <div className="flex items-center justify-between">
-                          {!isPDF && (
-                            <div className="text-slate-500 dark:text-slate-400 text-xs">
-                              <span className="font-medium group-hover:text-accent-600 transition-colors duration-200">{insight.author || 'Unknown Author'}</span>
-                            </div>
-                          )}
-                          <div className={`flex items-center gap-3 text-slate-500 dark:text-slate-400 text-xs ${isPDF ? 'w-full justify-center' : ''}`}>
-                            <div className="flex items-center gap-1 group-hover:text-blue-600 transition-colors duration-200">
-                              <Calendar className="w-3 h-3" />
-                              {formatDate(insight.publishDate || insight.publishedAt || insight.createdAt)}
-                            </div>
-                            {!isPDF && (
-                              <div className="flex items-center gap-1 group-hover:text-green-600 transition-colors duration-200">
-                                <Eye className="w-3 h-3" />
-                                {formatViews(insight.views)}
-                              </div>
-                            )}
-                          </div>
-                        </div>
+                        {/* Metadata Section - Date and author removed for cleaner display */}
                         
                         {/* Action Button - Show for all cards */}
                         <div className="pt-2 border-t border-slate-200 dark:border-slate-700">

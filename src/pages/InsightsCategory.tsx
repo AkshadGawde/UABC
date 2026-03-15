@@ -302,23 +302,7 @@ export const InsightsCategory = () => {
 
                     {/* Content */}
                     <div className="p-4">
-                      {/* Meta */}
-                      <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400 mb-3">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          {new Date(insight.publishDate || insight.createdAt).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric'
-                          })}
-                        </span>
-                        {insight.readTime && (
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
-                            {insight.readTime} min
-                          </span>
-                        )}
-                      </div>
+                      {/* Meta - Date and Read Time removed for cleaner display */}
 
                       {/* Title */}
                       <h3 className="text-xl font-bold mb-3 text-slate-900 dark:text-white group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors">
