@@ -11,4 +11,3 @@ const router = express.Router();
 // PDFs are now accessed directly via the pdfUrl field from the database
 
 module.exports = router;
-

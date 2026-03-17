@@ -135,16 +135,16 @@ export const InsightsCategory = () => {
 
   const copyPdfLink = (e: React.MouseEvent, insight: Insight) => {
     e.stopPropagation();
-    // Use deployed backend API URL directly for sharing
-    const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc-backend.onrender.com/api';
-    const shareableUrl = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
-    
-    navigator.clipboard.writeText(shareableUrl).then(() => {
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 2000);
-    }).catch(err => {
-      console.error('Failed to copy link:', err);
-    });
+    // Copy the direct Cloudinary PDF URL for sharing
+    if (insight.pdfUrl) {
+      console.log('Copying PDF URL:', insight.pdfUrl);
+      navigator.clipboard.writeText(insight.pdfUrl).then(() => {
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 2000);
+      }).catch(err => {
+        console.error('Failed to copy link:', err);
+      });
+    }
   };
 
   const goToPage = (page: number) => {

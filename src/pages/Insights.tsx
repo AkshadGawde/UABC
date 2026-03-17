@@ -257,6 +257,7 @@ export const Insights = () => {
     e.stopPropagation();
     // Copy the direct Cloudinary PDF URL for sharing
     if (insight.pdfUrl) {
+      console.log('Copying PDF URL:', insight.pdfUrl);
       navigator.clipboard.writeText(insight.pdfUrl).then(() => {
         setShowToast(true);
         setTimeout(() => setShowToast(false), 2000);
