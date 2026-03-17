@@ -152,7 +152,7 @@ export const Hero = () => {
   const handleInsightClick = (insight: InsightCard) => {
     // For PDF insights, fetch clean PDF URL from backend and open in new tab
     if (insight.pdfFilename && (insight._id || insight.id)) {
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://https://uabc-pkg3.onrender.com/api';
       const pdfEndpoint = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
       
       fetch(pdfEndpoint)

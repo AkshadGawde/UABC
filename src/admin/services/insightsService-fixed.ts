@@ -1,6 +1,6 @@
 import { authService } from './authService';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://https://uabc-pkg3.onrender.com/api';
 
 export interface Insight {
   _id?: string;

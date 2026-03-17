@@ -108,7 +108,7 @@ export const InsightsCategory = () => {
         window.open(insight.pdfUrl, '_blank');
       } else {
         // Fallback to old pdfFilename method
-        const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
+        const apiUrl = import.meta.env.VITE_API_URL || 'https://https://uabc-pkg3.onrender.com/api';
         const pdfEndpoint = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
         
         fetch(pdfEndpoint)

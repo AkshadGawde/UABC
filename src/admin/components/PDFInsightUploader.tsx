@@ -112,7 +112,7 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
       }
 
       // API URL configuration
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc.onrender.com/api';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://https://uabc-pkg3.onrender.com/api';
       
       console.log('Uploading to:', `${apiUrl}/pdf-insights/upload`);
       
