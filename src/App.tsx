@@ -16,6 +16,7 @@ import { InsightPreview } from './admin/pages/InsightPreview';
 import { ProtectedRoute } from './admin/components/ProtectedRoute';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Toaster } from 'react-hot-toast';
 import './global.css';
 
 // Register GSAP plugins
@@ -101,6 +102,7 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
+        <Toaster position="top-right" />
         <PageLoader />
         <div className="antialiased min-h-screen font-sans selection:bg-accent-500/30 selection:text-accent-900 dark:selection:text-white bg-light-bg dark:bg-dark-bg">
           <ScrollToTop />

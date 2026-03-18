@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { optimizeImage } from '../utils/imageUtils';
-import { ConsultationForm } from '../components/ConsultationForm';
+import { JobApplicationForm } from '../components/JobApplicationForm';
 import { 
   MapPin, 
   Clock, 
@@ -26,7 +26,7 @@ import {
  * Careers Page Component
  */
 export const Careers = () => {
-  const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
+  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
@@ -497,27 +497,27 @@ export const Careers = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.button
-                onClick={() => setIsConsultationModalOpen(true)}
+                onClick={() => setIsApplicationModalOpen(true)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="px-8 py-4 bg-white text-accent-600 rounded-lg font-bold text-lg hover:bg-accent-50 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-1"
               >
-                Get in touch
+                Apply for an Opportunity
               </motion.button>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Consultation Modal */}
+      {/* Application Modal */}
       <AnimatePresence>
-        {isConsultationModalOpen && (
+        {isApplicationModalOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
-            onClick={() => setIsConsultationModalOpen(false)}
+            onClick={() => setIsApplicationModalOpen(false)}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -529,7 +529,7 @@ export const Careers = () => {
             >
               {/* Close Button */}
               <button
-                onClick={() => setIsConsultationModalOpen(false)}
+                onClick={() => setIsApplicationModalOpen(false)}
                 className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10 p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
                 aria-label="Close modal"
               >
@@ -538,7 +538,7 @@ export const Careers = () => {
 
               {/* Modal Content */}
               <div className="p-6 sm:p-8 md:p-10 pt-12 sm:pt-14 max-h-[80vh] overflow-y-auto">
-                <ConsultationForm />
+                <JobApplicationForm />
               </div>
             </motion.div>
           </motion.div>

@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { insightsService } from '../../admin/services/insightsService';
+import emailjs from '@emailjs/browser';
+import toast from 'react-hot-toast';
 
 /**
  * Footer
  */
 export const Footer = () => {
   const [insightCategories, setInsightCategories] = useState<string[]>([]);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [isNewsletterLoading, setIsNewsletterLoading] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -33,6 +37,46 @@ export const Footer = () => {
 
   const categoryToSlug = (category: string) => {
     return category.toLowerCase().replace(/\s+/g, '-');
+  };
+
+  // Handle newsletter subscription
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newsletterEmail)) {
+      toast.error('Please enter a valid email address.');
+      return;
+    }
+
+    setIsNewsletterLoading(true);
+
+    try {
+      // Send newsletter email using the consultation template
+      await emailjs.send(
+        import.meta.env.VITE_EMAIL_SERVICE_ID,
+        import.meta.env.VITE_EMAIL_TEMPLATE_ID,
+        {
+          name: '',
+          email: newsletterEmail,
+          contact_number: '',
+          company_name: '',
+          employee_headcount: '',
+          services_required: '',
+          message: '',
+        },
+        import.meta.env.VITE_EMAIL_PUBLIC_KEY
+      );
+
+      toast.success('Successfully subscribed to our newsletter!');
+      setNewsletterEmail('');
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      toast.error('Failed to subscribe. Please try again.');
+    } finally {
+      setIsNewsletterLoading(false);
+    }
   };
 
   return (
@@ -123,17 +167,28 @@ export const Footer = () => {
               Subscribe to our newsletter for the latest updates.
             </p>
 
-            <div className="flex flex-col gap-2">
+            <form onSubmit={handleNewsletterSubmit} className="flex flex-col gap-2">
               <input
                 type="email"
                 placeholder="Email"
-                className="bg-white/5 border border-white/10 rounded-md px-4 py-2 text-sm text-white focus:outline-none focus:border-accent-500"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                className="bg-white/5 border border-white/10 rounded-md px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-accent-500 transition-colors"
+                required
               />
 
-              <button className="bg-accent-600 hover:bg-accent-500 px-4 py-2 rounded-md transition-colors text-white flex items-center justify-center">
-                <ArrowRight className="w-4 h-4" />
+              <button
+                type="submit"
+                disabled={isNewsletterLoading}
+                className="bg-accent-600 hover:bg-accent-500 disabled:bg-slate-600 disabled:cursor-not-allowed px-4 py-2 rounded-md transition-colors text-white flex items-center justify-center"
+              >
+                {isNewsletterLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ArrowRight className="w-4 h-4" />
+                )}
               </button>
-            </div>
+            </form>
           </div>
         </div>
 

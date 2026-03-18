@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, AlertCircle, Loader2, Mail, Phone, User, Building2, MessageSquare } from 'lucide-react';
+import { CheckCircle, AlertCircle, Loader2, Mail, Phone, User, Upload, FileText } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import toast from 'react-hot-toast';
 
@@ -10,33 +10,23 @@ interface FormStatus {
 }
 
 /**
- * Schedule Consultation Form Component
- * Sends consultation requests via EmailJS to universalactuaries@uabc.co.in
+ * Job Application Form Component
+ * Sends job applications via EmailJS with resume attachment
  */
-export const ConsultationForm: React.FC = () => {
+export const JobApplicationForm: React.FC = () => {
   const formRef = useRef<HTMLFormElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus>({ type: 'idle', message: '' });
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    contact_number: '',
-    company_name: '',
-    employee_headcount: '',
-    services_required: [] as string[],
-    message: '',
+    phone: '',
   });
-
-  const serviceOptions = [
-    'Gratuity Valuation',
-    'Leave Valuation',
-    'ESOP Valuation',
-    'Others'
-  ];
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [resumeFileName, setResumeFileName] = useState('');
 
   // Handle input changes
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -44,25 +34,57 @@ export const ConsultationForm: React.FC = () => {
     }));
   };
 
-  // Handle service checkbox changes
-  const handleServiceChange = (service: string) => {
-    setFormData(prev => ({
-      ...prev,
-      services_required: prev.services_required.includes(service)
-        ? prev.services_required.filter(s => s !== service)
-        : [...prev.services_required, service]
-    }));
+  // Handle file selection
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    
+    if (file) {
+      // Validate file type
+      if (file.type !== 'application/pdf') {
+        setFormStatus({
+          type: 'error',
+          message: 'Please upload a PDF file only.'
+        });
+        setResumeFile(null);
+        setResumeFileName('');
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setFormStatus({
+          type: 'error',
+          message: 'File size should be less than 5MB.'
+        });
+        setResumeFile(null);
+        setResumeFileName('');
+        return;
+      }
+
+      setResumeFile(file);
+      setResumeFileName(file.name);
+      setFormStatus({ type: 'idle', message: '' });
+    }
   };
 
-  // Send email via EmailJS
-  const sendEmail = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Handle file removal
+  const handleRemoveFile = () => {
+    setResumeFile(null);
+    setResumeFileName('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Send application via EmailJS
+  const sendApplication = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Validate required fields
-    if (!formData.name.trim() || !formData.email.trim() || !formData.contact_number.trim() || !formData.employee_headcount.trim() || !formData.message.trim() || formData.services_required.length === 0) {
+    if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim() || !resumeFile) {
       setFormStatus({
         type: 'error',
-        message: 'Please fill in all required fields.'
+        message: 'Please fill in all required fields and upload your resume.'
       });
       return;
     }
@@ -79,7 +101,7 @@ export const ConsultationForm: React.FC = () => {
 
     // Validate phone format (basic)
     const phoneRegex = /^[0-9+\-\s()]+$/;
-    if (!phoneRegex.test(formData.contact_number) || formData.contact_number.replace(/\D/g, '').length < 7) {
+    if (!phoneRegex.test(formData.phone) || formData.phone.replace(/\D/g, '').length < 7) {
       setFormStatus({
         type: 'error',
         message: 'Please enter a valid phone number.'
@@ -87,50 +109,82 @@ export const ConsultationForm: React.FC = () => {
       return;
     }
 
-    setFormStatus({ type: 'loading', message: 'Sending your request...' });
+    setFormStatus({ type: 'loading', message: 'Uploading resume...' });
 
     try {
-      // Send email using EmailJS
-      await emailjs.sendForm(
+      // Log for debugging
+      console.log('Cloud Name:', import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
+      console.log('All env vars:', import.meta.env);
+
+      // Upload resume to Cloudinary
+      const formDataCloudinary = new FormData();
+      formDataCloudinary.append('file', resumeFile);
+      formDataCloudinary.append('upload_preset', 'uabc_resumes');
+      formDataCloudinary.append('folder', 'uabc_job_applications');
+
+      const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/auto/upload`;
+      console.log('Cloudinary URL:', cloudinaryUrl);
+
+      const cloudinaryResponse = await fetch(cloudinaryUrl, {
+        method: 'POST',
+        body: formDataCloudinary,
+      });
+
+      const cloudinaryData = await cloudinaryResponse.json();
+      console.log('Cloudinary Response:', cloudinaryData);
+
+      if (!cloudinaryResponse.ok) {
+        console.error('Cloudinary Error Response:', cloudinaryData);
+        throw new Error(cloudinaryData.error?.message || 'Failed to upload resume to Cloudinary');
+      }
+
+      const resumeUrl = cloudinaryData.secure_url;
+      console.log('✅ Cloudinary Upload Success! Resume URL:', resumeUrl);
+
+      setFormStatus({ type: 'loading', message: 'Sending your application...' });
+
+      // Send email using EmailJS with resume URL
+      const emailData = {
+        applicant_name: formData.name,
+        applicant_email: formData.email,
+        applicant_phone: formData.phone,
+        resume_filename: resumeFileName,
+        resume_url: resumeUrl,
+      };
+      console.log('📧 Sending to EmailJS with data:', emailData);
+
+      await emailjs.send(
         import.meta.env.VITE_EMAIL_SERVICE_ID,
-        import.meta.env.VITE_EMAIL_TEMPLATE_ID,
-        formRef.current!,
+        import.meta.env.VITE_EMAIL_APPLICATION_TEMPLATE_ID,
+        emailData,
         import.meta.env.VITE_EMAIL_PUBLIC_KEY
       );
 
       // Success
-      toast.success('Email sent successfully! We\'ll get back to you soon.');
+      toast.success('Application submitted successfully! We\'ll review your resume soon.');
       setFormStatus({
         type: 'success',
-        message: 'Consultation request sent successfully! We\'ll get back to you soon.'
+        message: 'Application submitted successfully! We\'ll review your resume and get back to you soon.'
       });
 
       // Reset form
       setFormData({
         name: '',
         email: '',
-        contact_number: '',
-        company_name: '',
-        employee_headcount: '',
-        services_required: [],
-        message: '',
+        phone: '',
       });
-
-      // Reset form ref
-      if (formRef.current) {
-        formRef.current.reset();
-      }
+      handleRemoveFile();
 
       // Clear success message after 5 seconds
       setTimeout(() => {
         setFormStatus({ type: 'idle', message: '' });
       }, 5000);
     } catch (error) {
-      console.error('EmailJS Error:', error);
-      toast.error('Email failed to deliver. Please try again or contact us directly.');
+      console.error('Upload/Email Error:', error);
+      toast.error('Failed to submit application. Please try again.');
       setFormStatus({
         type: 'error',
-        message: 'Failed to send request. Please try again or contact us directly.'
+        message: 'Failed to submit application. Please try again or contact us directly.'
       });
     }
   };
@@ -146,10 +200,10 @@ export const ConsultationForm: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2">
-            Schedule a Consultation
+            Apply for an Opportunity
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg">
-            Let's discuss how we can help your organization achieve its goals.
+            Submit your resume and let us know more about you. We'd love to hear from you!
           </p>
         </div>
 
@@ -191,14 +245,7 @@ export const ConsultationForm: React.FC = () => {
         )}
 
         {/* Form */}
-        <form ref={formRef} onSubmit={sendEmail} className="space-y-5 sm:space-y-6">
-          {/* Hidden field for services_required */}
-          <input
-            type="hidden"
-            name="services_required"
-            value={formData.services_required.join(', ')}
-          />
-
+        <form ref={formRef} onSubmit={sendApplication} className="space-y-5 sm:space-y-6">
           {/* Full Name */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
@@ -241,7 +288,7 @@ export const ConsultationForm: React.FC = () => {
 
           {/* Phone Number */}
           <div>
-            <label htmlFor="contact_number" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            <label htmlFor="phone" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               <span className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
                 Phone Number <span className="text-red-500">*</span>
@@ -249,9 +296,9 @@ export const ConsultationForm: React.FC = () => {
             </label>
             <input
               type="tel"
-              id="contact_number"
-              name="contact_number"
-              value={formData.contact_number}
+              id="phone"
+              name="phone"
+              value={formData.phone}
               onChange={handleChange}
               placeholder="+1 (555) 000-0000"
               required
@@ -259,87 +306,53 @@ export const ConsultationForm: React.FC = () => {
             />
           </div>
 
-          {/* Company (Optional) */}
+          {/* Resume Upload */}
           <div>
-            <label htmlFor="company_name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               <span className="flex items-center gap-2">
-                <Building2 className="w-4 h-4" />
-                Company <span className="text-slate-400">(Optional)</span>
+                <FileText className="w-4 h-4" />
+                Resume (PDF) <span className="text-red-500">*</span>
               </span>
             </label>
-            <input
-              type="text"
-              id="company_name"
-              name="company_name"
-              value={formData.company_name}
-              onChange={handleChange}
-              placeholder="Your company name"
-              className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
-            />
-          </div>
-
-          {/* Employee HeadCount */}
-          <div>
-            <label htmlFor="employee_headcount" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-              <span className="flex items-center gap-2">
-                <User className="w-4 h-4" />
-                Employee HeadCount <span className="text-red-500">*</span>
-              </span>
-            </label>
-            <input
-              type="number"
-              id="employee_headcount"
-              name="employee_headcount"
-              value={formData.employee_headcount}
-              onChange={handleChange}
-              placeholder="Enter number of employees"
-              min="1"
-              required
-              className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
-            />
-          </div>
-
-          {/* Services Required */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
-              <span className="flex items-center gap-2">
-                <MessageSquare className="w-4 h-4" />
-                Type of Services Required <span className="text-red-500">*</span>
-              </span>
-            </label>
-            <div className="space-y-3">
-              {serviceOptions.map(service => (
-                <label key={service} className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.services_required.includes(service)}
-                    onChange={() => handleServiceChange(service)}
-                    className="w-4 h-4 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-accent-600 focus:ring-2 focus:ring-accent-500 cursor-pointer"
-                  />
-                  <span className="text-sm text-slate-700 dark:text-slate-300">{service}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Message */}
-          <div>
-            <label htmlFor="message" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-              <span className="flex items-center gap-2">
-                <MessageSquare className="w-4 h-4" />
-                Message <span className="text-red-500">*</span>
-              </span>
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              placeholder="Tell us about your consultation needs..."
-              rows={5}
-              required
-              className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all resize-none"
-            />
+            
+            {!resumeFile ? (
+              <label className="w-full px-4 py-6 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer flex flex-col items-center justify-center gap-2">
+                <Upload className="w-8 h-8 text-slate-400" />
+                <div className="text-center">
+                  <p className="font-medium text-slate-900 dark:text-white">Click to upload or drag and drop</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">PDF file (max 5MB)</p>
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  id="resume"
+                  name="resume"
+                  accept=".pdf"
+                  onChange={handleFileChange}
+                  required
+                  className="hidden"
+                />
+              </label>
+            ) : (
+              <div className="w-full px-4 py-4 border border-slate-300 dark:border-slate-600 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-grow">
+                  <FileText className="w-5 h-5 text-green-600 dark:text-green-500 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="font-medium text-slate-900 dark:text-white truncate">{resumeFileName}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      {(resumeFile.size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleRemoveFile}
+                  className="px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-colors flex-shrink-0"
+                >
+                  Remove
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Submit Button */}
@@ -357,10 +370,10 @@ export const ConsultationForm: React.FC = () => {
             {formStatus.type === 'loading' ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Sending...
+                Submitting...
               </>
             ) : (
-              'Schedule Consultation'
+              'Submit Application'
             )}
           </motion.button>
 
@@ -373,7 +386,7 @@ export const ConsultationForm: React.FC = () => {
         {/* Footer Note */}
         <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 text-center">
-            We respect your privacy. Your information will only be used to contact you about your consultation request.
+            We respect your privacy. Your information will only be used for recruitment purposes.
           </p>
         </div>
       </div>
