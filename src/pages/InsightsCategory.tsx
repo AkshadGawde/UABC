@@ -27,6 +27,7 @@ interface Insight {
   tags?: string[];
   readTime?: number;
   image?: string;
+  pdfUrl?: string;
   featuredImage?: string;
   published: boolean;
   featured?: boolean;
@@ -100,32 +101,16 @@ export const InsightsCategory = () => {
     }
   };
 
-  const handleInsightClick = (insight: Insight) => {
+  const handleInsightClick = async (insight: Insight) => {
     // For PDF insights, open the PDF URL directly
     if (insight.pdfUrl || insight.pdfFilename) {
-      if (insight.pdfUrl) {
-        // Use direct Cloudinary URL
-        window.open(insight.pdfUrl, '_blank');
-      } else {
-        // Fallback to old pdfFilename method
-        const apiUrl = import.meta.env.VITE_API_URL || 'https://https://uabc-pkg3.onrender.com/api';
-        const pdfEndpoint = `${apiUrl}/pdf-insights/${insight._id || insight.id}/pdf`;
-        
-        fetch(pdfEndpoint)
-          .then(res => res.json())
-          .then(data => {
-            if (data.success && data.pdfUrl) {
-              console.log('Opening PDF:', data.pdfUrl);
-              window.open(data.pdfUrl, '_blank');
-            } else {
-              console.error('Failed to get PDF URL:', data.message);
-              alert('Failed to load PDF. Please try again.');
-            }
-          })
-          .catch(error => {
-            console.error('Error fetching PDF URL:', error);
-            alert('Error loading PDF. Please try again.');
-          });
+      try {
+        const pdfUrl = await insightsService.getPdfViewerUrl(insight._id || insight.id || '');
+        console.log('Opening PDF:', pdfUrl);
+        window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+      } catch (error) {
+        console.error('Error fetching PDF URL:', error);
+        alert('Error loading PDF. Please try again.');
       }
     } else {
       // For regular insights, navigate to detail page
@@ -133,17 +118,18 @@ export const InsightsCategory = () => {
     }
   };
 
-  const copyPdfLink = (e: React.MouseEvent, insight: Insight) => {
+  const copyPdfLink = async (e: React.MouseEvent, insight: Insight) => {
     e.stopPropagation();
-    // Copy the direct Cloudinary PDF URL for sharing
-    if (insight.pdfUrl) {
-      console.log('Copying PDF URL:', insight.pdfUrl);
-      navigator.clipboard.writeText(insight.pdfUrl).then(() => {
+    if (insight.pdfUrl && (insight._id || insight.id)) {
+      try {
+        const pdfUrl = await insightsService.getPdfViewerUrl(insight._id || insight.id || '');
+        console.log('Copying PDF URL:', pdfUrl);
+        await navigator.clipboard.writeText(pdfUrl);
         setShowToast(true);
         setTimeout(() => setShowToast(false), 2000);
-      }).catch(err => {
+      } catch (err) {
         console.error('Failed to copy link:', err);
-      });
+      }
     }
   };
 

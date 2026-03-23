@@ -161,16 +161,16 @@ export const AdminDashboard = () => {
     setTimeout(() => setErrorMessage(null), 5000);
   };
 
-  const handleViewPDF = (id: string) => {
+  const handleViewPDF = async (id: string) => {
     // Find the insight with the matching ID
     const insight = insights.find(i => (i._id || i.id) === id);
     if (insight && (insight.pdfUrl || insight.pdfFilename)) {
-      // Use the direct pdfUrl stored in the insight
-      const pdfUrl = insight.pdfUrl;
-      if (pdfUrl) {
-        window.open(pdfUrl, '_blank');
-      } else {
-        setErrorMessage('PDF URL not found');
+      try {
+        const pdfUrl = await insightsService.getPdfViewerUrl(id);
+        window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'PDF URL not found';
+        setErrorMessage(message);
         setTimeout(() => setErrorMessage(null), 3000);
       }
     } else {
@@ -308,6 +308,7 @@ export const AdminDashboard = () => {
               <PDFInsightUploader
                 onUploadSuccess={handleUploadSuccess}
                 onUploadError={handleUploadError}
+                initialCategories={categories.filter(category => category !== 'all')}
               />
             </motion.div>
           </motion.div>

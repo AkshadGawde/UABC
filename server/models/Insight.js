@@ -20,6 +20,21 @@ const insightSchema = new mongoose.Schema(
       required: false,
       trim: true,
     },
+    pdfPublicId: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+    pdfVersion: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+    pdfOriginalFilename: {
+      type: String,
+      required: false,
+      trim: true,
+    },
     // Regular insight fields (optional - only for text insights)
     content: {
       type: String,
@@ -119,6 +134,7 @@ insightSchema.pre("save", function (next) {
 insightSchema.index({ published: 1, createdAt: -1 });
 insightSchema.index({ category: 1, published: 1 });
 insightSchema.index({ tags: 1 });
+insightSchema.index({ pdfPublicId: 1 });
 // Slug index handled by unique: true above
 
 // Static methods

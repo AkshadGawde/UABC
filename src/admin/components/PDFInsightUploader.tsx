@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, Calendar, FileText, Image, AlertCircle, Check } from 'lucide-react';
 import { authService } from '../services/authService';
@@ -6,18 +6,33 @@ import { authService } from '../services/authService';
 interface PDFInsightUploaderProps {
   onUploadSuccess?: (insight: any) => void;
   onUploadError?: (error: string) => void;
+  initialCategories?: string[];
 }
+
+const DEFAULT_CATEGORIES = ['Research Papers', 'Interests', 'Regulatory Reports'];
+
+const buildCategoryOptions = (categories: string[] = []) => {
+  return Array.from(
+    new Set(
+      [...DEFAULT_CATEGORIES, ...categories]
+        .map(category => category.trim())
+        .filter(Boolean)
+    )
+  );
+};
 
 const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
   onUploadSuccess,
   onUploadError,
+  initialCategories = [],
 }) => {
+  const [categoryOptions, setCategoryOptions] = useState<string[]>(() => buildCategoryOptions(initialCategories));
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [featuredImage, setFeaturedImage] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageMode, setImageMode] = useState<'url' | 'upload'>('url');
   const [publishDate, setPublishDate] = useState(new Date().toISOString().split('T')[0]);
-  const [category, setCategory] = useState('Research Papers');
+  const [category, setCategory] = useState(DEFAULT_CATEGORIES[0]);
   const [customCategory, setCustomCategory] = useState('');
   const [showCustomCategory, setShowCustomCategory] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -28,6 +43,10 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
   } | null>(null);
   const [customTitle, setCustomTitle] = useState('');
   const [showCustomTitleInput, setShowCustomTitleInput] = useState(false);
+
+  useEffect(() => {
+    setCategoryOptions((currentOptions) => buildCategoryOptions([...currentOptions, ...initialCategories]));
+  }, [initialCategories]);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -98,12 +117,27 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
       return;
     }
 
+    const trimmedCustomCategory = customCategory.trim();
+    const selectedCategory = showCustomCategory && trimmedCustomCategory ? trimmedCustomCategory : category;
+
+    if (!selectedCategory) {
+      onUploadError?.('Please select or add a category');
+      return;
+    }
+
+    if (showCustomCategory && trimmedCustomCategory) {
+      setCategoryOptions((currentOptions) => buildCategoryOptions([...currentOptions, trimmedCustomCategory]));
+      setCategory(trimmedCustomCategory);
+      setShowCustomCategory(false);
+      setCustomCategory('');
+    }
+
     setLoading(true);
     
     try {
       const formData = new FormData();
       formData.append('pdf', pdfFile);
-      formData.append('category', showCustomCategory && customCategory ? customCategory : category);
+      formData.append('category', selectedCategory);
       formData.append('publishDate', publishDate);
       
       // Include custom title if provided
@@ -119,7 +153,7 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
       }
 
       // API URL configuration
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://https://uabc-pkg3.onrender.com/api';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://uabc-pkg3.onrender.com/api';
       
       console.log('Uploading to:', `${apiUrl}/pdf-insights/upload`);
       
@@ -168,6 +202,9 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
       setImageFile(null);
       setImageMode('url');
       setPublishDate(new Date().toISOString().split('T')[0]);
+      setCategory(selectedCategory);
+      setCustomCategory('');
+      setShowCustomCategory(false);
       setCustomTitle('');
       setShowCustomTitleInput(false);
       setPreview(null);
@@ -466,9 +503,9 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
                 required={!showCustomCategory}
                 className="block flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 text-gray-500"
               >
-                <option value="Research Papers">Research Papers</option>
-                <option value="Interests">Interests</option>
-                <option value="Regulatory Reports">Regulatory Reports</option>
+                {categoryOptions.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
               </select>
               
               <button
@@ -477,7 +514,7 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
                   setShowCustomCategory(!showCustomCategory);
                   if (showCustomCategory) {
                     setCustomCategory('');
-                    setCategory('Research Papers');
+                    setCategory(categoryOptions[0] || DEFAULT_CATEGORIES[0]);
                   }
                 }}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${

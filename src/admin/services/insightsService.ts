@@ -15,6 +15,8 @@ export interface Insight {
   readTime?: number;
   image?: string;
   pdfUrl?: string;
+  pdfPublicId?: string;
+  pdfOriginalFilename?: string;
   featuredImage?: string;
   published: boolean;
   featured?: boolean;
@@ -210,6 +212,17 @@ class InsightsService {
       console.error('Error fetching insight:', error);
       return null;
     }
+  }
+
+  async getPdfViewerUrl(id: string): Promise<string> {
+    const response = await fetch(`${API_URL}/pdf-insights/${id}/pdf`);
+    const data = await response.json();
+
+    if (!response.ok || !data.success || !data.pdfUrl) {
+      throw new Error(data.message || 'Failed to fetch PDF URL');
+    }
+
+    return data.pdfUrl as string;
   }
 
   // Create new insight

@@ -43,29 +43,66 @@ const insightUploadValidation = [
     .optional()
     .isURL()
     .withMessage("Featured image must be a valid URL"),
+  body("customTitle")
+    .optional()
+    .isLength({ max: 200 })
+    .withMessage("Custom title cannot exceed 200 characters"),
 ];
 
-// Helper function to extract title from PDF text
+const TITLE_BLACKLIST_PATTERNS = [
+  /proprietary\s*&\s*confidential/gi,
+  /confidential/gi,
+  /^page\s+\d+(?:\s+of\s+\d+)?$/i,
+  /^prepared\s+by[:\s].*$/i,
+  /^prepared\s+for[:\s].*$/i,
+  /^for\s+internal\s+use\s+only$/i,
+  /^draft$/i,
+  /^table\s+of\s+contents$/i,
+];
+
+const cleanPdfTitle = (value) => {
+  if (!value) return "";
+
+  let cleaned = value
+    .replace(/\.pdf$/i, "")
+    .replace(/[_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  for (const pattern of TITLE_BLACKLIST_PATTERNS) {
+    cleaned = cleaned.replace(pattern, " ").trim();
+  }
+
+  cleaned = cleaned
+    .replace(/^\d+\.\s*/, "")
+    .replace(/^[^A-Za-z0-9]+/, "")
+    .replace(/[|:;,\-\s]+$/, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return cleaned;
+};
+
+// Helper function to extract a clean title from PDF text
 const extractTitleFromPdf = (text) => {
-  const lines = text.split("\n").filter((line) => line.trim().length > 0);
+  const lines = text
+    .split("\n")
+    .map((line) => cleanPdfTitle(line))
+    .filter((line) => line.length >= 6 && line.length <= 200);
 
-  // Try to find the first substantial line as title
   for (const line of lines) {
-    const trimmed = line.trim();
-    if (trimmed.length > 5 && trimmed.length < 200) {
-      // Remove common PDF artifacts
-      const cleaned = trimmed
-        .replace(/^\d+\.\s*/, "") // Remove numbering
-        .replace(/^[^\w]*/, "") // Remove leading non-word chars
-        .trim();
+    const looksLikeMetadata =
+      /^by\s+/i.test(line) ||
+      /^author[:\s]/i.test(line) ||
+      /^www\./i.test(line) ||
+      /^https?:\/\//i.test(line);
 
-      if (cleaned.length > 5) {
-        return cleaned;
-      }
+    if (!looksLikeMetadata) {
+      return line;
     }
   }
 
-  return "Untitled Insight";
+  return "";
 };
 
 // Helper function to generate excerpt from PDF text
@@ -88,13 +125,46 @@ const generateExcerpt = (text) => {
 
 // Helper function to create a URL-safe slug from text
 const slugify = (text) => {
-  if (!text) return "untitled-pdf";
-  return text
+  const slug = (text || "")
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric with hyphens
-    .replace(/^-+|-+$/g, "") // Remove leading/trailing hyphens
-    .slice(0, 80); // Max length for Cloudinary public_id (leaving room for randomness if needed)
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 120);
+
+  return slug || `pdf-${Date.now()}`;
+};
+
+const normalizePdfPublicId = (publicId) => {
+  if (!publicId) return "";
+  return publicId.replace(/\.pdf$/i, "").trim();
+};
+
+const extractVersionFromPdfUrl = (url) => {
+  if (!url) return undefined;
+  const match = url.match(/\/v(\d+)\//);
+  return match ? match[1] : undefined;
+};
+
+const extractPublicIdFromPdfUrl = (url) => {
+  if (!url) return "";
+
+  const sanitizedUrl = url.split("?")[0];
+  const match = sanitizedUrl.match(
+    /\/upload\/(?:fl_attachment:false\/)?(?:v\d+\/)?(.+?)(?:\.pdf)?$/i,
+  );
+
+  return normalizePdfPublicId(match ? match[1] : "");
+};
+
+const getInlinePdfUrl = ({ publicId, version }) => {
+  return cloudinary.url(normalizePdfPublicId(publicId), {
+    resource_type: "raw",
+    type: "upload",
+    secure: true,
+    version,
+    format: "pdf",
+  });
 };
 
 // Helper function to extract author from PDF text
@@ -245,14 +315,16 @@ router.post(
         });
       }
 
-      // Extract metadata from PDF
-      // Use customTitle if provided, otherwise extract from PDF
-      const title = customTitle && customTitle.trim() ? customTitle.trim() : extractTitleFromPdf(pdfText);
+      const providedTitle = cleanPdfTitle(customTitle);
+      const extractedTitle = extractTitleFromPdf(pdfText);
+      const fallbackFilenameTitle = cleanPdfTitle(pdfFile.originalname);
+      const title = providedTitle || extractedTitle || fallbackFilenameTitle || "Untitled Insight";
       const excerpt = generateExcerpt(pdfText);
       const author = extractAuthorFromPdf(pdfText);
 
       console.log("📝 Extracted metadata:");
       console.log("  - Title:", title);
+      console.log("  - Custom title provided:", Boolean(providedTitle));
       console.log("  - Author:", author || "Unknown");
       console.log("  - Excerpt length:", excerpt.length);
 
@@ -263,16 +335,31 @@ router.post(
       const pdfSlug = slugify(title);
       console.log("  - PDF Slug/Filename:", pdfSlug);
 
-      // Upload to Cloudinary with proper filename
-      const uploadResult = await cloudinary.uploader.upload(base64Pdf, {
-        resource_type: "auto", // Auto-detect PDF type
-        folder: "insights-pdfs",
-        public_id: pdfSlug, // Use slugified title as the filename
-        access_mode: "public",
-        flags: "immutable", // Cache the file permanently
-      });
+      // Upload to Cloudinary with deterministic naming and inline viewing support.
+      let uploadResult;
+      try {
+        uploadResult = await cloudinary.uploader.upload(base64Pdf, {
+          resource_type: "raw",
+          folder: "insights-pdfs",
+          public_id: pdfSlug,
+          format: "pdf",
+          use_filename: false,
+          unique_filename: false,
+          overwrite: true,
+          access_mode: "public",
+          timeout: 120000,
+        });
+      } catch (uploadError) {
+        console.error("❌ Cloudinary upload error:", uploadError.message);
+        throw new Error(`Failed to upload PDF to Cloudinary: ${uploadError.message}`);
+      }
 
-      const pdfUrl = uploadResult.secure_url;
+      const pdfPublicId = normalizePdfPublicId(uploadResult.public_id);
+      const pdfVersion = uploadResult.version ? String(uploadResult.version) : undefined;
+      const pdfUrl = getInlinePdfUrl({
+        publicId: pdfPublicId,
+        version: pdfVersion,
+      });
 
       console.log("🔗 PDF URL from Cloudinary:", pdfUrl);
       console.log("✅ PDF will download as:", `${pdfSlug}.pdf`);
@@ -300,6 +387,9 @@ router.post(
         author: author || "Unknown Author",
         category: category || "General",
         pdfUrl: pdfUrl,
+        pdfPublicId,
+        pdfVersion,
+        pdfOriginalFilename: pdfFile.originalname,
         featuredImage: finalImageUrl,
         publishDate: publishDate ? new Date(publishDate) : new Date(),
         published: true,
@@ -377,22 +467,19 @@ router.delete("/:id", authenticateToken, requireEditor, async (req, res) => {
       });
     }
 
-    // Delete from Cloudinary if PDF URL exists
-    if (insight.pdfUrl) {
+    // Delete from Cloudinary if PDF metadata exists
+    if (insight.pdfPublicId || insight.pdfUrl) {
       try {
-        // Extract public_id from URL using regex for accuracy
-        // URL format: https://res.cloudinary.com/.../upload/.../insights/filename.pdf
-        // Extract everything after /upload/ up to the file extension
-        const matches = insight.pdfUrl.match(
-          /upload\/(?:v\d+\/)?(.+?)(\.\w+)?$/,
+        const publicId = normalizePdfPublicId(
+          insight.pdfPublicId || extractPublicIdFromPdfUrl(insight.pdfUrl),
         );
-        if (matches) {
-          const publicId = matches[1]; // This will be "insights/qtpczupsrkyinygdudhc"
 
+        if (publicId) {
           console.log("📤 Deleting from Cloudinary:", publicId);
 
           await cloudinary.uploader.destroy(publicId, {
-            resource_type: "auto",
+            resource_type: "raw",
+            type: "upload",
           });
 
           console.log("✅ Deleted from Cloudinary:", publicId);
@@ -433,7 +520,9 @@ router.get("/:id/pdf", async (req, res) => {
   try {
     const { id } = req.params;
 
-    const insight = await Insight.findById(id).select("pdfUrl published");
+    const insight = await Insight.findById(id).select(
+      "pdfUrl pdfPublicId pdfVersion published title",
+    );
 
     if (!insight || !insight.published) {
       return res.status(404).json({
@@ -449,13 +538,24 @@ router.get("/:id/pdf", async (req, res) => {
       });
     }
 
-    // Return the stored PDF URL directly (already clean from Cloudinary)
-    // Format: https://res.cloudinary.com/cloud/image/upload/v1234/insights-pdfs/filename.pdf
-    console.log("📄 Serving PDF URL:", insight.pdfUrl);
+    const derivedPublicId = normalizePdfPublicId(
+      insight.pdfPublicId || extractPublicIdFromPdfUrl(insight.pdfUrl),
+    );
+    const derivedVersion = insight.pdfVersion || extractVersionFromPdfUrl(insight.pdfUrl);
+
+    const pdfUrl = derivedPublicId
+      ? getInlinePdfUrl({
+          publicId: derivedPublicId,
+          version: derivedVersion,
+        })
+      : insight.pdfUrl;
+
+    console.log("📄 Serving inline PDF URL:", pdfUrl);
 
     res.json({
       success: true,
-      pdfUrl: insight.pdfUrl,
+      pdfUrl,
+      title: insight.title,
     });
   } catch (error) {
     console.error("PDF serve error:", error);

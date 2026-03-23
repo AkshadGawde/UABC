@@ -232,38 +232,34 @@ export const Insights = () => {
     return insight.publishedAt || insight.createdAt;
   };
 
-  const handleInsightClick = (insight: Insight) => {
+  const handleInsightClick = async (insight: Insight) => {
   if (!insight) return;
 
-  // If insight has a PDF, open it directly
-  if (insight.pdfUrl) {
-    let pdfUrl = insight.pdfUrl;
-
-    // Safety fix for old DB records that contain invalid Cloudinary flag
-    if (pdfUrl.includes("fl_attachment:false")) {
-      pdfUrl = pdfUrl.replace("fl_attachment:false/", "");
+  if (insight.pdfUrl && (insight._id || insight.id)) {
+    try {
+      const pdfUrl = await insightsService.getPdfViewerUrl(insight._id || insight.id || '');
+      window.open(pdfUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error('Failed to open PDF:', error);
+      setError('Failed to load PDF. Please try again.');
     }
-
-    console.log("Opening PDF:", pdfUrl);
-
-    window.open(pdfUrl, "_blank", "noopener,noreferrer");
     return;
   }
 
-  // Future support for article pages
   console.log("Navigate to insight detail:", insight._id || insight.id);
 };
-  const copyPdfLink = (e: React.MouseEvent, insight: Insight) => {
+  const copyPdfLink = async (e: React.MouseEvent, insight: Insight) => {
     e.stopPropagation();
-    // Copy the direct Cloudinary PDF URL for sharing
-    if (insight.pdfUrl) {
-      console.log('Copying PDF URL:', insight.pdfUrl);
-      navigator.clipboard.writeText(insight.pdfUrl).then(() => {
+    if (insight.pdfUrl && (insight._id || insight.id)) {
+      try {
+        const pdfUrl = await insightsService.getPdfViewerUrl(insight._id || insight.id || '');
+        console.log('Copying PDF URL:', pdfUrl);
+        await navigator.clipboard.writeText(pdfUrl);
         setShowToast(true);
         setTimeout(() => setShowToast(false), 2000);
-      }).catch(err => {
+      } catch (err) {
         console.error('Failed to copy link:', err);
-      });
+      }
     }
   };
 

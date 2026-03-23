@@ -7,6 +7,7 @@
     "build": "echo 'No build step required for Node.js backend'",
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "fix:pdf-public-ids": "node scripts/fixPdfPublicIds.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
