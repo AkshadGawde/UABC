@@ -26,6 +26,8 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
     title?: string;
     excerpt?: string;
   } | null>(null);
+  const [customTitle, setCustomTitle] = useState('');
+  const [showCustomTitleInput, setShowCustomTitleInput] = useState(false);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -104,6 +106,11 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
       formData.append('category', showCustomCategory && customCategory ? customCategory : category);
       formData.append('publishDate', publishDate);
       
+      // Include custom title if provided
+      if (customTitle.trim()) {
+        formData.append('customTitle', customTitle.trim());
+      }
+      
       // Handle image - either file upload or URL
       if (imageFile) {
         formData.append('image', imageFile);
@@ -161,6 +168,8 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
       setImageFile(null);
       setImageMode('url');
       setPublishDate(new Date().toISOString().split('T')[0]);
+      setCustomTitle('');
+      setShowCustomTitleInput(false);
       setPreview(null);
 
       onUploadSuccess?.(result.data);
@@ -264,6 +273,61 @@ const PDFInsightUploader: React.FC<PDFInsightUploaderProps> = ({
               )}
             </div>
           </div>
+
+          {/* Custom Title Field */}
+          {pdfFile && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-2 p-4 bg-amber-50 border border-amber-200 rounded-lg"
+            >
+              <label className="block text-sm font-medium text-gray-700">
+                PDF Title (optional)
+              </label>
+              <p className="text-xs text-gray-600 mb-3">
+                The title will be automatically extracted from the PDF. You can override it here if needed.
+              </p>
+              {!showCustomTitleInput ? (
+                <button
+                  type="button"
+                  onClick={() => setShowCustomTitleInput(true)}
+                  className="text-sm text-accent-600 hover:text-accent-700 font-medium"
+                >
+                  + Override extracted title
+                </button>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="space-y-2"
+                >
+                  <input
+                    type="text"
+                    value={customTitle}
+                    onChange={(e) => setCustomTitle(e.target.value)}
+                    placeholder="Enter custom title for this PDF..."
+                    maxLength={200}
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <p className="text-xs text-gray-500">
+                    {customTitle.length}/200 characters
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowCustomTitleInput(false);
+                        setCustomTitle('');
+                      }}
+                      className="text-sm text-gray-600 hover:text-gray-700 font-medium"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
 
           {/* Featured Image */}
           <div className="space-y-4">

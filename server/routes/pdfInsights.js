@@ -86,6 +86,17 @@ const generateExcerpt = (text) => {
     : truncated + "...";
 };
 
+// Helper function to create a URL-safe slug from text
+const slugify = (text) => {
+  if (!text) return "untitled-pdf";
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric with hyphens
+    .replace(/^-+|-+$/g, "") // Remove leading/trailing hyphens
+    .slice(0, 80); // Max length for Cloudinary public_id (leaving room for randomness if needed)
+};
+
 // Helper function to extract author from PDF text
 const extractAuthorFromPdf = (text) => {
   const lines = text
@@ -202,7 +213,7 @@ router.post(
         });
       }
 
-      const { featuredImage, publishDate, category } = req.body;
+      const { featuredImage, publishDate, category, customTitle } = req.body;
       const pdfFile = req.files.pdf[0];
       const imageFile = req.files.image ? req.files.image[0] : null;
 
@@ -235,7 +246,8 @@ router.post(
       }
 
       // Extract metadata from PDF
-      const title = extractTitleFromPdf(pdfText);
+      // Use customTitle if provided, otherwise extract from PDF
+      const title = customTitle && customTitle.trim() ? customTitle.trim() : extractTitleFromPdf(pdfText);
       const excerpt = generateExcerpt(pdfText);
       const author = extractAuthorFromPdf(pdfText);
 
@@ -247,17 +259,23 @@ router.post(
       // Convert PDF buffer to base64
       const base64Pdf = `data:application/pdf;base64,${pdfFile.buffer.toString("base64")}`;
 
-      // Upload to Cloudinary
+      // Create a URL-safe slug from the title for the PDF filename
+      const pdfSlug = slugify(title);
+      console.log("  - PDF Slug/Filename:", pdfSlug);
+
+      // Upload to Cloudinary with proper filename
       const uploadResult = await cloudinary.uploader.upload(base64Pdf, {
-        resource_type: "image",
+        resource_type: "auto", // Auto-detect PDF type
         folder: "insights-pdfs",
-        format: "pdf",
+        public_id: pdfSlug, // Use slugified title as the filename
         access_mode: "public",
+        flags: "immutable", // Cache the file permanently
       });
 
       const pdfUrl = uploadResult.secure_url;
 
       console.log("🔗 PDF URL from Cloudinary:", pdfUrl);
+      console.log("✅ PDF will download as:", `${pdfSlug}.pdf`);
 
       // Handle image - either uploaded file or URL
       let finalImageUrl;
